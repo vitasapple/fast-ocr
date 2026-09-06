@@ -10,12 +10,15 @@ use tiny_http::{Header, Response, Server};
 fn resolve_asset_dir(app: &tauri::AppHandle) -> PathBuf {
     // 1. Try production bundled resource directory
     if let Ok(resource_dir) = app.path().resource_dir() {
-        let candidate = resource_dir.join("src");
-        if candidate.join("index.html").exists() {
-            return candidate;
-        }
-        if resource_dir.join("index.html").exists() {
-            return resource_dir;
+        let candidates = [
+            resource_dir.join("src"),
+            resource_dir.join("_up_").join("src"),
+            resource_dir.clone(),
+        ];
+        for candidate in &candidates {
+            if candidate.join("index.html").exists() {
+                return candidate.clone();
+            }
         }
     }
 
