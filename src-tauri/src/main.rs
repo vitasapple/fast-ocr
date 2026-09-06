@@ -128,8 +128,38 @@ fn start_local_server(asset_dir: PathBuf) -> u16 {
     port
 }
 
+#[tauri::command]
+fn capture_screen() -> Result<Vec<u8>, String> {
+    #[cfg(target_os = "macos")]
+    {
+        use std::process::Command;
+        let temp_path = std::env::temp_dir().join("dali_snip.png");
+        let _ = std::fs::remove_file(&temp_path);
+
+        let status = Command::new("/usr/sbin/screencapture")
+            .arg("-i")
+            .arg(&temp_path)
+            .status()
+            .map_err(|e| format!("screencapture failed: {}", e))?;
+
+        if status.success() && temp_path.exists() {
+            let bytes = std::fs::read(&temp_path)
+                .map_err(|e| format!("Failed to read screenshot: {}", e))?;
+            let _ = std::fs::remove_file(&temp_path);
+            Ok(bytes)
+        } else {
+            Err("Capture cancelled".to_string())
+        }
+    }
+    #[cfg(not(target_os = "macos"))]
+    {
+        Err("Native screen capture is only supported on macOS".to_string())
+    }
+}
+
 fn main() {
     tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![capture_screen])
         .setup(|app| {
             let asset_dir = resolve_asset_dir(app.handle());
             let port = start_local_server(asset_dir);

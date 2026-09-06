@@ -179,6 +179,34 @@
     }
     .more { opacity: 0.55; font-size: 12px; }
     #copyTip { margin-left: 8px; }
+
+    .view-tabs {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 2px;
+      border-radius: 8px;
+    }
+    @media (prefers-color-scheme: dark) {
+      .view-tabs { background: rgba(255, 255, 255, 0.08); }
+    }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: inherit;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #fff;
+      color: #2563eb;
+      font-weight: 500;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    @media (prefers-color-scheme: dark) {
+      .tab-btn.active { background: #2c2f38; color: #60a5fa; }
+    }
   </style>
 </head>
 <body>
@@ -218,15 +246,31 @@
   </div>
 
   <div class="card">
-    <div class="row" style="margin-bottom: 10px">
+    <div class="row" style="margin-bottom: 10px; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <h2 style="font-size: 15px; margin: 0">全部识别结果</h2>
-      <button id="copyBtn" class="primary" disabled>复制全部</button>
-      <button id="downloadBtn" disabled>下载 .txt</button>
-      <button id="clearBtn">清空</button>
-      <span id="copyTip" class="more"></span>
+      <div class="row" style="gap: 8px;">
+        <button id="copyBtn" class="primary" disabled>复制全部</button>
+        <button id="downloadBtn" disabled>下载 .txt</button>
+        <button id="clearBtn">清空</button>
+        <span id="copyTip" class="more"></span>
+      </div>
     </div>
+
+    <!-- Smart Paragraph Formatting Toolbar -->
+    <div id="formatToolbar" class="row" style="gap: 10px; margin-bottom: 10px; font-size: 13px; align-items: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px;">
+      <span style="font-size: 12px; opacity: 0.75;">排版模式:</span>
+      <div class="view-tabs">
+        <button id="fmtSmartBtn" class="tab-btn active" type="button">✨ 智能段落排版</button>
+        <button id="fmtRawBtn" class="tab-btn" type="button">原始换行</button>
+      </div>
+      <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; font-size: 12px; margin-left: 6px;" title="自动清理中文汉字之间被误识别出的多余空格">
+        <input type="checkbox" id="cleanSpacesCheck" checked />
+        <span>去除中文多余空格</span>
+      </label>
+    </div>
+
     <textarea id="result" readonly placeholder="识别出的全部文字会按页码汇总到这里……"></textarea>
-    <div class="more" style="margin-top: 8px">分页之间用空行隔开。点击“复制全部”即可复制全部文字，无需手动框选。</div>
+    <div class="more" style="margin-top: 8px">💡 智能排版模式会自动合并自然段落折行。切换上方选项可即时对比。</div>
   </div>
 
   <script type="module">
@@ -246,6 +290,9 @@
       fileInfo: $("fileInfo"),
       progress: $("progress"),
       status: $("status"),
+      fmtSmartBtn: $("fmtSmartBtn"),
+      fmtRawBtn: $("fmtRawBtn"),
+      cleanSpacesCheck: $("cleanSpacesCheck"),
       result: $("result"),
       copyBtn: $("copyBtn"),
       downloadBtn: $("downloadBtn"),
@@ -257,6 +304,9 @@
       ocr: null,
       ocrReady: false,
       pdfFile: null,
+      pages: [], // array of { pageNo, items }
+      formatMode: "smart",
+      cleanSpaces: true,
       lastText: "",
       isRunning: false,
       isAborted: false
@@ -327,6 +377,144 @@
       setStatus("就绪：选择一个 PDF，然后点“开始识别整个 PDF”。", "ok");
     }
 
+    function cleanOcrSpaces(str) {
+      let prev;
+      let res = str;
+      const hSpace = "[ \\t\\u00A0\\u3000]+";
+      const cjk = "[\\u4e00-\\u9fa5\\u3000-\\u303f\\uff00-\\uffef]";
+      const punct = "[，。！？；：、“”‘’（）]";
+      const r1 = new RegExp(`(${cjk})${hSpace}(${cjk})`, "g");
+      const r2 = new RegExp(`(${cjk})${hSpace}(${punct})`, "g");
+      const r3 = new RegExp(`(${punct})${hSpace}(${cjk})`, "g");
+
+      do {
+        prev = res;
+        res = res.replace(r1, "$1$2").replace(r2, "$1$2").replace(r3, "$1$2");
+      } while (res !== prev);
+      return res;
+    }
+
+    function formatSmartParagraphs(itemsOrLines, cleanSpaces = true) {
+      if (!itemsOrLines || !itemsOrLines.length) return "";
+      const isItems = typeof itemsOrLines[0] === "object" && itemsOrLines[0] !== null && "text" in itemsOrLines[0];
+      const listRegex = /^(\d+[\.、\)]|\([0-9a-zA-Z一二三四五六七八九十]+\)|[一二三四五六七八九十]+[、\.]|[•\-\*·◆●]|第[0-9一二三四五六七八九十]+[章节条篇部])/;
+      const isCjk = (ch) => /[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/.test(ch);
+      const isEndPunct = (ch) => /[。！？…；”’!?]/.test(ch);
+
+      let items = [];
+      if (isItems) {
+        items = itemsOrLines.map((it) => {
+          const text = (it.text || "").trim();
+          let left = 0, right = 0, top = 0, bottom = 0, height = 20;
+          if (it.poly && it.poly.length >= 4) {
+            left = Math.min(it.poly[0][0], it.poly[3][0]);
+            right = Math.max(it.poly[1][0], it.poly[2][0]);
+            top = Math.min(it.poly[0][1], it.poly[1][1]);
+            bottom = Math.max(it.poly[2][1], it.poly[3][1]);
+            height = Math.max(10, bottom - top);
+          }
+          return { text, left, right, top, bottom, height };
+        }).filter((it) => it.text.length > 0);
+      } else {
+        items = itemsOrLines
+          .map((line) => ({ text: String(line).trim(), left: 0, right: 0, top: 0, bottom: 0, height: 20 }))
+          .filter((it) => it.text.length > 0);
+      }
+
+      if (!items.length) return "";
+
+      const hasGeometry = isItems && items.some((it) => it.right > 0);
+      let maxRight = 0, minLeft = 0, avgHeight = 20;
+      if (hasGeometry) {
+        maxRight = Math.max(...items.map((it) => it.right));
+        minLeft = Math.min(...items.map((it) => it.left));
+        const heights = items.map((it) => it.height).sort((a, b) => a - b);
+        avgHeight = heights[Math.floor(heights.length / 2)] || 20;
+      }
+
+      const paragraphs = [];
+      let currentPara = "";
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        const lineText = item.text;
+
+        if (!currentPara) {
+          currentPara = lineText;
+          continue;
+        }
+
+        const prevItem = items[i - 1];
+        const lastChar = currentPara.slice(-1);
+        const firstChar = lineText.charAt(0);
+        const isNextList = listRegex.test(lineText);
+        const isCurrentEndPunct = isEndPunct(lastChar);
+
+        let isNewParagraph = false;
+
+        if (isNextList) {
+          isNewParagraph = true;
+        } else if (hasGeometry) {
+          const vertGap = item.top - prevItem.bottom;
+          const isLargeGap = vertGap > avgHeight * 0.75;
+          const isIndented = (item.left - minLeft) > avgHeight * 1.2;
+          const isShortLine = (maxRight - prevItem.right) > avgHeight * 2.2;
+
+          if (isLargeGap || isIndented || (isCurrentEndPunct && isShortLine)) {
+            isNewParagraph = true;
+          }
+        } else {
+          if (isCurrentEndPunct && lineText.length > 0) {
+            isNewParagraph = true;
+          }
+        }
+
+        if (isNewParagraph) {
+          paragraphs.push(currentPara);
+          currentPara = lineText;
+        } else {
+          if (lastChar === "-" && /[a-zA-Z]/.test(currentPara.slice(-2, -1)) && /[a-zA-Z]/.test(firstChar)) {
+            currentPara = currentPara.slice(0, -1) + lineText;
+          } else if (isCjk(lastChar) || isCjk(firstChar)) {
+            currentPara += lineText;
+          } else {
+            currentPara += " " + lineText;
+          }
+        }
+      }
+
+      if (currentPara) paragraphs.push(currentPara);
+
+      let result = paragraphs.join("\n\n");
+      if (cleanSpaces) result = cleanOcrSpaces(result);
+      return result;
+    }
+
+    function renderPdfResult(scrollBottom = false) {
+      if (!state.pages.length) {
+        ui.result.value = "";
+        ui.copyBtn.disabled = true;
+        ui.downloadBtn.disabled = true;
+        return;
+      }
+
+      const pageTexts = state.pages.map((p) => {
+        const header = `--- 第 ${p.pageNo} 页 ---`;
+        const body = state.formatMode === "smart"
+          ? formatSmartParagraphs(p.items, state.cleanSpaces)
+          : p.items.map((it) => it.text).join("\n");
+        return `${header}\n${body}`;
+      });
+
+      state.lastText = pageTexts.join("\n\n");
+      ui.result.value = state.lastText;
+      if (scrollBottom) {
+        ui.result.scrollTop = ui.result.scrollHeight;
+      }
+      ui.copyBtn.disabled = !state.lastText;
+      ui.downloadBtn.disabled = !state.lastText;
+    }
+
     function acceptPdf(file) {
       if (state.isRunning) return;
       if (!file) return;
@@ -335,6 +523,8 @@
         return;
       }
       state.pdfFile = file;
+      state.pages = [];
+      state.lastText = "";
       const sizeMb = file.size / 1048576;
       ui.fileInfo.textContent =
         `已选择：${file.name}（${file.size / 1024 >= 1024 ? sizeMb.toFixed(1) + " MB" : (file.size / 1024).toFixed(0) + " KB"}）`;
@@ -343,7 +533,6 @@
       ui.copyBtn.disabled = true;
       ui.downloadBtn.disabled = true;
       ui.result.value = "";
-      state.lastText = "";
       ui.progress.hidden = true;
       ui.progress.value = 0;
       setStatus("已选择 PDF，点击“开始识别整个 PDF”。", "ok");
@@ -370,9 +559,15 @@
         setStatus("请先选择一个 PDF 文件。", "error");
         return;
       }
+      if (state.isRunning) return;
 
       state.isRunning = true;
       state.isAborted = false;
+      state.pages = [];
+      state.lastText = "";
+      ui.result.value = "";
+      ui.copyBtn.disabled = true;
+      ui.downloadBtn.disabled = true;
 
       ui.runBtn.style.display = "none";
       ui.stopBtn.style.display = "";
@@ -380,36 +575,29 @@
       ui.chooseBtn.disabled = true;
       ui.modelSelect.disabled = true;
 
-      ui.copyBtn.disabled = true;
-      ui.downloadBtn.disabled = true;
-      ui.result.value = "";
-      state.lastText = "";
-
       let pdf = null;
-      let totalLines = 0;
-      let totalMs = 0;
-      let completedPages = 0;
-
       try {
-        try {
-          setStatus("正在读取与解析 PDF…");
-          // 每次识别均读取全新的 ArrayBuffer，避免 ArrayBuffer 被 PDF.js worker detach 导致二次识别报错
-          const arrayBuffer = await state.pdfFile.arrayBuffer();
-          const pdfData = new Uint8Array(arrayBuffer);
-          const lib = await getPdfjs();
-          pdf = await lib.getDocument({ data: pdfData }).promise;
-        } catch (e) {
-          setStatus("PDF 加载失败：" + (e instanceof Error ? e.message : String(e)), "error");
-          return;
-        }
+        setStatus("正在解析 PDF 结构…");
+        const pdfjs = await getPdfjs();
+        const data = await state.pdfFile.arrayBuffer();
+        const typedarray = new Uint8Array(data);
+        pdf = await pdfjs.getDocument({
+          data: typedarray,
+          cMapUrl: "/vendor/cmaps/",
+          cMapPacked: true,
+          standardFontDataUrl: "/vendor/standard_fonts/"
+        }).promise;
 
         const numPages = pdf.numPages;
-        setStatus(`PDF 共 ${numPages} 页，开始逐页识别…（可随时点击“停止识别”）`);
         ui.progress.hidden = false;
-        ui.progress.max = numPages;
         ui.progress.value = 0;
+        ui.progress.max = numPages;
 
-        for (let pageNo = 1; pageNo <= numPages; pageNo += 1) {
+        let totalLines = 0;
+        let totalMs = 0;
+        let completedPages = 0;
+
+        for (let pageNo = 1; pageNo <= numPages; pageNo++) {
           if (state.isAborted) break;
 
           setStatus(`正在识别第 ${pageNo} / ${numPages} 页…（点击“停止识别”可随时中断）`);
@@ -422,23 +610,13 @@
             const [result] = await state.ocr.predict(canvas, { textRecScoreThresh: 0.1 });
             if (state.isAborted) break;
 
-            const lines = result.items.map((it) => it.text).filter(Boolean);
-            totalLines += lines.length;
+            const items = result.items || [];
+            totalLines += items.length;
             totalMs += result.metrics.totalMs;
             completedPages += 1;
 
-            const pageContent = lines.join("\n");
-            if (pageContent) {
-              if (state.lastText) {
-                state.lastText += "\n\n" + pageContent;
-              } else {
-                state.lastText = pageContent;
-              }
-              ui.result.value = state.lastText;
-              ui.result.scrollTop = ui.result.scrollHeight;
-              ui.copyBtn.disabled = false;
-              ui.downloadBtn.disabled = false;
-            }
+            state.pages.push({ pageNo, items });
+            renderPdfResult(true);
           } finally {
             try { page.cleanup(); } catch (_) {}
           }
@@ -447,15 +625,9 @@
         }
 
         if (state.isAborted) {
-          setStatus(
-            `已停止：已处理前 ${completedPages} / ${numPages} 页（共识别 ${totalLines} 行文字），内容已保留在下方。`,
-            "ok"
-          );
+          setStatus(`已停止：已处理前 ${completedPages} / ${numPages} 页（共识别 ${totalLines} 行文字），内容已保留在下方。`, "ok");
         } else {
-          setStatus(
-            `识别完成：共 ${numPages} 页、${totalLines} 行文字，OCR 总耗时 ${(totalMs / 1000).toFixed(1)} 秒。`,
-            "ok"
-          );
+          setStatus(`识别完成：共 ${numPages} 页、${totalLines} 行文字，OCR 总耗时 ${(totalMs / 1000).toFixed(1)} 秒。`, "ok");
         }
       } catch (e) {
         setError(e);
@@ -533,28 +705,52 @@
         setStatus("正在停止识别，当前页完成后即刻中止并保留已识别内容…");
       }
     });
+
+    ui.fmtSmartBtn.addEventListener("click", () => {
+      state.formatMode = "smart";
+      ui.fmtSmartBtn.classList.add("active");
+      ui.fmtRawBtn.classList.remove("active");
+      renderPdfResult(false);
+    });
+
+    ui.fmtRawBtn.addEventListener("click", () => {
+      state.formatMode = "raw";
+      ui.fmtRawBtn.classList.add("active");
+      ui.fmtSmartBtn.classList.remove("active");
+      renderPdfResult(false);
+    });
+
+    ui.cleanSpacesCheck.addEventListener("change", () => {
+      state.cleanSpaces = ui.cleanSpacesCheck.checked;
+      renderPdfResult(false);
+    });
+
     ui.copyBtn.addEventListener("click", async () => {
       if (!state.lastText) return;
       const ok = await copyText(state.lastText);
       if (ok) flashCopyTip();
       else setStatus("复制失败，请手动框选复制。", "error");
     });
+
     ui.downloadBtn.addEventListener("click", () => {
       if (!state.lastText) return;
       const blob = new Blob([state.lastText], { type: "text/plain;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "ocr_result.txt";
+      a.download = `大梨OCR_PDF识别结果_${Date.now()}.txt`;
       a.click();
       URL.revokeObjectURL(url);
     });
+
     ui.clearBtn.addEventListener("click", () => {
       state.lastText = "";
+      state.pages = [];
       ui.result.value = "";
       ui.copyBtn.disabled = true;
       ui.downloadBtn.disabled = true;
     });
+
     ui.modelSelect.addEventListener("change", () => initializeOcr().catch(setError));
 
     // 转换状态：读取 PDF 字节后自动识别
