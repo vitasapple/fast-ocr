@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PaddleOCR.js PDF 全篇幅识别</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      max-width: 920px;
+      margin-inline: auto;
+      background: #f5f7fb;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background: #17181c; }
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { opacity: 0.65; font-size: 13px; margin: 0 0 18px; line-height: 1.6; }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .page-header-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .page-header-main h1 {
+      margin: 0 0 6px;
+    }
+    .page-header-main .sub {
+      margin: 0;
+    }
+    .page-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 9px;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      background: #fff;
+      color: #2563eb;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+      transition: all 0.15s ease;
+    }
+    .page-switch-btn:hover {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transform: translateY(-1px);
+    }
+    .page-switch-btn:active {
+      transform: translateY(0);
+    }
+    .page-switch-btn .btn-arrow {
+      font-size: 15px;
+      line-height: 1;
+      transition: transform 0.15s ease;
+    }
+    .page-switch-btn:hover .btn-arrow-right {
+      transform: translateX(3px);
+    }
+    .page-switch-btn:hover .btn-arrow-left {
+      transform: translateX(-3px);
+    }
+    @media (max-width: 680px) {
+      .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .page-switch-btn {
+        align-self: flex-start;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      .page-switch-btn {
+        background: #22242b;
+        color: #60a5fa;
+        border-color: rgba(96, 165, 250, 0.35);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      }
+      .page-switch-btn:hover {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      }
+    }
+    .card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    @media (prefers-color-scheme: dark) {
+      .card { background: #22242b; border-color: rgba(255,255,255,0.08); }
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button, select {
+      cursor: pointer;
+      border-radius: 9px;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 9px 14px;
+      font: inherit;
+      font-size: 14px;
+      background: #fff;
+    }
+    @media (prefers-color-scheme: dark) {
+      button, select { background: #2c2f38; border-color: rgba(255,255,255,0.15); color: #eee; }
+    }
+    button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:hover:not(:disabled) { filter: brightness(1.05); }
+    #dropzone {
+      border: 2px dashed rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 26px 16px;
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+      background: rgba(37,99,235,0.03);
+    }
+    @media (prefers-color-scheme: dark) {
+      #dropzone { border-color: rgba(255,255,255,0.25); color: #bbb; background: rgba(37,99,235,0.08); }
+    }
+    #dropzone.dragover { border-color: #2563eb; background: rgba(37,99,235,0.1); }
+    #fileInfo { margin-top: 10px; font-size: 13px; opacity: 0.8; }
+    progress {
+      width: 100%;
+      height: 18px;
+      accent-color: #2563eb;
+      margin-top: 12px;
+    }
+    #status {
+      font-size: 13px; line-height: 1.6;
+      padding: 10px 12px; border-radius: 10px;
+      background: rgba(0,0,0,0.04);
+      min-height: 20px; word-break: break-all; margin-top: 12px;
+    }
+    @media (prefers-color-scheme: dark) { #status { background: rgba(255,255,255,0.06); } }
+    #status.error { color: #dc2626; }
+    #status.ok { color: #16a34a; }
+    label { font-size: 13px; opacity: 0.8; margin-right: 4px; }
+    #result {
+      width: 100%;
+      min-height: 260px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 10px 12px;
+      background: #fafafa;
+    }
+    @media (prefers-color-scheme: dark) {
+      #result { background: #1b1d23; color: #e6e6e6; border-color: rgba(255,255,255,0.15); }
+    }
+    .more { opacity: 0.55; font-size: 12px; }
+    #copyTip { margin-left: 8px; }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="page-header-main">
+      <h1>PaddleOCR.js PDF 全篇幅识别</h1>
+      <p class="sub">
+        上传 PDF 后，网页会用 PDF.js 渲染每一页、再用 PaddleOCR 逐页识别，结果全部汇总，可一键复制。<br />
+        全部在浏览器本地完成，模型与运行库都已内置，无需联网下载，不会上传你的文件。页面越多耗时越长。
+      </p>
+    </div>
+    <a href="index.html" class="page-switch-btn" title="切换到单张图片识别页面">
+      <span class="btn-arrow btn-arrow-left">&larr;</span>
+      <span>🖼️ 切换到图片识别</span>
+    </a>
+  </header>
+
+  <div class="card">
+    <div class="row" style="margin-bottom: 12px">
+      <input id="fileInput" type="file" accept="application/pdf,.pdf" hidden />
+      <button id="chooseBtn" class="primary">选择 PDF 文件</button>
+      <label for="modelSelect">模型</label>
+      <select id="modelSelect">
+        <option value="PP-OCRv5">PP-OCRv5（推荐，中文精准）</option>
+        <option value="PP-OCRv6_small">PP-OCRv6 small（更快）</option>
+        <option value="PP-OCRv6_tiny">PP-OCRv6 tiny（最快）</option>
+      </select>
+      <button id="runBtn" class="primary" disabled>开始识别整个 PDF</button>
+    </div>
+    <div id="dropzone">
+      <div id="dropHint">点击上方按钮选择 PDF，或把 PDF 文件直接拖到这里</div>
+    </div>
+    <div id="fileInfo"></div>
+    <progress id="progress" max="100" value="0" hidden></progress>
+    <div id="status">正在启动 OCR 引擎…</div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="margin-bottom: 10px">
+      <h2 style="font-size: 15px; margin: 0">全部识别结果</h2>
+      <button id="copyBtn" class="primary" disabled>复制全部</button>
+      <button id="downloadBtn" disabled>下载 .txt</button>
+      <button id="clearBtn">清空</button>
+      <span id="copyTip" class="more"></span>
+    </div>
+    <textarea id="result" readonly placeholder="识别出的全部文字会按页码汇总到这里……"></textarea>
+    <div class="more" style="margin-top: 8px">分页之间用空行隔开。点击“复制全部”即可复制全部文字，无需手动框选。</div>
+  </div>
+
+  <script type="module">
+    const ORT_WASM_PATHS = "/npm2/onnxruntime-web@1.26.0/dist/";
+    const PDFJS_LIB = "/vendor/pdf.mjs";
+    const PDFJS_WORKER = "/vendor/pdf.worker.mjs";
+
+    const $ = (id) => document.getElementById(id);
+    const ui = {
+      fileInput: $("fileInput"),
+      chooseBtn: $("chooseBtn"),
+      modelSelect: $("modelSelect"),
+      runBtn: $("runBtn"),
+      dropzone: $("dropzone"),
+      dropHint: $("dropHint"),
+      fileInfo: $("fileInfo"),
+      progress: $("progress"),
+      status: $("status"),
+      result: $("result"),
+      copyBtn: $("copyBtn"),
+      downloadBtn: $("downloadBtn"),
+      clearBtn: $("clearBtn"),
+      copyTip: $("copyTip")
+    };
+
+    const state = {
+      ocr: null,
+      ocrReady: false,
+      pdfFile: null,
+      pdfData: null,
+      lastText: ""
+    };
+
+    function setStatus(text, type = "") {
+      ui.status.textContent = text;
+      ui.status.className = type;
+      console.log("[status]", text);
+    }
+    function setError(e) {
+      console.error(e);
+      setStatus("出错了：" + (e instanceof Error ? e.message : String(e)), "error");
+    }
+
+    function getModelNames(preset) {
+      if (preset === "PP-OCRv5") return { det: "PP-OCRv5_mobile_det", rec: "PP-OCRv5_mobile_rec" };
+      return { det: preset + "_det", rec: preset + "_rec" };
+    }
+
+    async function loadSdk() {
+      const mod = await import("/npm2/@paddleocr/paddleocr-js@0.4.2/+esm");
+      if (mod.PaddleOCR) return mod.PaddleOCR;
+      throw new Error("SDK 模块中未找到 PaddleOCR 导出");
+    }
+
+    let pdfjsLib = null;
+    async function getPdfjs() {
+      if (pdfjsLib) return pdfjsLib;
+      pdfjsLib = await import(PDFJS_LIB);
+      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      return pdfjsLib;
+    }
+
+    async function initializeOcr() {
+      state.ocrReady = false;
+      ui.runBtn.disabled = true;
+      setStatus("正在加载 PaddleOCR.js SDK 与运行库…");
+
+      const PaddleOCR = await loadSdk();
+      setStatus("正在初始化 OCR 引擎（加载本地模型）…");
+
+      const threadCount =
+        self.crossOriginIsolated
+          ? Math.min(4, Math.max(1, (navigator.hardwareConcurrency || 2) - 1))
+          : 1;
+
+      const { det, rec } = getModelNames(ui.modelSelect.value);
+      const ocr = await PaddleOCR.create({
+        initialize: false,
+        worker: false,
+        textDetectionModelName: det,
+        textDetectionModelAsset: { url: "/models/" + det + "_onnx_infer.tar" },
+        textRecognitionModelName: rec,
+        textRecognitionModelAsset: { url: "/models/" + rec + "_onnx_infer.tar" },
+        ortOptions: {
+          backend: "auto",
+          wasmPaths: ORT_WASM_PATHS,
+          numThreads: threadCount,
+          simd: true
+        }
+      });
+
+      const summary = await ocr.initialize();
+      state.ocr = ocr;
+      state.ocrReady = true;
+      ui.runBtn.disabled = !state.pdfFile;
+      setStatus("就绪：选择一个 PDF，然后点“开始识别整个 PDF”。", "ok");
+    }
+
+    function acceptPdf(file) {
+      if (!file) return;
+      if (file.type && file.type !== "application/pdf" && !/\.pdf$/i.test(file.name)) {
+        setStatus("这不是 PDF 文件（" + file.type + "+" + file.name + "），请选择 PDF。", "error");
+        return;
+      }
+      state.pdfFile = file;
+      const sizeMb = file.size / 1048576;
+      ui.fileInfo.textContent =
+        `已选择：${file.name}（${file.size / 1024 >= 1024 ? sizeMb.toFixed(1) + " MB" : (file.size / 1024).toFixed(0) + " KB"}）`;
+      ui.dropHint.style.display = "none";
+      ui.runBtn.disabled = !state.ocrReady;
+      setStatus("已选择 PDF，点击“开始识别整个 PDF”。", "ok");
+    }
+
+    function renderPdfPage(page, targetLongSide) {
+      const size1 = page.getViewport({ scale: 1 });
+      const long1 = Math.max(size1.width, size1.height);
+      const scale = Math.max(1.2, Math.min(4, targetLongSide / long1));
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+      const ctx = canvas.getContext("2d", { alpha: false });
+      return page.render({ canvasContext: ctx, viewport }).promise.then(() => canvas);
+    }
+
+    async function recognizePdf() {
+      if (!state.ocrReady || !state.ocr) {
+        setStatus("OCR 引擎还未就绪，请稍候…", "error");
+        return;
+      }
+      if (!state.pdfFile) {
+        setStatus("请先选择一个 PDF 文件。", "error");
+        return;
+      }
+
+      ui.runBtn.disabled = true;
+      ui.copyBtn.disabled = true;
+      ui.downloadBtn.disabled = true;
+      ui.result.value = "";
+      state.lastText = "";
+
+      try {
+        let pdf;
+        try {
+          setStatus("正在加载 PDF…");
+          if (!state.pdfData) state.pdfData = await state.pdfFile.arrayBuffer();
+          const lib = await getPdfjs();
+          pdf = await lib.getDocument({ data: state.pdfData }).promise;
+        } catch (e) {
+          setStatus("PDF 加载失败：" + (e instanceof Error ? e.message : e), "error");
+          return;
+        }
+
+        const numPages = pdf.numPages;
+        setStatus(`PDF 共 ${numPages} 页，正在逐页识别，请耐心等待…（模型初始化已完成，无需重复下载）`);
+        ui.progress.hidden = false;
+        ui.progress.max = numPages;
+        ui.progress.value = 0;
+
+        const pageTexts = [];
+        const pendingPerBatch = 2;
+
+        let start = 1;
+        while (start <= numPages) {
+          const pending = [];
+          for (let p = start; p < start + pendingPerBatch && p <= numPages; p += 1) {
+            const page = await pdf.getPage(p);
+            pending.push(page);
+          }
+
+          for (let i = 0; i < pending.length; i += 1) {
+            const page = pending[i];
+            const pageNo = start + i;
+            setStatus(`正在处理第 ${pageNo} / ${numPages} 页…`);
+
+            const canvas = await renderPdfPage(page, 1600);
+            const [result] = await state.ocr.predict(canvas, { textRecScoreThresh: 0.1 });
+
+            const lines = result.items.map((it) => it.text);
+            pageTexts.push({ page: pageNo, lines, totalMs: result.metrics.totalMs });
+
+            ui.progress.value = pageNo;
+            try { page.cleanup(); } catch (e) { /* 忽略清理错误 */ }
+          }
+
+          start += pendingPerBatch;
+        }
+
+        const allText = pageTexts
+          .map((p) => p.lines.join("\n"))
+          .join("\n\n");
+        state.lastText = allText;
+        ui.result.value = allText;
+        ui.copyBtn.disabled = !allText;
+        ui.downloadBtn.disabled = !allText;
+
+        const totalMs = pageTexts.reduce((s, p) => s + p.totalMs, 0);
+        const totalLines = pageTexts.reduce((s, p) => s + p.lines.length, 0);
+        setStatus(
+          `识别完成：共 ${numPages} 页、${totalLines} 行文字，OCR 总耗时 ${(totalMs / 1000).toFixed(1)} 秒。`,
+          "ok"
+        );
+      } catch (e) {
+        setError(e);
+      } finally {
+        ui.progress.hidden = true;
+        ui.runBtn.disabled = false;
+      }
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (e) {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand("copy");
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e2) {
+          return false;
+        }
+      }
+    }
+
+    function flashCopyTip() {
+      ui.copyTip.textContent = "已复制全部内容 ✓";
+      setTimeout(() => { ui.copyTip.textContent = ""; }, 1600);
+    }
+
+    ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
+    ui.fileInput.addEventListener("change", (e) => acceptPdf(e.target.files?.[0]));
+
+    for (const ev of ["dragenter", "dragover"]) {
+      ui.dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        ui.dropzone.classList.add("dragover");
+      });
+    }
+    for (const ev of ["dragleave", "drop"]) {
+      ui.dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        ui.dropzone.classList.remove("dragover");
+      });
+    }
+    ui.dropzone.addEventListener("drop", (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) acceptPdf(file);
+    });
+
+    ui.runBtn.addEventListener("click", () => recognizePdf());
+    ui.copyBtn.addEventListener("click", async () => {
+      if (!state.lastText) return;
+      const ok = await copyText(state.lastText);
+      if (ok) flashCopyTip();
+      else setStatus("复制失败，请手动框选复制。", "error");
+    });
+    ui.downloadBtn.addEventListener("click", () => {
+      if (!state.lastText) return;
+      const blob = new Blob([state.lastText], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ocr_result.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    ui.clearBtn.addEventListener("click", () => {
+      state.lastText = "";
+      ui.result.value = "";
+      ui.copyBtn.disabled = true;
+      ui.downloadBtn.disabled = true;
+    });
+    ui.modelSelect.addEventListener("change", () => initializeOcr().catch(setError));
+
+    // 转换状态：读取 PDF 字节后自动识别
+    initializeOcr().catch(setError);
+  </script>
+</body>
+</html>

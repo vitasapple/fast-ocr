@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PaddleOCR.js 网页 OCR 工具</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      max-width: 920px;
+      margin-inline: auto;
+      background: #f5f7fb;
+    }
+    @media (prefers-color-scheme: dark) {
+      body { background: #17181c; }
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { opacity: 0.65; font-size: 13px; margin: 0 0 18px; line-height: 1.6; }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .page-header-main {
+      flex: 1;
+      min-width: 0;
+    }
+    .page-header-main h1 {
+      margin: 0 0 6px;
+    }
+    .page-header-main .sub {
+      margin: 0;
+    }
+    .page-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 9px;
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      background: #fff;
+      color: #2563eb;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+      transition: all 0.15s ease;
+    }
+    .page-switch-btn:hover {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transform: translateY(-1px);
+    }
+    .page-switch-btn:active {
+      transform: translateY(0);
+    }
+    .page-switch-btn .btn-arrow {
+      font-size: 15px;
+      line-height: 1;
+      transition: transform 0.15s ease;
+    }
+    .page-switch-btn:hover .btn-arrow-right {
+      transform: translateX(3px);
+    }
+    .page-switch-btn:hover .btn-arrow-left {
+      transform: translateX(-3px);
+    }
+    @media (max-width: 680px) {
+      .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .page-switch-btn {
+        align-self: flex-start;
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      .page-switch-btn {
+        background: #22242b;
+        color: #60a5fa;
+        border-color: rgba(96, 165, 250, 0.35);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      }
+      .page-switch-btn:hover {
+        background: #2563eb;
+        color: #fff;
+        border-color: #2563eb;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      }
+    }
+    .card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    @media (prefers-color-scheme: dark) {
+      .card { background: #22242b; border-color: rgba(255,255,255,0.08); }
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    button, select {
+      cursor: pointer;
+      border-radius: 9px;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 9px 14px;
+      font: inherit;
+      font-size: 14px;
+      background: #fff;
+    }
+    @media (prefers-color-scheme: dark) {
+      button, select { background: #2c2f38; border-color: rgba(255,255,255,0.15); color: #eee; }
+    }
+    button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:hover:not(:disabled) { filter: brightness(1.05); }
+    #dropzone {
+      border: 2px dashed rgba(0,0,0,0.2);
+      border-radius: 12px;
+      padding: 28px 16px;
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+      background: rgba(37,99,235,0.03);
+    }
+    @media (prefers-color-scheme: dark) {
+      #dropzone { border-color: rgba(255,255,255,0.25); color: #bbb; background: rgba(37,99,235,0.08); }
+    }
+    #dropzone.dragover { border-color: #2563eb; background: rgba(37,99,235,0.1); }
+    #dropzone img {
+      max-width: 100%;
+      max-height: 340px;
+      display: block;
+      margin: 0 auto 10px;
+      border-radius: 8px;
+    }
+    #status {
+      font-size: 13px; line-height: 1.6;
+      padding: 10px 12px; border-radius: 10px;
+      background: rgba(0,0,0,0.04);
+      min-height: 20px; word-break: break-all;
+    }
+    @media (prefers-color-scheme: dark) { #status { background: rgba(255,255,255,0.06); } }
+    #status.error { color: #dc2626; }
+    #status.ok { color: #16a34a; }
+    label { font-size: 13px; opacity: 0.8; margin-right: 4px; }
+    #result {
+      width: 100%;
+      min-height: 160px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.15);
+      padding: 10px 12px;
+      background: #fafafa;
+    }
+    @media (prefers-color-scheme: dark) {
+      #result { background: #1b1d23; color: #e6e6e6; border-color: rgba(255,255,255,0.15); }
+    }
+    .more { opacity: 0.55; font-size: 12px; }
+    #metrics { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.7; margin: 0; white-space: pre-wrap; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <div class="page-header-main">
+      <h1>PaddleOCR.js 网页 OCR 工具</h1>
+      <p class="sub">
+        全部在浏览器本地运行，模型与运行库都已随页面内置，无需联网下载，不经过任何服务器。<br />
+        支持：点击选择图片、拖拽图片到方块内、或直接 <b>Ctrl/⌘ + V</b> 粘贴剪贴板里的图片。
+      </p>
+    </div>
+    <a href="pdf.html" class="page-switch-btn" title="切换到 PDF 全篇幅识别页面">
+      <span>📄 切换到 PDF 识别</span>
+      <span class="btn-arrow btn-arrow-right">&rarr;</span>
+    </a>
+  </header>
+
+  <div class="card">
+    <div class="row" style="margin-bottom: 12px">
+      <input id="fileInput" type="file" accept="image/*" hidden />
+      <button id="chooseBtn" class="primary">选择图片</button>
+      <button id="pasteBtn">从剪贴板粘贴</button>
+      <label for="modelSelect">模型</label>
+      <select id="modelSelect">
+        <option value="PP-OCRv5">PP-OCRv5（推荐，中文精准）</option>
+        <option value="PP-OCRv6_small">PP-OCRv6 small（更快）</option>
+        <option value="PP-OCRv6_tiny">PP-OCRv6 tiny（最快）</option>
+      </select>
+      <button id="runBtn" class="primary" disabled>开始识别</button>
+    </div>
+    <div id="dropzone">
+      <img id="preview" alt="" hidden />
+      <div id="dropHint">点击上方按钮选择图片，或把图片拖到这里，或直接 Ctrl/⌘+V 粘贴</div>
+    </div>
+    <div id="status" style="margin-top: 12px">正在启动 OCR 引擎…</div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="margin-bottom: 10px">
+      <h2 style="font-size: 15px; margin: 0">识别结果</h2>
+      <button id="copyBtn" class="primary" disabled>复制结果</button>
+      <button id="clearBtn">清空</button>
+      <span id="copyTip" class="more"></span>
+    </div>
+    <textarea id="result" readonly placeholder="识别出的文字会出现在这里……"></textarea>
+    <div class="more" style="margin-top: 8px">点击“复制结果”即复制上方全部文字（每行一条识别结果），无需手动框选。</div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size: 15px; margin: 0 0 8px">运行信息</h2>
+    <pre id="metrics">暂无</pre>
+  </div>
+
+  <script type="module">
+    const ORT_WASM_PATHS = "/npm2/onnxruntime-web@1.26.0/dist/";
+
+    const $ = (id) => document.getElementById(id);
+    const ui = {
+      fileInput: $("fileInput"),
+      chooseBtn: $("chooseBtn"),
+      pasteBtn: $("pasteBtn"),
+      modelSelect: $("modelSelect"),
+      runBtn: $("runBtn"),
+      dropzone: $("dropzone"),
+      preview: $("preview"),
+      dropHint: $("dropHint"),
+      status: $("status"),
+      result: $("result"),
+      copyBtn: $("copyBtn"),
+      clearBtn: $("clearBtn"),
+      copyTip: $("copyTip"),
+      metrics: $("metrics")
+    };
+
+    const state = {
+      ocr: null,
+      ocrReady: false,
+      srcBlob: null,
+      previewUrl: null,
+      lastText: ""
+    };
+
+    function setStatus(text, type = "") {
+      ui.status.textContent = text;
+      ui.status.className = type;
+      console.log("[status]", text);
+    }
+    function setError(e) {
+      console.error(e);
+      setStatus("出错了：" + (e instanceof Error ? e.message : String(e)), "error");
+    }
+
+    function getModelNames(preset) {
+      if (preset === "PP-OCRv5") return { det: "PP-OCRv5_mobile_det", rec: "PP-OCRv5_mobile_rec" };
+      return { det: preset + "_det", rec: preset + "_rec" };
+    }
+
+    async function loadSdk() {
+      const mod = await import("/npm2/@paddleocr/paddleocr-js@0.4.2/+esm");
+      if (mod.PaddleOCR) return mod.PaddleOCR;
+      throw new Error("SDK 模块中未找到 PaddleOCR 导出");
+    }
+
+    async function initializeOcr() {
+      state.ocrReady = false;
+      ui.runBtn.disabled = true;
+      setStatus("正在加载 PaddleOCR.js SDK 与运行库…");
+
+      const PaddleOCR = await loadSdk();
+      setStatus("正在初始化 OCR 引擎（加载本地模型）…");
+
+      const threadCount =
+        self.crossOriginIsolated
+          ? Math.min(4, Math.max(1, (navigator.hardwareConcurrency || 2) - 1))
+          : 1;
+
+      const { det, rec } = getModelNames(ui.modelSelect.value);
+      const ocr = await PaddleOCR.create({
+        initialize: false,
+        worker: false,
+        textDetectionModelName: det,
+        textDetectionModelAsset: { url: "/models/" + det + "_onnx_infer.tar" },
+        textRecognitionModelName: rec,
+        textRecognitionModelAsset: { url: "/models/" + rec + "_onnx_infer.tar" },
+        ortOptions: {
+          backend: "auto",
+          wasmPaths: ORT_WASM_PATHS,
+          numThreads: threadCount,
+          simd: true
+        }
+      });
+
+      const summary = await ocr.initialize();
+      state.ocr = ocr;
+      state.ocrReady = true;
+      ui.runBtn.disabled = !state.srcBlob;
+
+      const totalBytes = summary.assets
+        .map((a) => a.bytes)
+        .reduce((s, b) => s + b, 0);
+      const modelSize =
+        totalBytes >= 1048576
+          ? (totalBytes / 1048576).toFixed(1) + " MB"
+          : (totalBytes / 1024).toFixed(0) + " KB";
+
+      const lines = [
+        "OCR 引擎已就绪",
+        // `模型：${det} + ${rec}`,
+        // `后端：${summary.backend}`,
+        `线程数：${threadCount}（${self.crossOriginIsolated ? "多线程" : "单线程"}）`,
+        `初始化耗时：${summary.elapsedMs.toFixed()} ms`,
+        `模型体积：${modelSize}`
+      ];
+      ui.metrics.textContent = lines.join("\n");
+      setStatus("就绪：选择或粘贴一张图片，然后点“开始识别”。", "ok");
+    }
+
+    function showPreview(blob) {
+      if (state.previewUrl) URL.revokeObjectURL(state.previewUrl);
+      state.previewUrl = URL.createObjectURL(blob);
+      ui.preview.src = state.previewUrl;
+      ui.preview.hidden = false;
+      ui.dropHint.style.display = "none";
+    }
+
+    function acceptImage(blob) {
+      if (!blob) return;
+      if (!/^image\//.test(blob.type)) {
+        setStatus("这不是图片文件（" + blob.type + "），请选择图片。", "error");
+        return;
+      }
+      state.srcBlob = blob;
+      showPreview(blob);
+      ui.runBtn.disabled = !state.ocrReady;
+      setStatus("已选择图片" + (blob.name ? `：${blob.name}` : "") + "，点击“开始识别”。", "ok");
+    }
+
+    async function runOcr() {
+      if (!state.ocrReady || !state.ocr) {
+        setStatus("OCR 引擎还未就绪，请稍候…", "error");
+        return;
+      }
+      if (!state.srcBlob) {
+        setStatus("请先选择或粘贴一张图片。", "error");
+        return;
+      }
+      ui.runBtn.disabled = true;
+      try {
+        setStatus("正在识别…");
+        const [result] = await state.ocr.predict(state.srcBlob, {
+          textRecScoreThresh: 0.1
+        });
+
+        const text = result.items.map((it) => it.text).join("\n");
+        state.lastText = text;
+        ui.result.value = text;
+        ui.copyBtn.disabled = !text;
+
+        const metricsLines = [
+          `识别到 ${result.metrics.recognizedCount} 行文字`,
+          `文字检测：${result.metrics.detMs.toFixed(1)} ms`,
+          `文字识别：${result.metrics.recMs.toFixed(1)} ms`,
+          `总耗时：${result.metrics.totalMs.toFixed(1)} ms`,
+          `运行时：${result.runtime?.backend || "?"}`
+        ];
+        if (ui.metrics.textContent.includes("OCR 引擎已就绪")) {
+          ui.metrics.textContent = ui.metrics.textContent + "\n" + metricsLines.join("\n");
+        } else {
+          ui.metrics.textContent = metricsLines.join("\n");
+        }
+        setStatus(`识别完成，共 ${result.metrics.recognizedCount} 行文字。`, "ok");
+      } catch (e) {
+        setError(e);
+      } finally {
+        ui.runBtn.disabled = false;
+      }
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (e) {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand("copy");
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e2) {
+          return false;
+        }
+      }
+    }
+
+    function flashCopyTip() {
+      ui.copyTip.textContent = "已复制 ✓";
+      setTimeout(() => { ui.copyTip.textContent = ""; }, 1600);
+    }
+
+    ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
+    ui.fileInput.addEventListener("change", (e) => acceptImage(e.target.files?.[0]));
+
+    for (const ev of ["dragenter", "dragover"]) {
+      ui.dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        ui.dropzone.classList.add("dragover");
+      });
+    }
+    for (const ev of ["dragleave", "drop"]) {
+      ui.dropzone.addEventListener(ev, (e) => {
+        e.preventDefault();
+        ui.dropzone.classList.remove("dragover");
+      });
+    }
+    ui.dropzone.addEventListener("drop", (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) acceptImage(file);
+    });
+
+    document.addEventListener("paste", (e) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of items) {
+        if (item.kind === "file" && /^image\//.test(item.type)) {
+          e.preventDefault();
+          acceptImage(item.getAsFile());
+          return;
+        }
+      }
+    });
+
+    ui.pasteBtn.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard?.read) {
+          const items = await navigator.clipboard.read();
+          for (const item of items) {
+            const blob = await item.getType(item.types.find((t) => t.startsWith("image/")));
+            if (blob) { acceptImage(blob); return; }
+          }
+          setStatus("剪贴板里没有图片。也可以直接 Ctrl/⌘+V 粘贴。", "error");
+        } else {
+          setStatus("此浏览器不支持按钮读取剪贴板，请直接按 Ctrl/⌘+V 粘贴图片。", "error");
+        }
+      } catch (e) {
+        setStatus("读取剪贴板被拒绝或失败，请直接 Ctrl/⌘+V 粘贴。", "error");
+      }
+    });
+
+    ui.runBtn.addEventListener("click", () => runOcr());
+    ui.copyBtn.addEventListener("click", async () => {
+      if (!state.lastText) return;
+      const ok = await copyText(state.lastText);
+      if (ok) flashCopyTip();
+      else setStatus("复制失败，请手动框选复制。", "error");
+    });
+    ui.clearBtn.addEventListener("click", () => {
+      state.lastText = "";
+      ui.result.value = "";
+      ui.copyBtn.disabled = true;
+    });
+    ui.modelSelect.addEventListener("change", () => initializeOcr().catch(setError));
+
+    initializeOcr().catch(setError);
+  </script>
+</body>
+</html>
