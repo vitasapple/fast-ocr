@@ -256,21 +256,30 @@
       </div>
     </div>
 
-    <!-- Smart Paragraph Formatting Toolbar -->
-    <div id="formatToolbar" class="row" style="gap: 10px; margin-bottom: 10px; font-size: 13px; align-items: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px;">
-      <span style="font-size: 12px; opacity: 0.75;">排版模式:</span>
-      <div class="view-tabs">
-        <button id="fmtSmartBtn" class="tab-btn active" type="button">✨ 智能段落排版</button>
-        <button id="fmtRawBtn" class="tab-btn" type="button">原始换行</button>
+    <!-- Output Format & Paragraph Toolbar -->
+    <div id="formatToolbar" class="row" style="gap: 12px; margin-bottom: 10px; font-size: 13px; align-items: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px; flex-wrap: wrap;">
+      <div class="row" style="gap: 6px; align-items: center;">
+        <span style="font-size: 12px; opacity: 0.75; font-weight: 600;">格式:</span>
+        <div class="view-tabs">
+          <button id="fmtTxtBtn" class="tab-btn active" type="button">📄 纯文本 (TXT)</button>
+          <button id="fmtMdBtn" class="tab-btn" type="button">📝 Markdown (.md)</button>
+        </div>
       </div>
-      <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; font-size: 12px; margin-left: 6px;" title="自动清理中文汉字之间被误识别出的多余空格">
+      <div id="txtOptionsGroup" class="row" style="gap: 6px; align-items: center;">
+        <span style="font-size: 12px; opacity: 0.75;">排版:</span>
+        <div class="view-tabs">
+          <button id="fmtSmartBtn" class="tab-btn active" type="button">✨ 智能段落</button>
+          <button id="fmtRawBtn" class="tab-btn" type="button">原始换行</button>
+        </div>
+      </div>
+      <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; font-size: 12px;" title="自动清理中文汉字之间被误识别出的多余空格">
         <input type="checkbox" id="cleanSpacesCheck" checked />
         <span>去除中文多余空格</span>
       </label>
     </div>
 
     <textarea id="result" readonly placeholder="识别出的全部文字会按页码汇总到这里……"></textarea>
-    <div class="more" style="margin-top: 8px">💡 智能排版模式会自动合并自然段落折行。切换上方选项可即时对比。</div>
+    <div class="more" style="margin-top: 8px">💡 支持在纯文本与 Markdown 间任意切换。识别过程中逐页流式展示，中途停止仍可保留并导出已识别内容。</div>
   </div>
 
   <script type="module">
@@ -290,6 +299,9 @@
       fileInfo: $("fileInfo"),
       progress: $("progress"),
       status: $("status"),
+      fmtTxtBtn: $("fmtTxtBtn"),
+      fmtMdBtn: $("fmtMdBtn"),
+      txtOptionsGroup: $("txtOptionsGroup"),
       fmtSmartBtn: $("fmtSmartBtn"),
       fmtRawBtn: $("fmtRawBtn"),
       cleanSpacesCheck: $("cleanSpacesCheck"),
@@ -305,6 +317,7 @@
       ocrReady: false,
       pdfFile: null,
       pages: [], // array of { pageNo, items }
+      docFormat: "txt", // "txt" | "md"
       formatMode: "smart",
       cleanSpaces: true,
       lastText: "",
@@ -490,29 +503,178 @@
       return result;
     }
 
+    function formatMarkdown(itemsOrLines, cleanSpaces = true) {
+      if (!itemsOrLines || !itemsOrLines.length) return "";
+      const isItems = typeof itemsOrLines[0] === "object" && itemsOrLines[0] !== null && "text" in itemsOrLines[0];
+      const isCjk = (ch) => /[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/.test(ch);
+      const isEndPunct = (ch) => /[。！？…；”’!?]/.test(ch);
+
+      let items = [];
+      if (isItems) {
+        items = itemsOrLines.map((it) => {
+          const text = (it.text || "").trim();
+          let left = it.left || 0, right = it.right || 0, top = it.top || 0, bottom = it.bottom || 0, height = it.height || 20;
+          if (it.poly && it.poly.length >= 4) {
+            left = Math.min(it.poly[0][0], it.poly[3][0]);
+            right = Math.max(it.poly[1][0], it.poly[2][0]);
+            top = Math.min(it.poly[0][1], it.poly[1][1]);
+            bottom = Math.max(it.poly[2][1], it.poly[3][1]);
+            height = Math.max(10, bottom - top);
+          }
+          return { text, left, right, top, bottom, height };
+        }).filter((it) => it.text.length > 0);
+      } else {
+        items = itemsOrLines
+          .map((line) => ({ text: String(line).trim(), left: 0, right: 0, top: 0, bottom: 0, height: 20 }))
+          .filter((it) => it.text.length > 0);
+      }
+
+      if (!items.length) return "";
+
+      const heights = items.map((it) => it.height).sort((a, b) => a - b);
+      const medianHeight = heights[Math.floor(heights.length / 2)] || 20;
+      const maxRight = Math.max(...items.map((it) => it.right));
+      const minLeft = Math.min(...items.map((it) => it.left));
+      const hasGeometry = isItems && items.some((it) => it.right > 0);
+
+      const lines = items.map((item) => {
+        let raw = item.text;
+        if (cleanSpaces) raw = cleanOcrSpaces(raw);
+        let type = "para";
+        let content = raw;
+
+        const heightRatio = item.height / medianHeight;
+        const isChapter = /^第[0-9一二三四五六七八九十百千万]+[章节篇卷部]/.test(raw);
+        const isChineseNumTitle = /^[一二三四五六七八九十]+[、\.]/.test(raw);
+
+        if (heightRatio >= 1.55 && raw.length <= 40) {
+          type = "h1";
+          content = "# " + raw.replace(/^#+\s*/, "");
+        } else if ((heightRatio >= 1.28 || isChapter) && raw.length <= 50) {
+          type = "h2";
+          content = "## " + raw.replace(/^#+\s*/, "");
+        } else if (isChineseNumTitle && raw.length <= 40) {
+          type = "h3";
+          content = "### " + raw.replace(/^#+\s*/, "");
+        } else {
+          const ulMatch = raw.match(/^[•\-\*·◆●■]\s*(.*)$/);
+          const olMatch = raw.match(/^(\d+)[\.、\)]\s*(.*)$/);
+          if (ulMatch) {
+            type = "ul";
+            content = "- " + ulMatch[1];
+          } else if (olMatch) {
+            type = "ol";
+            content = `${olMatch[1]}. ${olMatch[2]}`;
+          }
+        }
+        return { ...item, type, content, raw };
+      });
+
+      const blocks = [];
+      let currentBlock = null;
+
+      for (let i = 0; i < lines.length; i++) {
+        const cur = lines[i];
+        const prev = lines[i - 1];
+
+        if (!currentBlock) {
+          currentBlock = { type: cur.type, text: cur.content, lastItem: cur };
+          continue;
+        }
+
+        let startNewBlock = false;
+
+        if (cur.type === "h1" || cur.type === "h2" || cur.type === "h3" || currentBlock.type === "h1" || currentBlock.type === "h2" || currentBlock.type === "h3") {
+          startNewBlock = true;
+        } else if (cur.type === "ul" || cur.type === "ol" || currentBlock.type === "ul" || currentBlock.type === "ol") {
+          startNewBlock = true;
+        } else {
+          const lastChar = currentBlock.text.slice(-1);
+          const isCurrentEndPunct = isEndPunct(lastChar);
+
+          if (hasGeometry) {
+            const vertGap = cur.top - prev.bottom;
+            const isLargeGap = vertGap > medianHeight * 0.75;
+            const isIndented = (cur.left - minLeft) > medianHeight * 1.2;
+            const isShortLine = (maxRight - prev.right) > medianHeight * 2.2;
+            if (isLargeGap || isIndented || (isCurrentEndPunct && isShortLine)) {
+              startNewBlock = true;
+            }
+          } else if (isCurrentEndPunct) {
+            startNewBlock = true;
+          }
+        }
+
+        if (startNewBlock) {
+          blocks.push(currentBlock);
+          currentBlock = { type: cur.type, text: cur.content, lastItem: cur };
+        } else {
+          const lastChar = currentBlock.text.slice(-1);
+          const firstChar = cur.raw.charAt(0);
+          if (lastChar === "-" && /[a-zA-Z]/.test(currentBlock.text.slice(-2, -1)) && /[a-zA-Z]/.test(firstChar)) {
+            currentBlock.text = currentBlock.text.slice(0, -1) + cur.raw;
+          } else if (isCjk(lastChar) || isCjk(firstChar)) {
+            currentBlock.text += cur.raw;
+          } else {
+            currentBlock.text += " " + cur.raw;
+          }
+          currentBlock.lastItem = cur;
+        }
+      }
+
+      if (currentBlock) blocks.push(currentBlock);
+
+      let md = "";
+      for (let i = 0; i < blocks.length; i++) {
+        const b = blocks[i];
+        const prevB = blocks[i - 1];
+        if (i === 0) {
+          md += b.text;
+        } else {
+          const isConsecutiveList = (b.type === "ul" && prevB.type === "ul") || (b.type === "ol" && prevB.type === "ol");
+          if (isConsecutiveList) {
+            md += "\n" + b.text;
+          } else {
+            md += "\n\n" + b.text;
+          }
+        }
+      }
+
+      return md;
+    }
+
     function renderPdfResult(scrollBottom = false) {
       if (!state.pages.length) {
+        state.lastText = "";
         ui.result.value = "";
         ui.copyBtn.disabled = true;
         ui.downloadBtn.disabled = true;
         return;
       }
 
+      const isMd = state.docFormat === "md";
       const pageTexts = state.pages.map((p) => {
-        const header = `--- 第 ${p.pageNo} 页 ---`;
-        const body = state.formatMode === "smart"
-          ? formatSmartParagraphs(p.items, state.cleanSpaces)
-          : p.items.map((it) => it.text).join("\n");
-        return `${header}\n${body}`;
+        if (isMd) {
+          const header = `## 第 ${p.pageNo} 页`;
+          const body = formatMarkdown(p.items, state.cleanSpaces);
+          return `${header}\n\n${body}`;
+        } else {
+          const header = `--- 第 ${p.pageNo} 页 ---`;
+          const body = state.formatMode === "smart"
+            ? formatSmartParagraphs(p.items, state.cleanSpaces)
+            : p.items.map((it) => it.text).join("\n");
+          return `${header}\n${body}`;
+        }
       });
 
-      state.lastText = pageTexts.join("\n\n");
+      state.lastText = pageTexts.join(isMd ? "\n\n---\n\n" : "\n\n");
       ui.result.value = state.lastText;
       if (scrollBottom) {
         ui.result.scrollTop = ui.result.scrollHeight;
       }
       ui.copyBtn.disabled = !state.lastText;
       ui.downloadBtn.disabled = !state.lastText;
+      ui.downloadBtn.textContent = isMd ? "下载 .md" : "下载 .txt";
     }
 
     function acceptPdf(file) {
@@ -668,9 +830,9 @@
       }
     }
 
-    function flashCopyTip() {
-      ui.copyTip.textContent = "已复制全部内容 ✓";
-      setTimeout(() => { ui.copyTip.textContent = ""; }, 1600);
+    function flashCopyTip(msg = "已复制全部内容 ✓") {
+      ui.copyTip.textContent = msg;
+      setTimeout(() => { if (ui.copyTip.textContent === msg) ui.copyTip.textContent = ""; }, 1600);
     }
 
     ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
@@ -706,6 +868,23 @@
       }
     });
 
+    // 格式切换（纯文本 vs Markdown）
+    ui.fmtTxtBtn.addEventListener("click", () => {
+      state.docFormat = "txt";
+      ui.fmtTxtBtn.classList.add("active");
+      ui.fmtMdBtn.classList.remove("active");
+      ui.txtOptionsGroup.style.display = "flex";
+      renderPdfResult(false);
+    });
+
+    ui.fmtMdBtn.addEventListener("click", () => {
+      state.docFormat = "md";
+      ui.fmtMdBtn.classList.add("active");
+      ui.fmtTxtBtn.classList.remove("active");
+      ui.txtOptionsGroup.style.display = "none";
+      renderPdfResult(false);
+    });
+
     ui.fmtSmartBtn.addEventListener("click", () => {
       state.formatMode = "smart";
       ui.fmtSmartBtn.classList.add("active");
@@ -728,17 +907,21 @@
     ui.copyBtn.addEventListener("click", async () => {
       if (!state.lastText) return;
       const ok = await copyText(state.lastText);
-      if (ok) flashCopyTip();
+      if (ok) flashCopyTip(state.docFormat === "md" ? "已复制全部 Markdown ✓" : "已复制全部内容 ✓");
       else setStatus("复制失败，请手动框选复制。", "error");
     });
 
     ui.downloadBtn.addEventListener("click", () => {
       if (!state.lastText) return;
-      const blob = new Blob([state.lastText], { type: "text/plain;charset=utf-8" });
+      const isMd = state.docFormat === "md";
+      const ext = isMd ? "md" : "txt";
+      const mime = isMd ? "text/markdown;charset=utf-8" : "text/plain;charset=utf-8";
+      const baseName = state.pdfFile?.name ? state.pdfFile.name.replace(/\.[^/.]+$/, "") : `PDF识别结果_${Date.now()}`;
+      const blob = new Blob([state.lastText], { type: mime });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `大梨OCR_PDF识别结果_${Date.now()}.txt`;
+      a.download = `大梨OCR_${baseName}.${ext}`;
       a.click();
       URL.revokeObjectURL(url);
     });

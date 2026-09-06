@@ -490,21 +490,31 @@
       </div>
       <div class="row" style="gap: 8px; flex-wrap: wrap; align-items: center;">
         <button id="copyBtn" class="primary" disabled>复制结果</button>
+        <button id="downloadBtn" disabled title="导出当前结果到本地文件">💾 导出 TXT</button>
         <button id="copyAllBatchBtn" style="display: none;" title="将全部已识别图片的文字合并复制到剪贴板">📦 复制全部图片结果</button>
-        <button id="downloadBatchBtn" style="display: none;" title="将全部已识别图片的文字导出为 .txt 文件">💾 导出合并 TXT</button>
+        <button id="downloadBatchBtn" style="display: none;" title="将全部已识别图片的文字导出为本地文件">💾 导出合并 TXT</button>
         <button id="clearBtn">清空</button>
         <span id="copyTip" class="more"></span>
       </div>
     </div>
 
-    <!-- Smart Paragraph Formatting Toolbar -->
-    <div id="formatToolbar" class="row" style="gap: 10px; margin-bottom: 10px; font-size: 13px; align-items: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px;">
-      <span style="font-size: 12px; opacity: 0.75;">排版模式:</span>
-      <div class="view-tabs">
-        <button id="fmtSmartBtn" class="tab-btn active" type="button">✨ 智能段落排版</button>
-        <button id="fmtRawBtn" class="tab-btn" type="button">原始换行</button>
+    <!-- Output Format & Paragraph Toolbar -->
+    <div id="formatToolbar" class="row" style="gap: 12px; margin-bottom: 10px; font-size: 13px; align-items: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px; flex-wrap: wrap;">
+      <div class="row" style="gap: 6px; align-items: center;">
+        <span style="font-size: 12px; opacity: 0.75; font-weight: 600;">格式:</span>
+        <div class="view-tabs">
+          <button id="fmtTxtBtn" class="tab-btn active" type="button">📄 纯文本 (TXT)</button>
+          <button id="fmtMdBtn" class="tab-btn" type="button">📝 Markdown (.md)</button>
+        </div>
       </div>
-      <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; font-size: 12px; margin-left: 6px;" title="自动清理中文汉字之间被误识别出的多余空格">
+      <div id="txtOptionsGroup" class="row" style="gap: 6px; align-items: center;">
+        <span style="font-size: 12px; opacity: 0.75;">排版:</span>
+        <div class="view-tabs">
+          <button id="fmtSmartBtn" class="tab-btn active" type="button">✨ 智能段落</button>
+          <button id="fmtRawBtn" class="tab-btn" type="button">原始换行</button>
+        </div>
+      </div>
+      <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; font-size: 12px;" title="自动清理中文汉字之间被误识别出的多余空格">
         <input type="checkbox" id="cleanSpacesCheck" checked />
         <span>去除中文多余空格</span>
       </label>
@@ -512,7 +522,7 @@
 
     <textarea id="result" readonly placeholder="识别出的文字会出现在这里……"></textarea>
     <div id="resultList" class="result-list" style="display: none;"></div>
-    <div class="more" style="margin-top: 8px">💡 智能排版模式会自动消除视觉折行破碎感，并保持列表和段落清晰。切换上方选项可即时对比。</div>
+    <div class="more" style="margin-top: 8px">💡 支持随时在纯文本与 Markdown 间动态切换。Markdown 自动保留各级标题与列表格式。</div>
   </div>
 
   <div class="card">
@@ -553,12 +563,17 @@
       // Results
       viewRawBtn: $("viewRawBtn"),
       viewListBtn: $("viewListBtn"),
+      formatToolbar: $("formatToolbar"),
+      fmtTxtBtn: $("fmtTxtBtn"),
+      fmtMdBtn: $("fmtMdBtn"),
+      txtOptionsGroup: $("txtOptionsGroup"),
       fmtSmartBtn: $("fmtSmartBtn"),
       fmtRawBtn: $("fmtRawBtn"),
       cleanSpacesCheck: $("cleanSpacesCheck"),
       result: $("result"),
       resultList: $("resultList"),
       copyBtn: $("copyBtn"),
+      downloadBtn: $("downloadBtn"),
       copyAllBatchBtn: $("copyAllBatchBtn"),
       downloadBatchBtn: $("downloadBatchBtn"),
       clearBtn: $("clearBtn"),
@@ -569,8 +584,9 @@
     const state = {
       ocr: null,
       ocrReady: false,
-      images: [], // array of { id, file, name, size, previewUrl, status, result, text, formattedText, items }
+      images: [], // array of { id, file, name, size, previewUrl, status, result, text, formattedText, mdText, items }
       currentIndex: -1,
+      docFormat: "txt", // "txt" | "md"
       formatMode: "smart", // "smart" | "raw"
       cleanSpaces: true,
       isBatchRunning: false,
@@ -771,6 +787,146 @@
       let result = paragraphs.join("\n\n");
       if (cleanSpaces) result = cleanOcrSpaces(result);
       return result;
+    }
+
+    function formatMarkdown(itemsOrLines, cleanSpaces = true) {
+      if (!itemsOrLines || !itemsOrLines.length) return "";
+      const isItems = typeof itemsOrLines[0] === "object" && itemsOrLines[0] !== null && "text" in itemsOrLines[0];
+      const isCjk = (ch) => /[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]/.test(ch);
+      const isEndPunct = (ch) => /[。！？…；”’!?]/.test(ch);
+
+      let items = [];
+      if (isItems) {
+        items = itemsOrLines.map((it) => {
+          const text = (it.text || "").trim();
+          let left = it.left || 0, right = it.right || 0, top = it.top || 0, bottom = it.bottom || 0, height = it.height || 20;
+          if (it.poly && it.poly.length >= 4) {
+            left = Math.min(it.poly[0][0], it.poly[3][0]);
+            right = Math.max(it.poly[1][0], it.poly[2][0]);
+            top = Math.min(it.poly[0][1], it.poly[1][1]);
+            bottom = Math.max(it.poly[2][1], it.poly[3][1]);
+            height = Math.max(10, bottom - top);
+          }
+          return { text, left, right, top, bottom, height };
+        }).filter((it) => it.text.length > 0);
+      } else {
+        items = itemsOrLines
+          .map((line) => ({ text: String(line).trim(), left: 0, right: 0, top: 0, bottom: 0, height: 20 }))
+          .filter((it) => it.text.length > 0);
+      }
+
+      if (!items.length) return "";
+
+      const heights = items.map((it) => it.height).sort((a, b) => a - b);
+      const medianHeight = heights[Math.floor(heights.length / 2)] || 20;
+      const maxRight = Math.max(...items.map((it) => it.right));
+      const minLeft = Math.min(...items.map((it) => it.left));
+      const hasGeometry = isItems && items.some((it) => it.right > 0);
+
+      const lines = items.map((item) => {
+        let raw = item.text;
+        if (cleanSpaces) raw = cleanOcrSpaces(raw);
+        let type = "para";
+        let content = raw;
+
+        const heightRatio = item.height / medianHeight;
+        const isChapter = /^第[0-9一二三四五六七八九十百千万]+[章节篇卷部]/.test(raw);
+        const isChineseNumTitle = /^[一二三四五六七八九十]+[、\.]/.test(raw);
+
+        if (heightRatio >= 1.55 && raw.length <= 40) {
+          type = "h1";
+          content = "# " + raw.replace(/^#+\s*/, "");
+        } else if ((heightRatio >= 1.28 || isChapter) && raw.length <= 50) {
+          type = "h2";
+          content = "## " + raw.replace(/^#+\s*/, "");
+        } else if (isChineseNumTitle && raw.length <= 40) {
+          type = "h3";
+          content = "### " + raw.replace(/^#+\s*/, "");
+        } else {
+          const ulMatch = raw.match(/^[•\-\*·◆●■]\s*(.*)$/);
+          const olMatch = raw.match(/^(\d+)[\.、\)]\s*(.*)$/);
+          if (ulMatch) {
+            type = "ul";
+            content = "- " + ulMatch[1];
+          } else if (olMatch) {
+            type = "ol";
+            content = `${olMatch[1]}. ${olMatch[2]}`;
+          }
+        }
+        return { ...item, type, content, raw };
+      });
+
+      const blocks = [];
+      let currentBlock = null;
+
+      for (let i = 0; i < lines.length; i++) {
+        const cur = lines[i];
+        const prev = lines[i - 1];
+
+        if (!currentBlock) {
+          currentBlock = { type: cur.type, text: cur.content, lastItem: cur };
+          continue;
+        }
+
+        let startNewBlock = false;
+
+        if (cur.type === "h1" || cur.type === "h2" || cur.type === "h3" || currentBlock.type === "h1" || currentBlock.type === "h2" || currentBlock.type === "h3") {
+          startNewBlock = true;
+        } else if (cur.type === "ul" || cur.type === "ol" || currentBlock.type === "ul" || currentBlock.type === "ol") {
+          startNewBlock = true;
+        } else {
+          const lastChar = currentBlock.text.slice(-1);
+          const isCurrentEndPunct = isEndPunct(lastChar);
+
+          if (hasGeometry) {
+            const vertGap = cur.top - prev.bottom;
+            const isLargeGap = vertGap > medianHeight * 0.75;
+            const isIndented = (cur.left - minLeft) > medianHeight * 1.2;
+            const isShortLine = (maxRight - prev.right) > medianHeight * 2.2;
+            if (isLargeGap || isIndented || (isCurrentEndPunct && isShortLine)) {
+              startNewBlock = true;
+            }
+          } else if (isCurrentEndPunct) {
+            startNewBlock = true;
+          }
+        }
+
+        if (startNewBlock) {
+          blocks.push(currentBlock);
+          currentBlock = { type: cur.type, text: cur.content, lastItem: cur };
+        } else {
+          const lastChar = currentBlock.text.slice(-1);
+          const firstChar = cur.raw.charAt(0);
+          if (lastChar === "-" && /[a-zA-Z]/.test(currentBlock.text.slice(-2, -1)) && /[a-zA-Z]/.test(firstChar)) {
+            currentBlock.text = currentBlock.text.slice(0, -1) + cur.raw;
+          } else if (isCjk(lastChar) || isCjk(firstChar)) {
+            currentBlock.text += cur.raw;
+          } else {
+            currentBlock.text += " " + cur.raw;
+          }
+          currentBlock.lastItem = cur;
+        }
+      }
+
+      if (currentBlock) blocks.push(currentBlock);
+
+      let md = "";
+      for (let i = 0; i < blocks.length; i++) {
+        const b = blocks[i];
+        const prevB = blocks[i - 1];
+        if (i === 0) {
+          md += b.text;
+        } else {
+          const isConsecutiveList = (b.type === "ul" && prevB.type === "ul") || (b.type === "ol" && prevB.type === "ol");
+          if (isConsecutiveList) {
+            md += "\n" + b.text;
+          } else {
+            md += "\n\n" + b.text;
+          }
+        }
+      }
+
+      return md;
     }
 
     function clearOverlay() {
@@ -1010,15 +1166,23 @@
       if (!currentImg || currentImg.status !== "done") {
         ui.result.value = "";
         ui.copyBtn.disabled = true;
+        ui.downloadBtn.disabled = true;
         return;
       }
 
-      const text = state.formatMode === "smart"
-        ? (currentImg.formattedText || formatSmartParagraphs(currentImg.items, state.cleanSpaces))
-        : currentImg.text;
+      let text = "";
+      if (state.docFormat === "md") {
+        text = currentImg.mdText || formatMarkdown(currentImg.items, state.cleanSpaces);
+      } else if (state.formatMode === "smart") {
+        text = currentImg.formattedText || formatSmartParagraphs(currentImg.items, state.cleanSpaces);
+      } else {
+        text = currentImg.text;
+      }
 
       ui.result.value = text;
       ui.copyBtn.disabled = !text;
+      ui.downloadBtn.disabled = !text;
+      ui.downloadBtn.textContent = state.docFormat === "md" ? "💾 导出 Markdown" : "💾 导出 TXT";
     }
 
     function updateBatchExportButtons() {
@@ -1027,6 +1191,7 @@
       if (isMulti && doneCount > 0) {
         ui.copyAllBatchBtn.style.display = "inline-block";
         ui.downloadBatchBtn.style.display = "inline-block";
+        ui.downloadBatchBtn.textContent = state.docFormat === "md" ? "💾 导出合并 Markdown" : "💾 导出合并 TXT";
       } else {
         ui.copyAllBatchBtn.style.display = "none";
         ui.downloadBatchBtn.style.display = "none";
@@ -1036,12 +1201,24 @@
     function getMergedBatchText() {
       const doneImages = state.images.filter((img) => img.status === "done");
       if (!doneImages.length) return "";
+      const isMd = state.docFormat === "md";
+      const total = doneImages.length;
+
       return doneImages
         .map((img, i) => {
-          const content = state.formatMode === "smart" ? img.formattedText : img.text;
-          return `========================================\n[${i + 1}/${doneImages.length}] ${img.name}\n========================================\n${content}`;
+          if (isMd) {
+            const header = `## [${i + 1}/${total}] ${img.name}`;
+            const body = img.mdText || formatMarkdown(img.items, state.cleanSpaces);
+            return `${header}\n\n${body}`;
+          } else {
+            const header = `================================================================================\n[${i + 1}/${total}] ${img.name}\n================================================================================`;
+            const body = state.formatMode === "smart"
+              ? (img.formattedText || formatSmartParagraphs(img.items, state.cleanSpaces))
+              : img.text;
+            return `${header}\n\n${body}`;
+          }
         })
-        .join("\n\n");
+        .join(isMd ? "\n\n---\n\n" : "\n\n");
     }
 
     function acceptFiles(files) {
@@ -1065,6 +1242,7 @@
           result: null,
           text: "",
           formattedText: "",
+          mdText: "",
           items: []
         });
       }
@@ -1105,6 +1283,7 @@
           img.items = result.items || [];
           img.text = (result.items || []).map((it) => it.text).join("\n");
           img.formattedText = formatSmartParagraphs(img.items, state.cleanSpaces);
+          img.mdText = formatMarkdown(img.items, state.cleanSpaces);
           img.status = "done";
 
           renderBoxes(result);
@@ -1158,6 +1337,7 @@
           img.items = result.items || [];
           img.text = (result.items || []).map((it) => it.text).join("\n");
           img.formattedText = formatSmartParagraphs(img.items, state.cleanSpaces);
+          img.mdText = formatMarkdown(img.items, state.cleanSpaces);
           img.status = "done";
           doneCount++;
 
@@ -1356,6 +1536,25 @@
       }
     });
 
+    // 格式切换（纯文本 vs Markdown）
+    ui.fmtTxtBtn.addEventListener("click", () => {
+      state.docFormat = "txt";
+      ui.fmtTxtBtn.classList.add("active");
+      ui.fmtMdBtn.classList.remove("active");
+      ui.txtOptionsGroup.style.display = "flex";
+      updateResultDisplay();
+      updateBatchExportButtons();
+    });
+
+    ui.fmtMdBtn.addEventListener("click", () => {
+      state.docFormat = "md";
+      ui.fmtMdBtn.classList.add("active");
+      ui.fmtTxtBtn.classList.remove("active");
+      ui.txtOptionsGroup.style.display = "none";
+      updateResultDisplay();
+      updateBatchExportButtons();
+    });
+
     // 智能排版切换
     ui.fmtSmartBtn.addEventListener("click", () => {
       state.formatMode = "smart";
@@ -1376,6 +1575,7 @@
       for (const img of state.images) {
         if (img.items?.length) {
           img.formattedText = formatSmartParagraphs(img.items, state.cleanSpaces);
+          img.mdText = formatMarkdown(img.items, state.cleanSpaces);
         }
       }
       updateResultDisplay();
@@ -1385,26 +1585,46 @@
       const text = ui.result.value;
       if (!text) return;
       const ok = await copyText(text);
-      if (ok) flashCopyTip("已复制当前结果 ✓");
+      if (ok) flashCopyTip(state.docFormat === "md" ? "已复制 Markdown ✓" : "已复制当前结果 ✓");
       else setStatus("复制失败，请手动框选复制。", "error");
+    });
+
+    ui.downloadBtn.addEventListener("click", () => {
+      const text = ui.result.value;
+      if (!text) return;
+      const currentImg = state.images[state.currentIndex];
+      const baseName = currentImg?.name ? currentImg.name.replace(/\.[^/.]+$/, "") : `识别结果_${Date.now()}`;
+      const isMd = state.docFormat === "md";
+      const ext = isMd ? "md" : "txt";
+      const mime = isMd ? "text/markdown;charset=utf-8" : "text/plain;charset=utf-8";
+      const blob = new Blob([text], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `大梨OCR_${baseName}.${ext}`;
+      a.click();
+      URL.revokeObjectURL(url);
     });
 
     ui.copyAllBatchBtn.addEventListener("click", async () => {
       const mergedText = getMergedBatchText();
       if (!mergedText) return;
       const ok = await copyText(mergedText);
-      if (ok) flashCopyTip("已复制全部图片结果 ✓");
+      if (ok) flashCopyTip(state.docFormat === "md" ? "已复制全部 Markdown ✓" : "已复制全部图片结果 ✓");
       else setStatus("复制失败，请重试。", "error");
     });
 
     ui.downloadBatchBtn.addEventListener("click", () => {
       const mergedText = getMergedBatchText();
       if (!mergedText) return;
-      const blob = new Blob([mergedText], { type: "text/plain;charset=utf-8" });
+      const isMd = state.docFormat === "md";
+      const ext = isMd ? "md" : "txt";
+      const mime = isMd ? "text/markdown;charset=utf-8" : "text/plain;charset=utf-8";
+      const blob = new Blob([mergedText], { type: mime });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `大梨OCR_批量识别结果_${Date.now()}.txt`;
+      a.download = `大梨OCR_批量识别结果_${Date.now()}.${ext}`;
       a.click();
       URL.revokeObjectURL(url);
     });
@@ -1423,6 +1643,7 @@
       renderResultList([]);
       ui.result.value = "";
       ui.copyBtn.disabled = true;
+      ui.downloadBtn.disabled = true;
       updateBatchUI();
       setStatus("已清空图片队列，请选择或拖入新图片。", "ok");
     });
@@ -1432,12 +1653,14 @@
       if (currentImg) {
         currentImg.text = "";
         currentImg.formattedText = "";
+        currentImg.mdText = "";
         currentImg.items = [];
         currentImg.result = null;
         currentImg.status = "pending";
       }
       ui.result.value = "";
       ui.copyBtn.disabled = true;
+      ui.downloadBtn.disabled = true;
       clearOverlay();
       renderResultList([]);
       renderBatchThumbnails();
