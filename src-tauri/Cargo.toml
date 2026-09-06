@@ -1,8 +1,8 @@
 [package]
-name = "paddleocr-desktop"
+name = "dali-ocr"
 version = "1.0.0"
-description = "PaddleOCR.js Desktop Application"
-authors = ["PaddleOCR Desktop"]
+description = "DaLi OCR Desktop Application"
+authors = ["DaLi OCR"]
 edition = "2021"
 
 [build-dependencies]

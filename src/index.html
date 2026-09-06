@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PaddleOCR.js 网页 OCR 工具</title>
+  <title>大梨OCR</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -182,9 +182,9 @@
 <body>
   <header class="page-header">
     <div class="page-header-main">
-      <h1>PaddleOCR.js 网页 OCR 工具</h1>
+      <h1>大梨OCR</h1>
       <p class="sub">
-        全部在浏览器本地运行，模型与运行库都已随页面内置，无需联网下载，不经过任何服务器。<br />
+        全部在本地离线运行，无需联网，不经过任何第三方服务器，保护您的隐私与数据安全。<br />
         支持：点击选择图片、拖拽图片到方块内、或直接 <b>Ctrl/⌘ + V</b> 粘贴剪贴板里的图片。
       </p>
     </div>
@@ -199,11 +199,11 @@
       <input id="fileInput" type="file" accept="image/*" hidden />
       <button id="chooseBtn" class="primary">选择图片</button>
       <button id="pasteBtn">从剪贴板粘贴</button>
-      <label for="modelSelect">模型</label>
+      <label for="modelSelect">识别模式</label>
       <select id="modelSelect">
-        <option value="PP-OCRv5">PP-OCRv5（推荐，中文精准）</option>
-        <option value="PP-OCRv6_small">PP-OCRv6 small（更快）</option>
-        <option value="PP-OCRv6_tiny">PP-OCRv6 tiny（最快）</option>
+        <option value="PP-OCRv5">高精度模式（推荐）</option>
+        <option value="PP-OCRv6_small">快速模式</option>
+        <option value="PP-OCRv6_tiny">极速模式</option>
       </select>
       <button id="runBtn" class="primary" disabled>开始识别</button>
     </div>
@@ -277,13 +277,13 @@
     async function loadSdk() {
       const mod = await import("/npm2/@paddleocr/paddleocr-js@0.4.2/+esm");
       if (mod.PaddleOCR) return mod.PaddleOCR;
-      throw new Error("SDK 模块中未找到 PaddleOCR 导出");
+      throw new Error("OCR 核心模块加载失败");
     }
 
     async function initializeOcr() {
       state.ocrReady = false;
       ui.runBtn.disabled = true;
-      setStatus("正在加载 PaddleOCR.js SDK 与运行库…");
+      setStatus("正在加载 OCR 引擎与运行库…");
 
       const PaddleOCR = await loadSdk();
       setStatus("正在初始化 OCR 引擎（加载本地模型）…");
@@ -422,7 +422,11 @@
     }
 
     ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
-    ui.fileInput.addEventListener("change", (e) => acceptImage(e.target.files?.[0]));
+    ui.fileInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (file) acceptImage(file);
+      e.target.value = "";
+    });
 
     for (const ev of ["dragenter", "dragover"]) {
       ui.dropzone.addEventListener(ev, (e) => {

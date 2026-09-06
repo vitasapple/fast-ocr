@@ -1,12 +1,17 @@
 {
-  "name": "paddleocr-desktop",
+  "name": "dali-ocr",
   "version": "1.0.0",
-  "description": "PaddleOCR.js 离线桌面版（支持 Windows / macOS）",
+  "description": "大梨OCR 离线桌面版（支持 Windows / macOS）",
   "private": true,
   "scripts": {
     "tauri": "tauri",
     "dev": "tauri dev",
-    "build": "tauri build"
+    "build": "tauri build",
+    "build:mac:arm64": "tauri build --target aarch64-apple-darwin --bundles dmg,app",
+    "build:mac:x64": "tauri build --target x86_64-apple-darwin --bundles dmg,app",
+    "build:mac:all": "npm run build:mac:arm64 && npm run build:mac:x64",
+    "build:mac:universal": "tauri build --target universal-apple-darwin --bundles dmg,app",
+    "build:win": "tauri build --bundles nsis"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0"
