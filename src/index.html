@@ -143,12 +143,177 @@
       #dropzone { border-color: rgba(255,255,255,0.25); color: #bbb; background: rgba(37,99,235,0.08); }
     }
     #dropzone.dragover { border-color: #2563eb; background: rgba(37,99,235,0.1); }
-    #dropzone img {
+    #previewContainer {
+      position: relative;
+      display: inline-block;
       max-width: 100%;
-      max-height: 340px;
+      margin: 0 auto;
+      line-height: 0;
+    }
+    #preview {
+      max-width: 100%;
+      max-height: 380px;
       display: block;
-      margin: 0 auto 10px;
+      margin: 0 auto;
       border-radius: 8px;
+    }
+    #overlaySvg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+      border-radius: 8px;
+    }
+    .ocr-box {
+      fill: rgba(37, 99, 235, 0.15);
+      stroke: #2563eb;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      cursor: pointer;
+      transition: fill 0.12s ease, stroke 0.12s ease, stroke-width 0.12s ease;
+    }
+    .ocr-box:hover, .ocr-box.active {
+      fill: rgba(16, 185, 129, 0.35) !important;
+      stroke: #10b981 !important;
+      stroke-width: 2.5 !important;
+    }
+    .ocr-box.copied {
+      fill: rgba(16, 185, 129, 0.65) !important;
+      stroke: #059669 !important;
+      stroke-width: 3 !important;
+    }
+    .box-tooltip {
+      position: absolute;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.92);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 6px 10px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+      word-break: break-all;
+      max-width: 340px;
+      transform: translate(-50%, -100%);
+      margin-top: -8px;
+      backdrop-filter: blur(4px);
+    }
+    .overlay-toolbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 13px;
+      flex-wrap: wrap;
+    }
+    .view-tabs {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 2px;
+      border-radius: 8px;
+    }
+    @media (prefers-color-scheme: dark) {
+      .view-tabs { background: rgba(255, 255, 255, 0.08); }
+    }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: inherit;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: #fff;
+      color: #2563eb;
+      font-weight: 500;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    @media (prefers-color-scheme: dark) {
+      .tab-btn.active { background: #2c2f38; color: #60a5fa; }
+    }
+    .result-list {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+      background: #fafafa;
+    }
+    @media (prefers-color-scheme: dark) {
+      .result-list { background: #1b1d23; border-color: rgba(255, 255, 255, 0.15); }
+    }
+    .result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      font-size: 13px;
+      transition: background 0.1s ease;
+    }
+    @media (prefers-color-scheme: dark) {
+      .result-item { border-bottom-color: rgba(255, 255, 255, 0.06); }
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-item:hover, .result-item.highlight {
+      background: rgba(37, 99, 235, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      .result-item:hover, .result-item.highlight { background: rgba(37, 99, 235, 0.2); }
+    }
+    .result-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+    }
+    .result-index {
+      font-size: 11px;
+      color: #888;
+      width: 24px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .result-score {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #15803d;
+      flex-shrink: 0;
+    }
+    @media (prefers-color-scheme: dark) {
+      .result-score { background: rgba(16, 185, 129, 0.25); color: #34d399; }
+    }
+    .result-text {
+      flex: 1;
+      word-break: break-all;
+      user-select: text;
+    }
+    .row-copy-btn {
+      padding: 3px 8px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: #fff;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    @media (prefers-color-scheme: dark) {
+      .row-copy-btn { background: #2c2f38; border-color: rgba(255, 255, 255, 0.15); color: #eee; }
+    }
+    .row-copy-btn:hover {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
     }
     #status {
       font-size: 13px; line-height: 1.6;
@@ -208,21 +373,41 @@
       <button id="runBtn" class="primary" disabled>开始识别</button>
     </div>
     <div id="dropzone">
-      <img id="preview" alt="" hidden />
+      <div id="previewContainer" style="display: none;">
+        <img id="preview" alt="" />
+        <svg id="overlaySvg"></svg>
+        <div id="boxTooltip" class="box-tooltip" style="display: none;"></div>
+      </div>
       <div id="dropHint">点击上方按钮选择图片，或把图片拖到这里，或直接 Ctrl/⌘+V 粘贴</div>
+      <div id="overlayToolbar" class="overlay-toolbar" style="display: none;">
+        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
+          <input type="checkbox" id="toggleBoxes" checked />
+          <span>显示文字识别框 (<span id="boxCount">0</span> 处)</span>
+        </label>
+        <span class="more">💡 鼠标移到图上文字框可预览，点击方框直接复制该行</span>
+      </div>
     </div>
     <div id="status" style="margin-top: 12px">正在启动 OCR 引擎…</div>
   </div>
 
   <div class="card">
-    <div class="row" style="margin-bottom: 10px">
-      <h2 style="font-size: 15px; margin: 0">识别结果</h2>
-      <button id="copyBtn" class="primary" disabled>复制结果</button>
-      <button id="clearBtn">清空</button>
-      <span id="copyTip" class="more"></span>
+    <div class="row" style="margin-bottom: 10px; justify-content: space-between;">
+      <div class="row" style="gap: 10px;">
+        <h2 style="font-size: 15px; margin: 0">识别结果</h2>
+        <div class="view-tabs">
+          <button id="viewRawBtn" class="tab-btn active" type="button">全文文本</button>
+          <button id="viewListBtn" class="tab-btn" type="button">逐行对照</button>
+        </div>
+      </div>
+      <div class="row" style="gap: 8px;">
+        <button id="copyBtn" class="primary" disabled>复制结果</button>
+        <button id="clearBtn">清空</button>
+        <span id="copyTip" class="more"></span>
+      </div>
     </div>
     <textarea id="result" readonly placeholder="识别出的文字会出现在这里……"></textarea>
-    <div class="more" style="margin-top: 8px">点击“复制结果”即复制上方全部文字（每行一条识别结果），无需手动框选。</div>
+    <div id="resultList" class="result-list" style="display: none;"></div>
+    <div class="more" style="margin-top: 8px">点击“复制结果”即复制全文，亦可点击「逐行对照」或直接在图上点击方框复制单行。</div>
   </div>
 
   <div class="card">
@@ -241,10 +426,19 @@
       modelSelect: $("modelSelect"),
       runBtn: $("runBtn"),
       dropzone: $("dropzone"),
+      previewContainer: $("previewContainer"),
       preview: $("preview"),
+      overlaySvg: $("overlaySvg"),
+      boxTooltip: $("boxTooltip"),
+      overlayToolbar: $("overlayToolbar"),
+      toggleBoxes: $("toggleBoxes"),
+      boxCount: $("boxCount"),
       dropHint: $("dropHint"),
       status: $("status"),
+      viewRawBtn: $("viewRawBtn"),
+      viewListBtn: $("viewListBtn"),
       result: $("result"),
+      resultList: $("resultList"),
       copyBtn: $("copyBtn"),
       clearBtn: $("clearBtn"),
       copyTip: $("copyTip"),
@@ -256,7 +450,8 @@
       ocrReady: false,
       srcBlob: null,
       previewUrl: null,
-      lastText: ""
+      lastText: "",
+      items: []
     };
 
     function setStatus(text, type = "") {
@@ -334,12 +529,180 @@
       setStatus("就绪：选择或粘贴一张图片，然后点“开始识别”。", "ok");
     }
 
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function clearOverlay() {
+      ui.overlaySvg.innerHTML = "";
+      ui.boxCount.textContent = "0";
+      ui.overlayToolbar.style.display = "none";
+      hideTooltip();
+    }
+
+    function showTooltip(e, item, justCopied = false) {
+      const scorePct = (item.score * 100).toFixed(0);
+      ui.boxTooltip.innerHTML = justCopied
+        ? `<div style="font-weight: 600; color: #34d399; margin-bottom: 2px;">✓ 已复制到剪贴板</div><div style="opacity: 0.85;">${escapeHtml(item.text)}</div>`
+        : `<div>${escapeHtml(item.text)}</div><div style="font-size: 11px; opacity: 0.75; margin-top: 3px;">置信度: ${scorePct}% · 点击单行复制</div>`;
+      moveTooltip(e);
+      ui.boxTooltip.style.display = "block";
+    }
+
+    function moveTooltip(e) {
+      const rect = ui.previewContainer.getBoundingClientRect();
+      const x = Math.max(10, Math.min(rect.width - 10, e.clientX - rect.left));
+      const y = e.clientY - rect.top;
+      ui.boxTooltip.style.left = `${x}px`;
+      ui.boxTooltip.style.top = `${y}px`;
+      if (y < 45) {
+        ui.boxTooltip.style.transform = "translate(-50%, 14px)";
+      } else {
+        ui.boxTooltip.style.transform = "translate(-50%, -100%)";
+      }
+    }
+
+    function hideTooltip() {
+      ui.boxTooltip.style.display = "none";
+    }
+
+    function highlightItem(index, active) {
+      const poly = ui.overlaySvg.querySelector(`polygon[data-index="${index}"]`);
+      if (poly) {
+        if (active) poly.classList.add("active");
+        else poly.classList.remove("active");
+      }
+      const listItem = ui.resultList.querySelector(`.result-item[data-index="${index}"]`);
+      if (listItem) {
+        if (active) {
+          listItem.classList.add("highlight");
+          if (ui.resultList.style.display !== "none") {
+            listItem.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          }
+        } else {
+          listItem.classList.remove("highlight");
+        }
+      }
+    }
+
+    function renderBoxes(result) {
+      const items = result.items || [];
+      state.items = items;
+      ui.overlaySvg.innerHTML = "";
+      hideTooltip();
+
+      if (!items.length) {
+        ui.overlayToolbar.style.display = "none";
+        renderResultList([]);
+        return;
+      }
+
+      const imgWidth = result.image?.width || ui.preview.naturalWidth || 1000;
+      const imgHeight = result.image?.height || ui.preview.naturalHeight || 1000;
+
+      ui.overlaySvg.setAttribute("viewBox", `0 0 ${imgWidth} ${imgHeight}`);
+      ui.overlaySvg.setAttribute("preserveAspectRatio", "none");
+
+      const svgNs = "http://www.w3.org/2000/svg";
+      items.forEach((item, index) => {
+        if (!item.poly || item.poly.length < 3) return;
+        const polygon = document.createElementNS(svgNs, "polygon");
+        const pointsStr = item.poly.map((pt) => `${pt[0]},${pt[1]}`).join(" ");
+        polygon.setAttribute("points", pointsStr);
+        polygon.setAttribute("class", "ocr-box");
+        polygon.setAttribute("data-index", String(index));
+
+        polygon.addEventListener("mouseenter", (e) => {
+          highlightItem(index, true);
+          showTooltip(e, item);
+        });
+        polygon.addEventListener("mousemove", (e) => {
+          moveTooltip(e);
+        });
+        polygon.addEventListener("mouseleave", () => {
+          highlightItem(index, false);
+          hideTooltip();
+        });
+        polygon.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const ok = await copyText(item.text);
+          if (ok) {
+            polygon.classList.add("copied");
+            flashCopyTip("已复制单行 ✓");
+            showTooltip(e, item, true);
+            setTimeout(() => polygon.classList.remove("copied"), 800);
+          }
+        });
+
+        ui.overlaySvg.appendChild(polygon);
+      });
+
+      ui.boxCount.textContent = items.length;
+      ui.overlayToolbar.style.display = "flex";
+      renderResultList(items);
+    }
+
+    function renderResultList(items) {
+      ui.resultList.innerHTML = "";
+      if (!items || !items.length) {
+        ui.resultList.innerHTML = '<div style="padding: 24px; text-align: center; color: #888; font-size: 13px;">无识别结果</div>';
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      items.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "result-item";
+        row.setAttribute("data-index", String(index));
+
+        const scorePct = (item.score * 100).toFixed(0);
+        row.innerHTML = `
+          <div class="result-item-left">
+            <span class="result-index">#${index + 1}</span>
+            <span class="result-score" title="识别置信度">${scorePct}%</span>
+            <span class="result-text">${escapeHtml(item.text)}</span>
+          </div>
+          <button class="row-copy-btn" type="button" title="点击复制这一行">复制</button>
+        `;
+
+        row.addEventListener("mouseenter", () => highlightItem(index, true));
+        row.addEventListener("mouseleave", () => highlightItem(index, false));
+
+        const copyBtn = row.querySelector(".row-copy-btn");
+        copyBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const ok = await copyText(item.text);
+          if (ok) {
+            copyBtn.textContent = "已复制 ✓";
+            flashCopyTip("已复制单行 ✓");
+            const poly = ui.overlaySvg.querySelector(`polygon[data-index="${index}"]`);
+            if (poly) {
+              poly.classList.add("copied");
+              setTimeout(() => poly.classList.remove("copied"), 800);
+            }
+            setTimeout(() => { copyBtn.textContent = "复制"; }, 1200);
+          }
+        });
+
+        fragment.appendChild(row);
+      });
+
+      ui.resultList.appendChild(fragment);
+    }
+
     function showPreview(blob) {
       if (state.previewUrl) URL.revokeObjectURL(state.previewUrl);
       state.previewUrl = URL.createObjectURL(blob);
       ui.preview.src = state.previewUrl;
       ui.preview.hidden = false;
+      ui.previewContainer.style.display = "inline-block";
       ui.dropHint.style.display = "none";
+      clearOverlay();
     }
 
     function acceptImage(blob) {
@@ -349,6 +712,12 @@
         return;
       }
       state.srcBlob = blob;
+      state.lastText = "";
+      state.items = [];
+      ui.result.value = "";
+      ui.copyBtn.disabled = true;
+      clearOverlay();
+      renderResultList([]);
       showPreview(blob);
       ui.runBtn.disabled = !state.ocrReady;
       setStatus("已选择图片" + (blob.name ? `：${blob.name}` : "") + "，点击“开始识别”。", "ok");
@@ -374,6 +743,9 @@
         state.lastText = text;
         ui.result.value = text;
         ui.copyBtn.disabled = !text;
+
+        // Render interactive boxes & dual-view result list
+        renderBoxes(result);
 
         const metricsLines = [
           `识别到 ${result.metrics.recognizedCount} 行文字`,
@@ -416,9 +788,11 @@
       }
     }
 
-    function flashCopyTip() {
-      ui.copyTip.textContent = "已复制 ✓";
-      setTimeout(() => { ui.copyTip.textContent = ""; }, 1600);
+    function flashCopyTip(msg = "已复制 ✓") {
+      ui.copyTip.textContent = msg;
+      setTimeout(() => {
+        if (ui.copyTip.textContent === msg) ui.copyTip.textContent = "";
+      }, 1600);
     }
 
     ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
@@ -478,14 +852,37 @@
     ui.copyBtn.addEventListener("click", async () => {
       if (!state.lastText) return;
       const ok = await copyText(state.lastText);
-      if (ok) flashCopyTip();
+      if (ok) flashCopyTip("已复制全文 ✓");
       else setStatus("复制失败，请手动框选复制。", "error");
     });
     ui.clearBtn.addEventListener("click", () => {
       state.lastText = "";
+      state.items = [];
       ui.result.value = "";
       ui.copyBtn.disabled = true;
+      clearOverlay();
+      renderResultList([]);
     });
+
+    ui.toggleBoxes.addEventListener("change", () => {
+      ui.overlaySvg.style.display = ui.toggleBoxes.checked ? "block" : "none";
+      if (!ui.toggleBoxes.checked) hideTooltip();
+    });
+
+    ui.viewRawBtn.addEventListener("click", () => {
+      ui.viewRawBtn.classList.add("active");
+      ui.viewListBtn.classList.remove("active");
+      ui.result.style.display = "block";
+      ui.resultList.style.display = "none";
+    });
+
+    ui.viewListBtn.addEventListener("click", () => {
+      ui.viewListBtn.classList.add("active");
+      ui.viewRawBtn.classList.remove("active");
+      ui.result.style.display = "none";
+      ui.resultList.style.display = "block";
+    });
+
     ui.modelSelect.addEventListener("change", () => initializeOcr().catch(setError));
 
     initializeOcr().catch(setError);
