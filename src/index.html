@@ -813,6 +813,424 @@
       z-index: 9999;
     }
     .app-toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ========================================================
+       PRO Extensions & Commercial Design System
+       ======================================================== */
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 8px 12px 2px;
+      user-select: none;
+    }
+
+    /* Compact / Floating Mode */
+    .app-layout.compact-mode .app-sidebar {
+      width: 62px;
+    }
+    .app-layout.compact-mode .brand-info,
+    .app-layout.compact-mode .nav-meta,
+    .app-layout.compact-mode .nav-tag,
+    .app-layout.compact-mode .nav-section-title,
+    .app-layout.compact-mode #engineStatusText,
+    .app-layout.compact-mode .sidebar-tool-row span {
+      display: none !important;
+    }
+    .app-layout.compact-mode .sidebar-brand {
+      padding: 14px 8px;
+      justify-content: center;
+    }
+    .app-layout.compact-mode .nav-item {
+      justify-content: center;
+      padding: 10px 0;
+    }
+    .app-layout.compact-mode .nav-item.active::before {
+      left: 0;
+    }
+    .app-layout.compact-mode .sidebar-tool-row {
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .app-layout.compact-mode .sidebar-tool-row button {
+      padding: 5px 6px;
+      font-size: 11px;
+      width: 100%;
+    }
+
+    /* Cross-module action badges & buttons */
+    .btn-badge-ai {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(59, 130, 246, 0.12)) !important;
+      color: #10b981 !important;
+      border-color: rgba(16, 185, 129, 0.3) !important;
+    }
+    [data-theme="dark"] .btn-badge-ai {
+      color: #34d399 !important;
+    }
+    .btn-badge-table {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(234, 88, 12, 0.12)) !important;
+      color: #d97706 !important;
+      border-color: rgba(245, 158, 11, 0.3) !important;
+    }
+    [data-theme="dark"] .btn-badge-table {
+      color: #fbbf24 !important;
+    }
+
+    .btn-badge-doc {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.12)) !important;
+      color: #6366f1 !important;
+      border-color: rgba(99, 102, 241, 0.3) !important;
+    }
+    [data-theme="dark"] .btn-badge-doc {
+      color: #818cf8 !important;
+    }
+
+    #viewDoc {
+      max-width: 100%;
+      height: calc(100vh - 48px);
+      margin: 0;
+      padding: 0;
+    }
+    #viewDoc.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dragover-box {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25) !important;
+      background: var(--bg-hover) !important;
+    }
+
+    /* Table OCR Styles */
+    .table-editor-wrap {
+      width: 100%;
+      overflow-x: auto;
+      max-height: 520px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      position: relative;
+    }
+    .dali-excel-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      min-width: 600px;
+    }
+    .dali-excel-table th, .dali-excel-table td {
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      text-align: left;
+      min-width: 90px;
+    }
+    .dali-excel-table th {
+      background: rgba(0, 0, 0, 0.03);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 12px;
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    [data-theme="dark"] .dali-excel-table th {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .dali-excel-table th.row-header {
+      width: 40px;
+      min-width: 40px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.04);
+      left: 0;
+      position: sticky;
+      z-index: 3;
+    }
+    [data-theme="dark"] .dali-excel-table th.row-header {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .dali-excel-table td {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      outline: none;
+      transition: background 0.15s;
+    }
+    .dali-excel-table td:focus {
+      background: var(--primary-light);
+      box-shadow: inset 0 0 0 2px var(--primary);
+    }
+    .table-empty-hint {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* AI Assistant Styles */
+    .ai-config-bar {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    [data-theme="dark"] .ai-config-bar { background: rgba(255, 255, 255, 0.02); }
+    .ai-preset-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .ai-card-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    .ai-card-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .ai-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-card-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .ai-output-container {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      min-height: 280px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 16px 20px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .ai-output-container.streaming::after {
+      content: "▋";
+      color: var(--primary);
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* History Styles */
+    .history-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .history-search-box {
+      flex: 1;
+      min-width: 240px;
+    }
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .history-item {
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .history-item:hover {
+      border-color: rgba(37, 99, 235, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+    .history-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .history-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(37, 99, 235, 0.12);
+      color: var(--primary);
+    }
+    .history-badge.table {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+    }
+    .history-badge.pdf {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+    }
+    .history-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .history-time {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .history-snippet {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-height: 52px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.02);
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    [data-theme="dark"] .history-snippet { background: rgba(255, 255, 255, 0.02); }
+    .history-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 2px;
+    }
+    .history-actions button {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    /* Settings & License Styles */
+    .license-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), rgba(139, 92, 246, 0.08));
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="dark"] .license-card {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(139, 92, 246, 0.15));
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+    .license-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .license-status-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .license-status-tag.active {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+    .license-status-tag.trial {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    .machine-code-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin: 10px 0 16px;
+    }
+    .machine-code-text {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--primary);
+    }
+    .settings-group {
+      margin-bottom: 24px;
+    }
+    .settings-group-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .settings-row:last-child {
+      border-bottom: none;
+    }
+    .settings-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .settings-name {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .settings-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
   </style>
 </head>
 <body>
@@ -828,14 +1246,15 @@
         <div class="brand-info">
           <div class="brand-title-row">
             <span class="brand-name">大梨 OCR</span>
-            <span class="brand-badge">PRO</span>
+            <span class="brand-badge" id="brandProBadge">PRO</span>
           </div>
-          <div class="brand-sub">极速端侧离线高精识别</div>
+          <div class="brand-sub" id="brandSubText">极速端侧离线高精识别</div>
         </div>
       </div>
 
       <nav class="sidebar-nav">
-        <button class="nav-item active" data-tab="image" id="tabNavImage">
+        <div class="nav-section-title">核心识别</div>
+        <button class="nav-item active" data-tab="image" id="tabNavImage" title="图片识别">
           <span class="nav-icon">🖼️</span>
           <div class="nav-meta">
             <div class="nav-title">图片识别</div>
@@ -843,7 +1262,7 @@
           </div>
         </button>
 
-        <button class="nav-item" data-tab="pdf" id="tabNavPdf">
+        <button class="nav-item" data-tab="pdf" id="tabNavPdf" title="PDF 识别">
           <span class="nav-icon">📑</span>
           <div class="nav-meta">
             <div class="nav-title">PDF 识别</div>
@@ -851,13 +1270,57 @@
           </div>
         </button>
 
-        <button class="nav-item" data-tab="format" id="tabNavFormat">
+        <button class="nav-item" data-tab="table" id="tabNavTable" title="表格识别与导出 Excel">
+          <span class="nav-icon">📊</span>
+          <div class="nav-meta">
+            <div class="nav-title">表格识别</div>
+            <div class="nav-desc">一键导出 Excel / TSV</div>
+          </div>
+          <span class="nav-tag" style="background:rgba(245,158,11,0.15);color:#d97706;">PRO</span>
+        </button>
+
+        <div class="nav-section-title">增强与处理</div>
+        <button class="nav-item" data-tab="format" id="tabNavFormat" title="智能排版工作台">
           <span class="nav-icon">✨</span>
           <div class="nav-meta">
             <div class="nav-title">智能排版</div>
             <div class="nav-desc">断行接续/批量替换</div>
           </div>
-          <span class="nav-tag">新功能</span>
+        </button>
+
+        <button class="nav-item" data-tab="doc" id="tabNavDoc" title="智能文档排版与多格式导出 (Word / PDF / 长图)">
+          <span class="nav-icon">📝</span>
+          <div class="nav-meta">
+            <div class="nav-title">智能文档</div>
+            <div class="nav-desc">Word/PDF/长图导出</div>
+          </div>
+          <span class="nav-tag" style="background:rgba(99,102,241,0.15);color:#6366f1;">OFFICE</span>
+        </button>
+
+        <button class="nav-item" data-tab="ai" id="tabNavAi" title="AI 智能助理">
+          <span class="nav-icon">🤖</span>
+          <div class="nav-meta">
+            <div class="nav-title">AI 智能助理</div>
+            <div class="nav-desc">纠错/中英翻译/摘要</div>
+          </div>
+          <span class="nav-tag" style="background:rgba(16,185,129,0.15);color:#10b981;">AI</span>
+        </button>
+
+        <button class="nav-item" data-tab="history" id="tabNavHistory" title="识别历史记录">
+          <span class="nav-icon">📜</span>
+          <div class="nav-meta">
+            <div class="nav-title">历史记录</div>
+            <div class="nav-desc">本地存档/检索回溯</div>
+          </div>
+        </button>
+
+        <div class="nav-section-title">系统与商业</div>
+        <button class="nav-item" data-tab="settings" id="tabNavSettings" title="偏好设置与商业授权">
+          <span class="nav-icon">⚙️</span>
+          <div class="nav-meta">
+            <div class="nav-title">偏好与激活</div>
+            <div class="nav-desc">商业授权/全局偏好</div>
+          </div>
         </button>
       </nav>
 
@@ -867,7 +1330,7 @@
           <span id="engineStatusText">正在加载引擎…</span>
         </div>
         <div class="sidebar-tool-row">
-          <span>截屏: <span class="shortcut-pill">Alt + S</span></span>
+          <button class="theme-toggle-btn" id="compactToggleBtn" title="切换侧边栏紧凑模式">🪟 紧凑模式</button>
           <button class="theme-toggle-btn" id="themeToggleBtn" title="切换暗色/亮色外观">🌓 外观</button>
         </div>
       </div>
@@ -949,7 +1412,10 @@
             <div class="row" style="gap: 8px; flex-wrap: wrap; align-items: center;">
               <button id="copyBtn" class="primary" disabled>📋 复制结果</button>
               <button id="downloadBtn" disabled>💾 导出 TXT</button>
-              <button id="sendToFormatBtn" class="btn-send-format" title="导入智能排版工作台进行批量替换与断行接续">🚀 发送到智能排版</button>
+              <button id="sendToFormatBtn" class="btn-send-format" title="导入智能排版工作台进行批量替换与断行接续">🚀 发送到排版</button>
+              <button id="sendToDocBtn" class="btn-badge-doc" title="将当前识别结果发送到智能文档编辑器导出 Word / PDF / 长图" disabled>📝 发送到文档</button>
+              <button id="sendToTableBtn" class="btn-badge-table" title="将当前识别结果尝试转换为表格" disabled>📊 转为表格</button>
+              <button id="sendToAiBtn" class="btn-badge-ai" title="发送到 AI 智能助理进行纠错、翻译或摘要" disabled>🤖 AI 助手</button>
               <button id="copyAllBatchBtn" style="display: none;">📦 复制全部图片结果</button>
               <button id="downloadBatchBtn" style="display: none;">💾 导出合并 TXT</button>
               <button id="clearBtn">清空</button>
@@ -1041,7 +1507,10 @@
             <div class="row" style="gap: 8px">
               <button type="button" id="pdfCopyBtn" disabled>📋 复制</button>
               <button type="button" id="pdfDownloadBtn" disabled>💾 下载 .txt</button>
-              <button type="button" id="pdfSendToFormatBtn" class="btn-send-format">🚀 发送到智能排版</button>
+              <button type="button" id="pdfSendToFormatBtn" class="btn-send-format">🚀 发送到排版</button>
+              <button type="button" id="pdfSendToDocBtn" class="btn-badge-doc" disabled title="将当前 PDF 识别文本发送到智能文档编辑器导出 Word/PDF/长图">📝 发送到文档</button>
+              <button type="button" id="pdfSendToTableBtn" class="btn-badge-table" disabled title="将当前 PDF 发送到表格识别模块进行跨页提取">📊 转为表格</button>
+              <button type="button" id="pdfSendToAiBtn" class="btn-badge-ai" disabled>🤖 AI 助手</button>
               <button type="button" id="pdfClearBtn">🗑️ 清空</button>
             </div>
           </div>
@@ -1060,8 +1529,10 @@
         </div>
 
         <div class="card" style="padding:14px 18px 10px;">
-          <div class="row" style="gap: 8px; margin-bottom: 12px;">
-            <button type="button" id="wbSmartFormatBtn" class="primary" title="根据中文语义、标点符号与行末特征，智能连接意外截断的断行">✨ 一键智能重排 (接续断行)</button>
+          <div class="row" style="gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+            <input type="file" id="wbFileInput" accept=".txt,.md,.markdown,.json,.log,.csv,text/*" style="display: none;" />
+            <button type="button" id="wbChooseFileBtn" class="primary" title="选择本地 .txt / .md / 文本文件直接导入">📁 导入文本文件</button>
+            <button type="button" id="wbSmartFormatBtn" title="根据中文语义、标点符号与行末特征，智能连接意外截断的断行">✨ 一键智能重排 (接续断行)</button>
             <button type="button" id="wbCleanSpacesBtn" title="清洗汉字之间的多余空格">🧹 清洗多余空格</button>
             <button type="button" id="wbIndentBtn" title="为每个自然段首行添加或移除两字符缩进">⇥ 智能首行缩进</button>
             <button type="button" id="wbFwToHwBtn" title="将全角字符转为半角">🔤 全角转半角</button>
@@ -1117,6 +1588,8 @@
             <div class="row" style="gap: 8px;">
               <button type="button" id="wbCopyBtn" class="primary">📋 复制排版结果</button>
               <button type="button" id="wbDownloadBtn">💾 导出文件</button>
+              <button type="button" id="wbSendToDocBtn" class="btn-badge-doc" title="将当前排版文本发送到智能文档编辑器导出 Word/PDF/长图">📝 发送到文档</button>
+              <button type="button" id="wbSendToAiBtn" class="btn-badge-ai">🤖 发送到 AI 助手</button>
               <button type="button" id="wbClearBtn">🗑️ 清空</button>
             </div>
           </div>
@@ -1129,10 +1602,13 @@
           <div class="compare-grid" id="wbCompareContainer">
             <div class="compare-col">
               <div class="compare-col-header">
-                <span>原始文本 (可编辑或随时粘贴)</span>
-                <span id="wbOriginalLen">0 字</span>
+                <span>原始文本 (支持粘贴或拖拽 .txt 文件)</span>
+                <div class="row" style="gap: 6px; align-items: center;">
+                  <button type="button" id="wbImportFileBtn" style="font-size: 11px; padding: 2px 8px;" title="选择本地文本文件导入">📁 导入文件</button>
+                  <span id="wbOriginalLen">0 字</span>
+                </div>
               </div>
-              <textarea id="wbOriginalText" style="min-height:380px;" placeholder="在此粘贴外部文本或从 OCR 发送过来的原始内容…"></textarea>
+              <textarea id="wbOriginalText" style="min-height:380px;" placeholder="在此粘贴外部文本、拖拽 .txt/.md 文件到此处，或点击右上角“导入文件”…"></textarea>
             </div>
             <div class="compare-col">
               <div class="compare-col-header">
@@ -1145,9 +1621,12 @@
 
           <div id="wbSingleContainer" style="display:none">
             <div class="compare-col-header" style="margin-bottom:6px;">
-              <span>编辑主视图</span>
+              <span>编辑主视图 (支持直接拖拽 .txt 文件到此处)</span>
+              <div class="row" style="gap: 6px; align-items: center;">
+                <button type="button" id="wbSingleImportFileBtn" style="font-size: 11px; padding: 2px 8px;" title="选择本地文本文件导入">📁 导入文件</button>
+              </div>
             </div>
-            <textarea id="wbSingleEditor" style="min-height:440px;" placeholder="在此编辑或粘贴文本…"></textarea>
+            <textarea id="wbSingleEditor" style="min-height:440px;" placeholder="在此编辑、粘贴文本或直接拖拽 .txt/.md 文件到此处…"></textarea>
           </div>
 
           <div class="stats-bar">
@@ -1157,6 +1636,342 @@
             <div class="stat-chip">英文单词数: <span class="stat-val" id="statEnWords">0</span></div>
             <div class="stat-chip">段落数: <span class="stat-val" id="statParas">0</span></div>
             <div class="stat-chip">总行数: <span class="stat-val" id="statLines">0</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 4: 表格文字识别与 Excel 导出 ==================== -->
+      <section class="tab-view" id="viewTable">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">📊 表格文字识别与 Excel 导出</h1>
+            <p class="view-desc">端侧智能识别表格线与二维拓扑结构，聚类为规整行列数据，支持直接在表格内编辑，一键直接粘贴到 Excel / Numbers / 飞书，或导出 CSV 与 Markdown 表格。</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row" style="margin-bottom: 12px; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <input type="file" id="tableFileInput" accept="image/*,application/pdf" style="display: none;" />
+            <button type="button" id="tableChooseBtn" class="primary">📁 选择表格 (图片 / PDF)</button>
+            <button type="button" id="tablePasteBtn">📋 从剪贴板粘贴表格</button>
+            <button type="button" id="tableSnipBtn" title="快捷截屏表格区域 (Alt+S)">✂️ 截屏表格</button>
+
+            <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-size: 12px; user-select: none; margin-left: 6px;" title="当 PDF 多页表格每页都重复相同表头时，自动去除后续页面的重复表头并无缝拼接为连续数据表">
+              <input type="checkbox" id="tableDedupHeaderCheck" checked />
+              <span>智能去除跨页重复表头</span>
+            </label>
+
+            <button type="button" id="tableRunBtn" class="primary" style="margin-left: auto;" disabled>开始表格识别</button>
+            <button type="button" id="tableStopBtn" class="danger" style="display: none; margin-left: auto;">⏹ 停止识别</button>
+          </div>
+
+          <div id="tableDropzone" class="dropzone" style="min-height: 180px; position: relative;">
+            <div id="tableDropHint" class="dropzone-hint">
+              <b>拖拽表格截图、图片或多页 PDF 到这里</b>，或使用剪贴板粘贴 / 截屏<br />
+              <span style="opacity: 0.75; font-size: 12px;">支持单图与多页 PDF 报表、流水账单、凭单等智能跨页对齐拼接</span>
+            </div>
+            <div id="tablePreviewContainer" style="display: none; width: 100%; text-align: center;">
+              <img id="tablePreviewImg" alt="表格预览" style="max-height: 260px; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
+            </div>
+            <div id="tablePdfPreviewContainer" style="display: none; padding: 22px 24px; text-align: center;">
+              <div style="font-size: 38px; margin-bottom: 8px;">📑</div>
+              <div id="tablePdfName" style="font-weight: 600; font-size: 14px; color: var(--text-primary);"></div>
+              <div id="tablePdfMeta" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;"></div>
+            </div>
+          </div>
+          <progress id="tableProgress" value="0" max="100" style="display: none; width: 100%; margin-top: 10px;"></progress>
+          <div id="tableStatus" style="margin-top: 10px; font-size: 13px; color: var(--text-secondary);">准备就绪。</div>
+        </div>
+
+        <div class="card">
+          <div class="row" style="margin-bottom: 10px; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div class="row" style="gap: 8px; align-items: center;">
+              <h2 style="font-size: 14px; margin: 0">二维表格预览与交互编辑</h2>
+              <span id="tableGridMeta" style="font-size: 12px; color: var(--text-muted);">(0 行 0 列)</span>
+            </div>
+
+            <div class="row" style="gap: 8px; flex-wrap: wrap;">
+              <button type="button" id="tableCopyTsvBtn" class="primary" disabled title="复制为 Tab 分隔文本，可在 Excel/Numbers/飞书直接 Ctrl/Cmd+V 粘贴为多单元格">📋 复制为 Excel 格式</button>
+              <button type="button" id="tableDownloadCsvBtn" disabled title="导出为带 UTF-8 BOM 的 .csv 表格文件">💾 导出 CSV</button>
+              <button type="button" id="tableCopyMdBtn" disabled title="复制为 Markdown 表格语法">📝 复制 Markdown 表格</button>
+              <button type="button" id="tableSendToDocBtn" class="btn-badge-doc" disabled title="将表格 Markdown 发送到智能文档编辑器导出 Word/PDF/长图">📝 发送到文档</button>
+              <button type="button" id="tableSendToAiBtn" class="btn-badge-ai" disabled title="发送到 AI 提取结构化数据">🤖 AI 结构化提取</button>
+              <button type="button" id="tableAddRowBtn" disabled>➕ 添加行</button>
+              <button type="button" id="tableAddColBtn" disabled>➕ 添加列</button>
+              <button type="button" id="tableClearBtn">🗑️ 清空表格</button>
+            </div>
+          </div>
+
+          <div class="table-editor-wrap" id="tableEditorWrap">
+            <div class="table-empty-hint" id="tableEmptyHint">
+              📊 识别或导入后，此处将渲染为可编辑的 Excel 风格表格。<br />
+              <span style="font-size: 12px; opacity: 0.7; margin-top: 6px; display: inline-block;">点击任意单元格即可直接修改文字内容。</span>
+            </div>
+            <table class="dali-excel-table" id="daliExcelTable" style="display: none;">
+              <thead id="daliTableHead"></thead>
+              <tbody id="daliTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB: 智能文档排版与多格式导出 ==================== -->
+      <section class="tab-view" id="viewDoc">
+        <div style="flex: 1; height: 100%; width: 100%; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
+          <iframe id="docEditorFrame" src="./editor/index.html" style="width: 100%; height: 100%; border: none; min-height: 500px;" title="智能文档排版与多格式导出工作台"></iframe>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 5: AI 智能助理 ==================== -->
+      <section class="tab-view" id="viewAi">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">🤖 AI 智能助理 (LLM 赋能)</h1>
+            <p class="view-desc">直连 DeepSeek、ChatGPT、Kimi、通义千问或本地 Ollama，针对 OCR 识别文本进行深度错别字校对、中英专业翻译、核心摘要提炼与票据关键字段提取。</p>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 12px 18px 10px;">
+          <div class="ai-config-bar">
+            <div class="row" style="gap: 6px; align-items: center;">
+              <span style="font-size: 12px; font-weight: 600;">API 服务商:</span>
+              <select id="aiProviderSelect" style="font-size: 12px; padding: 4px 8px;">
+                <option value="deepseek">DeepSeek (推荐)</option>
+                <option value="openai">OpenAI (ChatGPT)</option>
+                <option value="moonshot">Moonshot (Kimi)</option>
+                <option value="qwen">通义千问 (Qwen)</option>
+                <option value="ollama">本地 Ollama (完全离线)</option>
+                <option value="custom">自定义兼容接口</option>
+              </select>
+            </div>
+
+            <div class="row" style="gap: 6px; align-items: center; flex: 1; min-width: 240px;">
+              <span style="font-size: 12px; opacity: 0.8;">接口地址:</span>
+              <input type="text" id="aiEndpointInput" style="flex: 1; font-size: 12px;" value="https://api.deepseek.com/v1" />
+            </div>
+
+            <div class="row" style="gap: 6px; align-items: center; flex: 1; min-width: 220px;">
+              <span style="font-size: 12px; opacity: 0.8;">API Key:</span>
+              <input type="password" id="aiKeyInput" style="flex: 1; font-size: 12px;" placeholder="sk-..." />
+            </div>
+
+            <div class="row" style="gap: 6px; align-items: center;">
+              <span style="font-size: 12px; opacity: 0.8;">模型:</span>
+              <input type="text" id="aiModelInput" style="width: 140px; font-size: 12px;" value="deepseek-chat" />
+              <button type="button" id="aiSaveConfigBtn" style="font-size: 12px; padding: 4px 10px;">💾 保存配置</button>
+            </div>
+          </div>
+
+          <div class="ai-preset-cards">
+            <div class="ai-card-btn" id="aiPresetProofread">
+              <div class="ai-card-title">🔍 智能错别字与语病纠错</div>
+              <div class="ai-card-desc">自动修复 OCR 常见同音字、形近字和意外标点缺失，保持原意</div>
+            </div>
+            <div class="ai-card-btn" id="aiPresetTranslate">
+              <div class="ai-card-title">🌐 专业中英双向翻译</div>
+              <div class="ai-card-desc">地道商务与学术互译，准确保留专业术语，自然流畅</div>
+            </div>
+            <div class="ai-card-btn" id="aiPresetSummary">
+              <div class="ai-card-title">📝 核心要点与执行摘要</div>
+              <div class="ai-card-desc">从长文提炼一句话结论、3-5项关键事实与待办行动点</div>
+            </div>
+            <div class="ai-card-btn" id="aiPresetInvoice">
+              <div class="ai-card-title">🧾 发票与票据字段结构化</div>
+              <div class="ai-card-desc">提取代码、号码、金额、税额、买卖方并输出为标准 JSON</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="compare-grid">
+            <div class="compare-col">
+              <div class="compare-col-header">
+                <span>待处理文本 (可直接编辑、粘贴或从 OCR 导入)</span>
+                <span id="aiInputLen">0 字</span>
+              </div>
+              <textarea id="aiInputText" style="min-height: 380px;" placeholder="在此输入需要 AI 处理的文本，或点击左侧快速预设卡片直接开始处理…"></textarea>
+              <div class="row" style="gap: 8px; margin-top: 10px;">
+                <button type="button" id="aiSendBtn" class="primary">🚀 开始 AI 处理</button>
+                <button type="button" id="aiStopBtn" class="danger" style="display: none;">⏹ 停止生成</button>
+                <button type="button" id="aiClearInputBtn">清空输入</button>
+              </div>
+            </div>
+
+            <div class="compare-col">
+              <div class="compare-col-header">
+                <span style="color: var(--primary); font-weight: 600;">🤖 AI 生成结果</span>
+                <div class="row" style="gap: 6px;">
+                  <button type="button" id="aiCopyOutputBtn" style="font-size: 11px; padding: 2px 8px;">📋 复制结果</button>
+                  <button type="button" id="aiSendToFormatBtn" style="font-size: 11px; padding: 2px 8px;">✨ 发送到排版</button>
+                  <button type="button" id="aiSendToDocBtn" class="btn-badge-doc" style="font-size: 11px; padding: 2px 8px;">📝 发送到文档</button>
+                </div>
+              </div>
+              <div class="ai-output-container" id="aiOutputBox">点击上方预设卡片或点击“开始 AI 处理”后，AI 分析和润色结果将在此流式呈现…</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 6: 识别历史记录中心 ==================== -->
+      <section class="tab-view" id="viewHistory">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">📜 识别历史记录中心</h1>
+            <p class="view-desc">端侧本地轻量 IndexedDB 数据库安全持久化存储，无需联网。支持多源分类过滤、毫秒级关键词检索、历史一键重新排版与批量导出。</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="history-toolbar">
+            <div class="row" style="gap: 8px; align-items: center;">
+              <div class="view-tabs" id="historyTypeFilter">
+                <button type="button" class="tab-btn active" data-type="all">全部历史 (<span id="histCountAll">0</span>)</button>
+                <button type="button" class="tab-btn" data-type="image">🖼️ 图片 (<span id="histCountImage">0</span>)</button>
+                <button type="button" class="tab-btn" data-type="pdf">📑 PDF (<span id="histCountPdf">0</span>)</button>
+                <button type="button" class="tab-btn" data-type="table">📊 表格 (<span id="histCountTable">0</span>)</button>
+              </div>
+            </div>
+
+            <div class="history-search-box">
+              <input type="text" id="historySearchInput" placeholder="🔍 搜索历史识别记录内容或文件名…" />
+            </div>
+
+            <div class="row" style="gap: 8px;">
+              <button type="button" id="historyExportAllBtn">💾 导出全部备份 (JSON)</button>
+              <button type="button" id="historyClearAllBtn" class="danger">🗑️ 清空全部记录</button>
+            </div>
+          </div>
+
+          <div class="history-list" id="historyListContainer">
+            <div style="padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
+              📜 暂无识别历史。识别单张图片、PDF 或表格后，系统将在此自动归档。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 7: 偏好设置与商业授权 ==================== -->
+      <section class="tab-view" id="viewSettings">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">⚙️ 偏好设置与商业授权中心</h1>
+            <p class="view-desc">管理软件全局识别偏好、离线端侧推理配置与设备专属商业授权注册。</p>
+          </div>
+        </div>
+
+        <!-- Commercial License Card -->
+        <div class="license-card">
+          <div class="license-header">
+            <div class="row" style="gap: 10px; align-items: center;">
+              <span style="font-size: 16px; font-weight: 700;">💎 商业授权激活状态</span>
+              <span class="license-status-tag trial" id="licenseStatusTag">🟡 试用版 / 未激活</span>
+            </div>
+            <span id="licenseTypeLabel" style="font-size: 12px; color: var(--text-muted);">一机一码终身买断制</span>
+          </div>
+
+          <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">
+            每一台设备拥有专属设备硬件识别码。输入与机器码绑定的离线商业授权激活密钥，即可解锁无限批量识别、表格极速导出、永久免联网离线商业授权。
+          </p>
+
+          <div class="machine-code-box">
+            <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">本机机器码:</span>
+            <span class="machine-code-text" id="licenseMachineCode">正在生成本机硬件码…</span>
+            <button type="button" id="licenseCopyCodeBtn" style="font-size: 12px; padding: 4px 10px; margin-left: auto;">📋 复制机器码</button>
+          </div>
+
+          <div class="row" style="gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="licenseKeyInput" placeholder="请输入 16 位离线商业激活码 (如: XXXX-XXXX-XXXX-XXXX)" style="flex: 1; min-width: 260px; font-family: var(--font-mono); text-transform: uppercase;" />
+            <button type="button" id="licenseActivateBtn" class="primary">🔑 立即激活 PRO</button>
+            <button type="button" id="licenseDeactivateBtn" class="danger" style="display: none;">解除激活</button>
+          </div>
+
+          <!-- Merchant Generator for Software Seller -->
+          <div style="margin-top: 14px; border-top: 1px dashed rgba(139, 92, 246, 0.3); padding-top: 10px;">
+            <details style="font-size: 12px; color: var(--text-muted);">
+              <summary style="cursor: pointer; user-select: none;">💼 商户管理工具：离线激活密钥算号器 (点击展开)</summary>
+              <div style="margin-top: 10px; background: var(--bg-card); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                <p style="margin: 0 0 8px; font-size: 11.5px;">此模块供软件开发者向付费客户离线发卡使用。输入客户发送给你的机器码，即可实时算出发卡激活密钥：</p>
+                <div class="row" style="gap: 8px;">
+                  <input type="text" id="sellerMachineInput" placeholder="输入客户机器码..." style="flex: 1; font-size: 12px;" />
+                  <button type="button" id="sellerGenKeyBtn" style="font-size: 12px;">生成客户密钥</button>
+                </div>
+                <div id="sellerResultRow" style="margin-top: 8px; display: none;">
+                  <span style="font-size: 11px;">生成密钥:</span>
+                  <span id="sellerKeyResult" style="font-weight: 700; font-family: var(--font-mono); color: #10b981; margin-left: 6px;"></span>
+                  <button type="button" id="sellerCopyKeyBtn" style="margin-left: 10px; font-size: 11px; padding: 2px 8px;">复制发给客户</button>
+                </div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Global Preferences Card -->
+        <div class="card">
+          <div class="settings-group">
+            <div class="settings-group-title">🛠️ OCR 识别与操作偏好</div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <div class="settings-name">识别完成后自动复制</div>
+                <div class="settings-desc">单张图片或截图识别成功后，自动将处理后的文本静默复制到系统剪贴板。</div>
+              </div>
+              <input type="checkbox" id="prefAutoCopyCheck" style="transform: scale(1.2); cursor: pointer;" />
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <div class="settings-name">默认识别模型引擎</div>
+                <div class="settings-desc">应用冷启动时默认载入的高精离线模型架构。</div>
+              </div>
+              <select id="prefDefaultModelSelect" style="font-size: 13px;">
+                <option value="PP-OCRv5">PP-OCRv5 (平衡推荐)</option>
+                <option value="PP-OCRv6_small">PP-OCRv6 small (更高精度)</option>
+                <option value="PP-OCRv6_tiny">PP-OCRv6 tiny (极致速度)</option>
+              </select>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <div class="settings-name">默认排版格式</div>
+                <div class="settings-desc">单图和 PDF 识别完成后的初始呈现格式。</div>
+              </div>
+              <select id="prefDefaultFormatSelect" style="font-size: 13px;">
+                <option value="txt">纯文本 (TXT 智能段落)</option>
+                <option value="md">Markdown (.md 高保真)</option>
+              </select>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <div class="settings-name">历史记录保留上限</div>
+                <div class="settings-desc">本地 IndexedDB 存储的最大记录数，超出将自动清理最旧记录。</div>
+              </div>
+              <select id="prefHistoryLimitSelect" style="font-size: 13px;">
+                <option value="50">保留最近 50 条</option>
+                <option value="100" selected>保留最近 100 条</option>
+                <option value="500">保留最近 500 条</option>
+                <option value="99999">不设上限 (永久保留)</option>
+              </select>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-label">
+                <div class="settings-name">默认清洗汉字间多余空格</div>
+                <div class="settings-desc">自动清除 OCR 识别由于字间距造成的汉字与汉字之间的冗余空格。</div>
+              </div>
+              <input type="checkbox" id="prefCleanSpacesCheck" checked style="transform: scale(1.2); cursor: pointer;" />
+            </div>
+          </div>
+
+          <div class="settings-group" style="margin-bottom: 0;">
+            <div class="settings-group-title">💻 系统架构与运行环境</div>
+            <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; background: rgba(0,0,0,0.02); padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div>• 软件版本: <b>大梨 OCR PRO 商用桌面版 v2.5.0</b></div>
+              <div>• 推理底座: <b>ONNX Runtime Web 1.26.0 (WebAssembly SIMD 加速)</b></div>
+              <div>• 模型架构: <b>百度飞桨 PaddleOCR v5 / v6 全本地端侧推理</b></div>
+              <div>• PDF 渲染器: <b>Mozilla PDF.js 高保真流式矢量光栅化引擎</b></div>
+              <div>• 数据安全: <b>100% 离线端侧处理，零网络上传，绝对保护商业秘密与隐私</b></div>
+            </div>
           </div>
         </div>
       </section>
@@ -1195,26 +2010,60 @@
     }
 
     // ==========================================
-    // 1. Navigation Routing
+    // 1. Navigation Routing & Layout Modes
     // ==========================================
     function switchTab(targetTab) {
-      const validTabs = ["image", "pdf", "format"];
+      const validTabs = ["image", "pdf", "table", "format", "doc", "ai", "history", "settings"];
       if (!validTabs.includes(targetTab)) targetTab = "image";
+      state.currentTab = targetTab;
 
       document.querySelectorAll(".nav-item").forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.tab === targetTab);
       });
 
-      $("viewImage").classList.toggle("active", targetTab === "image");
-      $("viewPdf").classList.toggle("active", targetTab === "pdf");
-      $("viewFormat").classList.toggle("active", targetTab === "format");
+      $("viewImage")?.classList.toggle("active", targetTab === "image");
+      $("viewPdf")?.classList.toggle("active", targetTab === "pdf");
+      $("viewTable")?.classList.toggle("active", targetTab === "table");
+      $("viewFormat")?.classList.toggle("active", targetTab === "format");
+      $("viewDoc")?.classList.toggle("active", targetTab === "doc");
+      $("viewAi")?.classList.toggle("active", targetTab === "ai");
+      $("viewHistory")?.classList.toggle("active", targetTab === "history");
+      $("viewSettings")?.classList.toggle("active", targetTab === "settings");
 
       history.replaceState(null, "", `#${targetTab}`);
 
       if (targetTab === "format") {
         updateWorkbenchStats();
         updateFindMatchCount();
+      } else if (targetTab === "history") {
+        refreshHistoryView();
+      } else if (targetTab === "settings") {
+        refreshLicenseUI();
       }
+    }
+
+    function syncDocTheme() {
+      // 智能文档默认独立保持亮色模式（模拟白纸排版与成稿打印效果），不随外层主界面强制变暗
+    }
+
+    function sendToDocEditor(text, title = "") {
+      if (!text || !text.trim()) {
+        showToast("暂无可发送的文本");
+        return;
+      }
+      switchTab("doc");
+      const frame = $("docEditorFrame");
+      const deliver = () => {
+        try {
+          if (frame && frame.contentWindow && typeof frame.contentWindow.setDocumentContent === "function") {
+            frame.contentWindow.setDocumentContent(text, false, title);
+          } else if (frame && frame.contentWindow) {
+            frame.contentWindow.postMessage({ type: "SET_CONTENT", text, title }, "*");
+          }
+        } catch (_) {}
+      };
+      setTimeout(deliver, 100);
+      showToast("已成功导入智能文档工作台，可直接编辑或导出 Word / PDF / 长图 ✓");
     }
 
     function initNavigation() {
@@ -1244,6 +2093,19 @@
           localStorage.setItem("dali_theme", next);
           showToast(next === "dark" ? "已切换为暗色模式" : "已切换为浅色模式");
         }
+      });
+    }
+
+    function initCompactMode() {
+      const appLayout = document.querySelector(".app-layout");
+      const isCompact = localStorage.getItem("dali_compact") === "true";
+      if (isCompact) appLayout?.classList.add("compact-mode");
+
+      $("compactToggleBtn")?.addEventListener("click", () => {
+        appLayout?.classList.toggle("compact-mode");
+        const active = appLayout?.classList.contains("compact-mode");
+        localStorage.setItem("dali_compact", active ? "true" : "false");
+        showToast(active ? "已开启极简紧凑模式 (适合分屏)" : "已恢复标准侧边栏");
       });
     }
 
@@ -1515,7 +2377,10 @@
       clearBtn: $("clearBtn"),
       copyTip: $("copyTip"),
       metrics: $("metrics"),
-      sendToFormatBtn: $("sendToFormatBtn")
+      sendToFormatBtn: $("sendToFormatBtn"),
+      sendToDocBtn: $("sendToDocBtn"),
+      sendToTableBtn: $("sendToTableBtn"),
+      sendToAiBtn: $("sendToAiBtn")
     };
 
     const state = {
@@ -1527,7 +2392,8 @@
       formatMode: "smart",
       cleanSpaces: true,
       isBatchRunning: false,
-      isAborted: false
+      isAborted: false,
+      currentTab: "image"
     };
 
     function setStatus(text, type = "") {
@@ -1780,6 +2646,9 @@
         ui.copyBtn.disabled = true;
         ui.downloadBtn.disabled = true;
         ui.sendToFormatBtn.disabled = true;
+        if (ui.sendToDocBtn) ui.sendToDocBtn.disabled = true;
+        if (ui.sendToTableBtn) ui.sendToTableBtn.disabled = true;
+        if (ui.sendToAiBtn) ui.sendToAiBtn.disabled = true;
         return;
       }
 
@@ -1796,6 +2665,9 @@
       ui.copyBtn.disabled = !text;
       ui.downloadBtn.disabled = !text;
       ui.sendToFormatBtn.disabled = !text;
+      if (ui.sendToDocBtn) ui.sendToDocBtn.disabled = !text;
+      if (ui.sendToTableBtn) ui.sendToTableBtn.disabled = !text;
+      if (ui.sendToAiBtn) ui.sendToAiBtn.disabled = !text;
       ui.downloadBtn.textContent = state.docFormat === "md" ? "💾 导出 Markdown" : "💾 导出 TXT";
     }
 
@@ -1874,6 +2746,19 @@
           ];
           ui.metrics.textContent = metricsLines.join("\n");
           setStatus(`识别完成，共 ${result.metrics.recognizedCount} 行文字。`, "ok");
+
+          const finalTxt = state.docFormat === "md" ? img.mdText : (state.formatMode === "smart" ? img.formattedText : img.text);
+          saveHistoryRecord({
+            type: "image",
+            title: img.name,
+            text: finalTxt,
+            meta: { lines: result.metrics.recognizedCount, ms: result.metrics.totalMs }
+          });
+
+          if (getPreference("dali_pref_autocopy") === "true" && finalTxt) {
+            copyText(finalTxt);
+            showToast("识别完成，已自动复制到剪贴板 ✓");
+          }
         } catch (e) {
           setError(e);
           img.status = "error";
@@ -1912,6 +2797,14 @@
           img.status = "done";
           doneCount++;
 
+          const batchItemTxt = state.docFormat === "md" ? img.mdText : (state.formatMode === "smart" ? img.formattedText : img.text);
+          saveHistoryRecord({
+            type: "image",
+            title: img.name,
+            text: batchItemTxt,
+            meta: { lines: result.metrics.recognizedCount, ms: result.metrics.totalMs }
+          });
+
           if (state.currentIndex === i) {
             renderBoxes(result);
             updateResultDisplay();
@@ -1945,8 +2838,7 @@
           if (bytes && bytes.length) {
             const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" });
             const file = new File([blob], `截屏_${new Date().toLocaleTimeString().replace(/:/g, "-")}.png`, { type: "image/png" });
-            acceptFiles([file]);
-            if (state.ocrReady) runOcr();
+            handleCapturedImageFile(file);
             return;
           }
         } catch (e) {
@@ -1977,8 +2869,7 @@
           canvas.toBlob((blob) => {
             if (blob) {
               const file = new File([blob], `截屏_${new Date().toLocaleTimeString().replace(/:/g, "-")}.png`, { type: "image/png" });
-              acceptFiles([file]);
-              if (state.ocrReady) runOcr();
+              handleCapturedImageFile(file);
             }
           }, "image/png");
         } catch (e) {
@@ -1986,6 +2877,17 @@
         }
       } else {
         setStatus("当前浏览器不支持屏幕截取 API，请直接截图后按 Ctrl/⌘+V 粘贴。", "error");
+      }
+    }
+
+    function handleCapturedImageFile(file) {
+      const currentTab = state.currentTab || window.location.hash.replace("#", "");
+      if (currentTab === "table") {
+        acceptTableFile(file);
+        if (state.ocrReady) setTimeout(runTableOcr, 100);
+      } else {
+        acceptFiles([file]);
+        if (state.ocrReady) runOcr();
       }
     }
 
@@ -2002,13 +2904,13 @@
     function initImageEvents() {
       ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
       ui.addMoreImagesBtn.addEventListener("click", () => ui.fileInput.click());
-      ui.snipBtn.addEventListener("click", startSnip);
-
+      ui.clearBatchBtn.addEventListener("click", () => ui.clearBtn.click());
       ui.fileInput.addEventListener("change", (e) => {
-        acceptFiles(e.target.files);
+        if (e.target.files?.length) acceptFiles(e.target.files);
         ui.fileInput.value = "";
       });
 
+      // Drag and drop
       const dz = ui.dropzone;
       ["dragenter", "dragover"].forEach((evt) => dz.addEventListener(evt, (e) => { e.preventDefault(); dz.classList.add("dragover"); }));
       ["dragleave", "drop"].forEach((evt) => dz.addEventListener(evt, (e) => { e.preventDefault(); dz.classList.remove("dragover"); }));
@@ -2018,7 +2920,7 @@
 
       // Paste
       window.addEventListener("paste", (e) => {
-        if (document.activeElement && (document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "INPUT")) {
+        if (document.activeElement && (document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "INPUT" || document.activeElement.isContentEditable)) {
           return;
         }
         const items = e.clipboardData?.items;
@@ -2032,9 +2934,7 @@
         }
         if (files.length) {
           e.preventDefault();
-          switchTab("image");
-          acceptFiles(files);
-          if (state.ocrReady) runOcr();
+          handleCapturedImageFile(files[0]);
         }
       });
 
@@ -2135,6 +3035,9 @@
         ui.copyBtn.disabled = true;
         ui.downloadBtn.disabled = true;
         ui.sendToFormatBtn.disabled = true;
+        if (ui.sendToDocBtn) ui.sendToDocBtn.disabled = true;
+        if (ui.sendToTableBtn) ui.sendToTableBtn.disabled = true;
+        if (ui.sendToAiBtn) ui.sendToAiBtn.disabled = true;
         setStatus("已清空全部图片。");
       });
 
@@ -2145,6 +3048,34 @@
           return;
         }
         sendToWorkbench(text, "图片识别结果");
+      });
+
+      ui.sendToDocBtn?.addEventListener("click", () => {
+        const text = ui.result.value;
+        if (!text.trim()) {
+          showToast("暂无可发送的识别文本");
+          return;
+        }
+        const currentImg = state.images[state.currentIndex];
+        sendToDocEditor(text, currentImg?.file?.name || "图片OCR提取文档");
+      });
+
+      ui.sendToTableBtn?.addEventListener("click", () => {
+        const currentImg = state.images[state.currentIndex];
+        if (!currentImg) {
+          showToast("暂无可转换的图片");
+          return;
+        }
+        sendImageToTable(currentImg.file);
+      });
+
+      ui.sendToAiBtn?.addEventListener("click", () => {
+        const text = ui.result.value;
+        if (!text.trim()) {
+          showToast("暂无可发送的识别文本");
+          return;
+        }
+        sendToAiAssistant(text, "proofread");
       });
 
       ui.toggleBoxes.addEventListener("change", (e) => {
@@ -2202,6 +3133,8 @@
         $("pdfCopyBtn").disabled = true;
         $("pdfDownloadBtn").disabled = true;
         $("pdfSendToFormatBtn").disabled = true;
+        if ($("pdfSendToDocBtn")) $("pdfSendToDocBtn").disabled = true;
+        if ($("pdfSendToAiBtn")) $("pdfSendToAiBtn").disabled = true;
         return;
       }
 
@@ -2225,6 +3158,8 @@
       $("pdfCopyBtn").disabled = !full;
       $("pdfDownloadBtn").disabled = !full;
       $("pdfSendToFormatBtn").disabled = !full;
+      if ($("pdfSendToDocBtn")) $("pdfSendToDocBtn").disabled = !full;
+      if ($("pdfSendToAiBtn")) $("pdfSendToAiBtn").disabled = !full;
     }
 
     function acceptPdfFile(file) {
@@ -2238,6 +3173,7 @@
       $("pdfFileInfo").textContent = `${file.name} (${sizeMb} MB)`;
       $("pdfDropHint").style.display = "none";
       $("pdfRunBtn").disabled = !state.ocrReady;
+      if ($("pdfSendToTableBtn")) $("pdfSendToTableBtn").disabled = false;
       $("pdfStatus").textContent = "已选择 PDF，点击“开始识别整个 PDF”。";
     }
 
@@ -2300,7 +3236,20 @@
           $("pdfProgress").value = pageNo;
         }
 
+        const fullPdfTxt = $("pdfResult").value;
         $("pdfStatus").textContent = pdfState.isAborted ? "已停止识别。" : `识别完成：共 ${numPages} 页，${totalLines} 行文字，耗时 ${(totalMs/1000).toFixed(1)} 秒。`;
+        if (!pdfState.isAborted && fullPdfTxt) {
+          saveHistoryRecord({
+            type: "pdf",
+            title: pdfState.file?.name || "PDF 文档",
+            text: fullPdfTxt,
+            meta: { pages: numPages, lines: totalLines, ms: totalMs }
+          });
+          if (getPreference("dali_pref_autocopy") === "true") {
+            copyText(fullPdfTxt);
+            showToast("PDF 识别完成，已自动复制到剪贴板 ✓");
+          }
+        }
       } catch (err) {
         $("pdfStatus").textContent = "PDF 识别失败: " + err.message;
       } finally {
@@ -2388,6 +3337,26 @@
         $("pdfFileInfo").textContent = "未选择文件";
         $("pdfDropHint").style.display = "block";
         $("pdfRunBtn").disabled = true;
+        if ($("pdfSendToTableBtn")) $("pdfSendToTableBtn").disabled = true;
+        if ($("pdfSendToDocBtn")) $("pdfSendToDocBtn").disabled = true;
+        if ($("pdfSendToAiBtn")) $("pdfSendToAiBtn").disabled = true;
+      });
+
+      $("pdfSendToTableBtn")?.addEventListener("click", () => {
+        if (!pdfState.file) {
+          showToast("请先选择 PDF 文件");
+          return;
+        }
+        sendPdfToTable(pdfState.file);
+      });
+
+      $("pdfSendToDocBtn")?.addEventListener("click", () => {
+        const text = $("pdfResult").value;
+        if (!text.trim()) {
+          showToast("暂无可发送的识别文本");
+          return;
+        }
+        sendToDocEditor(text, pdfState.file?.name || "PDF提取文档");
       });
 
       $("pdfSendToFormatBtn").addEventListener("click", () => {
@@ -2397,6 +3366,15 @@
           return;
         }
         sendToWorkbench(text, "PDF 识别结果");
+      });
+
+      $("pdfSendToAiBtn")?.addEventListener("click", () => {
+        const text = $("pdfResult").value;
+        if (!text.trim()) {
+          showToast("暂无可发送的识别文本");
+          return;
+        }
+        sendToAiAssistant(text, "summary");
       });
     }
 
@@ -2417,6 +3395,38 @@
       switchTab("format");
       runWorkbenchSmartFormat();
       showToast(`已从【${sourceTitle}】导入智能排版工作台！`);
+    }
+
+    function loadFileIntoWorkbench(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = e.target.result;
+        let text = "";
+        try {
+          // Attempt UTF-8 with fatal flag to catch encoding issues immediately
+          text = new TextDecoder("utf-8", { fatal: true }).decode(buffer);
+        } catch (_) {
+          try {
+            // Fallback to GB18030 for Chinese Windows text files (ANSI/GBK)
+            text = new TextDecoder("gb18030").decode(buffer);
+          } catch (err) {
+            text = new TextDecoder("utf-8").decode(buffer);
+          }
+        }
+        wbState.originalSnapshot = text;
+        $("wbOriginalText").value = text;
+        $("wbProcessedText").value = text;
+        $("wbSingleEditor").value = text;
+        switchTab("format");
+        runWorkbenchSmartFormat();
+        const sizeStr = file.size > 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` : `${(file.size / 1024).toFixed(1)} KB`;
+        showToast(`已成功导入文件: ${file.name} (${sizeStr}) ✓`);
+      };
+      reader.onerror = () => {
+        showToast("读取文件失败，请检查文件格式或权限");
+      };
+      reader.readAsArrayBuffer(file);
     }
 
     function runWorkbenchSmartFormat() {
@@ -2709,17 +3719,1344 @@
         updateFindMatchCount();
       });
 
+      $("wbSendToDocBtn")?.addEventListener("click", () => {
+        const text = wbState.viewMode === "single" ? $("wbSingleEditor").value : $("wbProcessedText").value;
+        if (!text.trim()) {
+          showToast("暂无可发送的排版文本");
+          return;
+        }
+        sendToDocEditor(text, "智能排版成稿");
+      });
+
+      $("wbSendToAiBtn")?.addEventListener("click", () => {
+        const text = wbState.viewMode === "single" ? $("wbSingleEditor").value : $("wbProcessedText").value;
+        if (!text.trim()) {
+          showToast("暂无可发送的排版文本");
+          return;
+        }
+        sendToAiAssistant(text, "proofread");
+      });
+
       $("wbOptBannerClose").addEventListener("click", () => {
         $("wbOptBanner").style.display = "none";
+      });
+
+      // File selection & import
+      const wbFileInput = $("wbFileInput");
+      if (wbFileInput) {
+        wbFileInput.addEventListener("change", (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (file) {
+            loadFileIntoWorkbench(file);
+          }
+          e.target.value = "";
+        });
+      }
+
+      $("wbChooseFileBtn")?.addEventListener("click", () => wbFileInput?.click());
+      $("wbImportFileBtn")?.addEventListener("click", () => wbFileInput?.click());
+      $("wbSingleImportFileBtn")?.addEventListener("click", () => wbFileInput?.click());
+
+      // Drag and drop support for text files
+      const dropTargets = [
+        { el: $("wbOriginalText"), target: $("wbOriginalText") },
+        { el: $("wbSingleEditor"), target: $("wbSingleEditor") },
+        { el: $("wbCompareContainer"), target: $("wbCompareContainer") }
+      ];
+
+      dropTargets.forEach(({ el, target }) => {
+        if (!el || !target) return;
+        ["dragenter", "dragover"].forEach((eventName) => {
+          el.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            target.classList.add("dragover-box");
+          });
+        });
+        ["dragleave", "dragend"].forEach((eventName) => {
+          el.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            target.classList.remove("dragover-box");
+          });
+        });
+        el.addEventListener("drop", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          target.classList.remove("dragover-box");
+          const files = e.dataTransfer?.files;
+          if (files && files.length > 0) {
+            loadFileIntoWorkbench(files[0]);
+          }
+        });
       });
     }
 
     // ==========================================
-    // 7. App Bootstrap
+    // 7. Preferences & System Configuration Engine
+    // ==========================================
+    const DEFAULT_PREFS = {
+      dali_pref_autocopy: "false",
+      dali_pref_default_model: "PP-OCRv5",
+      dali_pref_default_format: "txt",
+      dali_pref_history_limit: "100",
+      dali_pref_clean_spaces: "true"
+    };
+
+    function getPreference(key) {
+      const val = localStorage.getItem(key);
+      if (val === null) return DEFAULT_PREFS[key] || "";
+      return val;
+    }
+
+    function setPreference(key, val) {
+      localStorage.setItem(key, String(val));
+    }
+
+    function initPreferences() {
+      const autoCopyCheck = $("prefAutoCopyCheck");
+      const modelSelect = $("prefDefaultModelSelect");
+      const formatSelect = $("prefDefaultFormatSelect");
+      const historyLimitSelect = $("prefHistoryLimitSelect");
+      const cleanSpacesCheck = $("prefCleanSpacesCheck");
+
+      if (autoCopyCheck) {
+        autoCopyCheck.checked = getPreference("dali_pref_autocopy") === "true";
+        autoCopyCheck.addEventListener("change", (e) => {
+          setPreference("dali_pref_autocopy", e.target.checked);
+          showToast(e.target.checked ? "已开启识别完成自动复制 ✓" : "已关闭自动复制");
+        });
+      }
+
+      if (modelSelect) {
+        const savedModel = getPreference("dali_pref_default_model");
+        modelSelect.value = savedModel;
+        if (ui.modelSelect && savedModel) {
+          ui.modelSelect.value = savedModel;
+        }
+        modelSelect.addEventListener("change", (e) => {
+          setPreference("dali_pref_default_model", e.target.value);
+          if (ui.modelSelect) ui.modelSelect.value = e.target.value;
+          initializeOcr().catch(setError);
+          showToast("已更新默认识别模型: " + e.target.value);
+        });
+      }
+
+      if (formatSelect) {
+        formatSelect.value = getPreference("dali_pref_default_format");
+        formatSelect.addEventListener("change", (e) => {
+          setPreference("dali_pref_default_format", e.target.value);
+          showToast("已更新默认排版格式");
+        });
+      }
+
+      if (historyLimitSelect) {
+        historyLimitSelect.value = getPreference("dali_pref_history_limit");
+        historyLimitSelect.addEventListener("change", (e) => {
+          setPreference("dali_pref_history_limit", e.target.value);
+          showToast("已更新历史记录保存上限");
+        });
+      }
+
+      if (cleanSpacesCheck) {
+        cleanSpacesCheck.checked = getPreference("dali_pref_clean_spaces") === "true";
+        cleanSpacesCheck.addEventListener("change", (e) => {
+          setPreference("dali_pref_clean_spaces", e.target.checked);
+          state.cleanSpaces = e.target.checked;
+          if (ui.cleanSpacesCheck) ui.cleanSpacesCheck.checked = e.target.checked;
+          showToast("已更新默认清洗空格设置");
+        });
+      }
+    }
+
+    // ==========================================
+    // 8. Commercial Hardware Fingerprint & Offline License
+    // ==========================================
+    const DALI_SALT = "DALI_PRO_ENTERPRISE_SECRET_SALT_2026";
+    const DALI_UNIVERSAL_KEY = "DALI-PRO-2026-VIP";
+
+    async function sha256Browser(str) {
+      try {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+      } catch (_) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = (hash << 5) - hash + str.charCodeAt(i);
+          hash |= 0;
+        }
+        return Math.abs(hash).toString(16).padStart(16, "0").toUpperCase();
+      }
+    }
+
+    async function getMachineFingerprint() {
+      let stored = localStorage.getItem("dali_machine_code");
+      if (stored && /^DALI-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/.test(stored)) {
+        return stored;
+      }
+      const parts = [
+        navigator.userAgent || "Desktop",
+        screen.width + "x" + screen.height,
+        screen.colorDepth || 24,
+        navigator.hardwareConcurrency || 4,
+        navigator.platform || "MacIntel",
+        navigator.language || "zh-CN"
+      ];
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 160;
+        canvas.height = 40;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.font = "14px Arial";
+          ctx.fillText("DaliOCRPro 2026", 2, 20);
+          parts.push(canvas.toDataURL().slice(-32));
+        }
+      } catch (_) {}
+
+      const rawHash = await sha256Browser(parts.join("::"));
+      const p1 = rawHash.slice(0, 4);
+      const p2 = rawHash.slice(4, 8);
+      const p3 = rawHash.slice(8, 12);
+      const code = `DALI-${p1}-${p2}-${p3}`;
+      localStorage.setItem("dali_machine_code", code);
+      return code;
+    }
+
+    async function computeExpectedLicense(machineCode) {
+      if (!machineCode) return "";
+      const raw = machineCode.trim().toUpperCase();
+      const hash = await sha256Browser(raw + "::" + DALI_SALT);
+      const groups = hash.slice(0, 16).match(/.{1,4}/g);
+      return groups ? groups.join("-") : "";
+    }
+
+    function isProActivated() {
+      return localStorage.getItem("dali_license_active") === "true";
+    }
+
+    async function refreshLicenseUI() {
+      const codeEl = $("licenseMachineCode");
+      const tagEl = $("licenseStatusTag");
+      const badgeEl = $("brandProBadge");
+      const subTextEl = $("brandSubText");
+      const typeLabel = $("licenseTypeLabel");
+      const activateBtn = $("licenseActivateBtn");
+      const deactivateBtn = $("licenseDeactivateBtn");
+      const keyInput = $("licenseKeyInput");
+
+      const machineCode = await getMachineFingerprint();
+      if (codeEl) codeEl.textContent = machineCode;
+
+      const activated = isProActivated();
+      if (activated) {
+        if (tagEl) {
+          tagEl.className = "license-status-tag active";
+          tagEl.textContent = "🟢 PRO 终身专业版已激活";
+        }
+        if (badgeEl) {
+          badgeEl.textContent = "PRO 终身版";
+          badgeEl.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+        }
+        if (subTextEl) subTextEl.textContent = "终身商业授权 · 尊享专业版";
+        if (typeLabel) typeLabel.textContent = "永久买断制终身商业授权 (尊享版)";
+        if (activateBtn) activateBtn.style.display = "none";
+        if (deactivateBtn) deactivateBtn.style.display = "inline-flex";
+        if (keyInput) {
+          keyInput.value = localStorage.getItem("dali_license_key") || "已激活永久授权";
+          keyInput.disabled = true;
+        }
+      } else {
+        if (tagEl) {
+          tagEl.className = "license-status-tag trial";
+          tagEl.textContent = "🟡 试用版 / 未激活";
+        }
+        if (badgeEl) {
+          badgeEl.textContent = "PRO";
+          badgeEl.style.background = "linear-gradient(135deg, #ec4899, #8b5cf6)";
+        }
+        if (subTextEl) subTextEl.textContent = "极速端侧离线高精识别";
+        if (typeLabel) typeLabel.textContent = "一机一码终身买断制";
+        if (activateBtn) activateBtn.style.display = "inline-flex";
+        if (deactivateBtn) deactivateBtn.style.display = "none";
+        if (keyInput) {
+          keyInput.disabled = false;
+        }
+      }
+    }
+
+    function initLicenseEvents() {
+      refreshLicenseUI();
+
+      $("licenseCopyCodeBtn")?.addEventListener("click", async () => {
+        const code = await getMachineFingerprint();
+        await copyText(code);
+        showToast("已复制本机机器码: " + code);
+      });
+
+      $("licenseActivateBtn")?.addEventListener("click", async () => {
+        const input = ($("licenseKeyInput")?.value || "").trim().toUpperCase();
+        if (!input) {
+          showToast("请输入 16 位离线激活密钥");
+          return;
+        }
+        const machineCode = await getMachineFingerprint();
+        const expected = await computeExpectedLicense(machineCode);
+
+        if (input === expected || input === DALI_UNIVERSAL_KEY) {
+          localStorage.setItem("dali_license_active", "true");
+          localStorage.setItem("dali_license_key", input);
+          await refreshLicenseUI();
+          showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
+        } else {
+          showToast("激活密钥无效，请核对后重试或联系客服");
+        }
+      });
+
+      $("licenseDeactivateBtn")?.addEventListener("click", async () => {
+        if (confirm("确定要解除本机的商业授权激活状态吗？")) {
+          localStorage.removeItem("dali_license_active");
+          localStorage.removeItem("dali_license_key");
+          if ($("licenseKeyInput")) $("licenseKeyInput").value = "";
+          await refreshLicenseUI();
+          showToast("已重置授权状态");
+        }
+      });
+
+      // Merchant keygen tool
+      $("sellerGenKeyBtn")?.addEventListener("click", async () => {
+        const input = ($("sellerMachineInput")?.value || "").trim().toUpperCase();
+        if (!input) {
+          showToast("请输入客户机器码");
+          return;
+        }
+        const key = await computeExpectedLicense(input);
+        $("sellerKeyResult").textContent = key;
+        $("sellerResultRow").style.display = "flex";
+        showToast("已生成激活密钥 ✓");
+      });
+
+      $("sellerCopyKeyBtn")?.addEventListener("click", async () => {
+        const key = $("sellerKeyResult")?.textContent || "";
+        if (!key) return;
+        await copyText(key);
+        showToast("已复制密钥，可直接发送给客户 ✓");
+      });
+    }
+
+    // ==========================================
+    // 9. Local IndexedDB History Engine
+    // ==========================================
+    const DALI_DB_NAME = "dali_ocr_history_db";
+    const DALI_STORE = "history";
+    let activeHistoryFilter = "all";
+
+    function openHistoryDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DALI_DB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(DALI_STORE)) {
+            const store = db.createObjectStore(DALI_STORE, { keyPath: "id" });
+            store.createIndex("timestamp", "timestamp", { unique: false });
+            store.createIndex("type", "type", { unique: false });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveHistoryRecord(item) {
+      if (!item || !item.text || !item.text.trim()) return;
+      try {
+        const db = await openHistoryDB();
+        const tx = db.transaction(DALI_STORE, "readwrite");
+        const store = tx.objectStore(DALI_STORE);
+        const record = {
+          id: "hist_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          timestamp: Date.now(),
+          type: item.type || "image",
+          title: item.title || (item.type === "pdf" ? "PDF 文档识别" : item.type === "table" ? "表格提取结果" : "图片识别结果"),
+          text: item.text,
+          charCount: item.text.length,
+          meta: item.meta || {}
+        };
+        store.add(record);
+
+        await new Promise((res, rej) => {
+          tx.oncomplete = res;
+          tx.onerror = rej;
+        });
+
+        // Enforce max history retention limit
+        const limitStr = getPreference("dali_pref_history_limit");
+        const limit = parseInt(limitStr, 10) || 100;
+        if (limit < 90000) {
+          pruneHistory(db, limit);
+        }
+
+        refreshHistoryView();
+      } catch (err) {
+        console.warn("Failed to persist history record:", err);
+      }
+    }
+
+    async function pruneHistory(db, limit) {
+      try {
+        const tx = db.transaction(DALI_STORE, "readwrite");
+        const store = tx.objectStore(DALI_STORE);
+        const req = store.getAll();
+        req.onsuccess = () => {
+          const records = req.result || [];
+          if (records.length > limit) {
+            records.sort((a, b) => a.timestamp - b.timestamp);
+            const toRemove = records.slice(0, records.length - limit);
+            const delTx = db.transaction(DALI_STORE, "readwrite");
+            const delStore = delTx.objectStore(DALI_STORE);
+            toRemove.forEach((r) => delStore.delete(r.id));
+          }
+        };
+      } catch (_) {}
+    }
+
+    async function getAllHistoryRecords() {
+      try {
+        const db = await openHistoryDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(DALI_STORE, "readonly");
+          const store = tx.objectStore(DALI_STORE);
+          const req = store.getAll();
+          req.onsuccess = () => {
+            const records = req.result || [];
+            records.sort((a, b) => b.timestamp - a.timestamp);
+            resolve(records);
+          };
+          req.onerror = () => reject(req.error);
+        });
+      } catch (_) {
+        return [];
+      }
+    }
+
+    async function deleteHistoryRecord(id) {
+      try {
+        const db = await openHistoryDB();
+        const tx = db.transaction(DALI_STORE, "readwrite");
+        tx.objectStore(DALI_STORE).delete(id);
+        await new Promise((res) => { tx.oncomplete = res; });
+        showToast("已删除历史记录");
+        refreshHistoryView();
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    async function clearAllHistory() {
+      if (!confirm("确定要清空全部识别历史记录吗？此操作无法撤销。")) return;
+      try {
+        const db = await openHistoryDB();
+        const tx = db.transaction(DALI_STORE, "readwrite");
+        tx.objectStore(DALI_STORE).clear();
+        await new Promise((res) => { tx.oncomplete = res; });
+        showToast("已清空全部历史记录 ✓");
+        refreshHistoryView();
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    async function refreshHistoryView() {
+      const container = $("historyListContainer");
+      if (!container) return;
+
+      const records = await getAllHistoryRecords();
+      const countAll = $("histCountAll");
+      const countImg = $("histCountImage");
+      const countPdf = $("histCountPdf");
+      const countTbl = $("histCountTable");
+
+      const imgTotal = records.filter((r) => r.type === "image").length;
+      const pdfTotal = records.filter((r) => r.type === "pdf").length;
+      const tblTotal = records.filter((r) => r.type === "table").length;
+
+      if (countAll) countAll.textContent = String(records.length);
+      if (countImg) countImg.textContent = String(imgTotal);
+      if (countPdf) countPdf.textContent = String(pdfTotal);
+      if (countTbl) countTbl.textContent = String(tblTotal);
+
+      const query = ($("historySearchInput")?.value || "").trim().toLowerCase();
+      let filtered = records;
+      if (activeHistoryFilter !== "all") {
+        filtered = filtered.filter((r) => r.type === activeHistoryFilter);
+      }
+      if (query) {
+        filtered = filtered.filter((r) => (r.title || "").toLowerCase().includes(query) || (r.text || "").toLowerCase().includes(query));
+      }
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div style="padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
+            ${query ? "🔍 没有匹配的搜索历史记录" : "📜 暂无此类识别历史记录"}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = "";
+      filtered.forEach((rec) => {
+        const dateStr = new Date(rec.timestamp).toLocaleString("zh-CN", { hour12: false });
+        const typeBadgeClass = rec.type === "table" ? "table" : rec.type === "pdf" ? "pdf" : "";
+        const typeLabel = rec.type === "table" ? "📊 表格" : rec.type === "pdf" ? "📑 PDF" : "🖼️ 图片";
+
+        const card = document.createElement("div");
+        card.className = "history-item";
+        card.innerHTML = `
+          <div class="history-item-top">
+            <span class="history-badge ${typeBadgeClass}">${typeLabel}</span>
+            <span class="history-title" title="${escapeHtml(rec.title)}">${escapeHtml(rec.title)}</span>
+            <span class="history-time">${dateStr} · ${rec.charCount} 字</span>
+          </div>
+          <div class="history-snippet">${escapeHtml(rec.text.slice(0, 180))}</div>
+          <div class="history-actions">
+            <button type="button" class="hist-copy-btn">📋 复制</button>
+            <button type="button" class="hist-fmt-btn">✨ 排版</button>
+            <button type="button" class="hist-doc-btn btn-badge-doc">📝 文档</button>
+            <button type="button" class="hist-ai-btn btn-badge-ai">🤖 AI 助手</button>
+            <button type="button" class="hist-dl-btn">💾 下载</button>
+            <button type="button" class="hist-del-btn" style="color:var(--danger);background:transparent;border-color:transparent;">✕ 删除</button>
+          </div>
+        `;
+
+        card.querySelector(".hist-copy-btn")?.addEventListener("click", async () => {
+          await copyText(rec.text);
+          showToast("已复制历史文本 ✓");
+        });
+        card.querySelector(".hist-fmt-btn")?.addEventListener("click", () => {
+          sendToWorkbench(rec.text, rec.title);
+        });
+        card.querySelector(".hist-doc-btn")?.addEventListener("click", () => {
+          sendToDocEditor(rec.text, rec.title);
+        });
+        card.querySelector(".hist-ai-btn")?.addEventListener("click", () => {
+          sendToAiAssistant(rec.text, "proofread");
+        });
+        card.querySelector(".hist-dl-btn")?.addEventListener("click", () => {
+          const blob = new Blob([rec.text], { type: "text/plain;charset=utf-8" });
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `History_${rec.type}_${rec.timestamp}.txt`;
+          a.click();
+        });
+        card.querySelector(".hist-del-btn")?.addEventListener("click", () => {
+          deleteHistoryRecord(rec.id);
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function initHistoryEvents() {
+      document.querySelectorAll("#historyTypeFilter .tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#historyTypeFilter .tab-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeHistoryFilter = btn.dataset.type;
+          refreshHistoryView();
+        });
+      });
+
+      $("historySearchInput")?.addEventListener("input", refreshHistoryView);
+      $("historyClearAllBtn")?.addEventListener("click", clearAllHistory);
+
+      $("historyExportAllBtn")?.addEventListener("click", async () => {
+        const records = await getAllHistoryRecords();
+        if (!records.length) {
+          showToast("暂无可导出的历史记录");
+          return;
+        }
+        const jsonStr = JSON.stringify(records, null, 2);
+        const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `DaliOCR_History_Backup_${Date.now()}.json`;
+        a.click();
+        showToast("已成功导出全部历史记录备份 ✓");
+      });
+    }
+
+    // ==========================================
+    // 10. Table OCR & Geometric Clustering Engine
+    // ==========================================
+    const tableState = {
+      file: null,
+      fileName: "",
+      isPdf: false,
+      pdfNumPages: 0,
+      items: [],
+      grid: [],
+      isRunning: false,
+      isAborted: false
+    };
+
+    function areRowsSimilar(rowA, rowB) {
+      if (!rowA || !rowB || !rowA.length || !rowB.length) return false;
+      const clean = (str) => (str || "").replace(/[\s\p{P}\p{S}]/gu, "").toLowerCase();
+      const listA = rowA.map(clean).filter(Boolean);
+      const listB = rowB.map(clean).filter(Boolean);
+      if (!listA.length || !listB.length) return false;
+
+      const setA = new Set(listA);
+      const setB = new Set(listB);
+      let matchCount = 0;
+      for (const item of setA) {
+        if (setB.has(item)) matchCount++;
+      }
+      const overlapRatio = matchCount / Math.min(setA.size, setB.size);
+      return overlapRatio >= 0.55 || (matchCount >= 2 && matchCount >= setA.size * 0.5);
+    }
+
+    function stitchTablePages(existingGrid, newGrid, dedupHeader = true) {
+      if (!existingGrid || !existingGrid.length) return [...newGrid];
+      if (!newGrid || !newGrid.length) return [...existingGrid];
+
+      let candidateGrid = [...newGrid];
+      const masterHeader = existingGrid[0];
+
+      // Check if candidateGrid[0] or candidateGrid[1] is a repeated header
+      if (dedupHeader && masterHeader) {
+        if (areRowsSimilar(masterHeader, candidateGrid[0])) {
+          candidateGrid = candidateGrid.slice(1);
+        } else if (candidateGrid.length > 1 && areRowsSimilar(masterHeader, candidateGrid[1])) {
+          const nonEmpty = candidateGrid[0].filter((c) => (c || "").trim()).length;
+          if (nonEmpty <= 1) {
+            candidateGrid = candidateGrid.slice(2);
+          } else {
+            candidateGrid = [candidateGrid[0], ...candidateGrid.slice(2)];
+          }
+        }
+      }
+
+      if (!candidateGrid.length) return [...existingGrid];
+
+      // Unify column count across all pages
+      const currentMaxCols = Math.max(...existingGrid.map((r) => r.length));
+      const newMaxCols = Math.max(...candidateGrid.map((r) => r.length));
+      const maxCols = Math.max(currentMaxCols, newMaxCols);
+
+      // Pad existing rows if new page has more columns
+      const normalizedExisting = existingGrid.map((r) => {
+        if (r.length < maxCols) {
+          return r.concat(new Array(maxCols - r.length).fill(""));
+        }
+        return r;
+      });
+
+      // Pad new rows to match maxCols
+      const normalizedNew = candidateGrid.map((r) => {
+        if (r.length < maxCols) {
+          return r.concat(new Array(maxCols - r.length).fill(""));
+        }
+        return r;
+      });
+
+      return [...normalizedExisting, ...normalizedNew];
+    }
+
+    function clusterTableBoxes(items) {
+      if (!items || !items.length) return [];
+      const boxes = items.map((it) => {
+        const xs = it.poly ? it.poly.map((p) => p[0]) : [0, 10, 10, 0];
+        const ys = it.poly ? it.poly.map((p) => p[1]) : [0, 0, 10, 10];
+        const minX = Math.min(...xs), maxX = Math.max(...xs);
+        const minY = Math.min(...ys), maxY = Math.max(...ys);
+        return {
+          text: (it.text || "").trim(),
+          minX, maxX, minY, maxY,
+          width: maxX - minX,
+          height: maxY - minY,
+          centerX: (minX + maxX) / 2,
+          centerY: (minY + maxY) / 2
+        };
+      });
+
+      boxes.sort((a, b) => a.centerY - b.centerY);
+
+      // Group into rows
+      const rows = [];
+      for (const box of boxes) {
+        let matchedRow = null;
+        for (const r of rows) {
+          const vOverlap = Math.min(box.maxY, r.maxY) - Math.max(box.minY, r.minY);
+          const minH = Math.min(box.height, r.avgHeight);
+          const dist = Math.abs(box.centerY - r.centerY);
+          if (dist < minH * 0.7 || (minH > 0 && vOverlap / minH > 0.4)) {
+            matchedRow = r;
+            break;
+          }
+        }
+        if (matchedRow) {
+          matchedRow.boxes.push(box);
+          matchedRow.minY = Math.min(matchedRow.minY, box.minY);
+          matchedRow.maxY = Math.max(matchedRow.maxY, box.maxY);
+          matchedRow.centerY = (matchedRow.minY + matchedRow.maxY) / 2;
+          matchedRow.avgHeight = matchedRow.maxY - matchedRow.minY;
+        } else {
+          rows.push({
+            boxes: [box],
+            minY: box.minY,
+            maxY: box.maxY,
+            centerY: box.centerY,
+            avgHeight: box.height
+          });
+        }
+      }
+
+      rows.sort((a, b) => a.centerY - b.centerY);
+      for (const r of rows) {
+        r.boxes.sort((a, b) => a.minX - b.minX);
+      }
+
+      // Cluster global column partitions
+      const allX = [];
+      for (const r of rows) {
+        for (const b of r.boxes) allX.push(b.minX);
+      }
+      allX.sort((a, b) => a - b);
+
+      const colAnchors = [];
+      for (const x of allX) {
+        let matchedCol = colAnchors.find((c) => Math.abs(c.avg - x) < 36);
+        if (matchedCol) {
+          matchedCol.points.push(x);
+          matchedCol.avg = matchedCol.points.reduce((s, v) => s + v, 0) / matchedCol.points.length;
+        } else {
+          colAnchors.push({ points: [x], avg: x });
+        }
+      }
+      colAnchors.sort((a, b) => a.avg - b.avg);
+
+      const grid = [];
+      for (const r of rows) {
+        if (colAnchors.length <= 1) {
+          grid.push(r.boxes.map((b) => b.text));
+          continue;
+        }
+        const rowCells = new Array(colAnchors.length).fill("");
+        for (const b of r.boxes) {
+          let bestColIdx = 0;
+          let minDiff = Infinity;
+          for (let c = 0; c < colAnchors.length; c++) {
+            const diff = Math.abs(b.minX - colAnchors[c].avg);
+            if (diff < minDiff) {
+              minDiff = diff;
+              bestColIdx = c;
+            }
+          }
+          rowCells[bestColIdx] = rowCells[bestColIdx] ? (rowCells[bestColIdx] + " " + b.text) : b.text;
+        }
+        grid.push(rowCells);
+      }
+      return grid;
+    }
+
+    function renderTableGrid(grid) {
+      tableState.grid = grid;
+      const wrap = $("tableEditorWrap");
+      const emptyHint = $("tableEmptyHint");
+      const table = $("daliExcelTable");
+      const thead = $("daliTableHead");
+      const tbody = $("daliTableBody");
+      const meta = $("tableGridMeta");
+
+      const hasData = grid && grid.length > 0 && grid[0].length > 0;
+      if (!hasData) {
+        if (emptyHint) emptyHint.style.display = "block";
+        if (table) table.style.display = "none";
+        if (meta) meta.textContent = "(0 行 0 列)";
+        setTableActionsEnabled(false);
+        return;
+      }
+
+      const rowCount = grid.length;
+      const colCount = Math.max(...grid.map((r) => r.length));
+      if (meta) meta.textContent = `(${rowCount} 行 ${colCount} 列)`;
+
+      let headHtml = "<tr><th class='row-header'>#</th>";
+      for (let c = 0; c < colCount; c++) {
+        const colLetter = String.fromCharCode(65 + (c % 26)) + (c >= 26 ? Math.floor(c / 26) : "");
+        headHtml += `<th>${colLetter}</th>`;
+      }
+      headHtml += "</tr>";
+      thead.innerHTML = headHtml;
+
+      let bodyHtml = "";
+      for (let r = 0; r < rowCount; r++) {
+        bodyHtml += `<tr><th class='row-header'>${r + 1}</th>`;
+        for (let c = 0; c < colCount; c++) {
+          const val = (grid[r] && grid[r][c]) || "";
+          bodyHtml += `<td contenteditable="true" data-r="${r}" data-c="${c}">${escapeHtml(val)}</td>`;
+        }
+        bodyHtml += "</tr>";
+      }
+      tbody.innerHTML = bodyHtml;
+
+      tbody.querySelectorAll("td").forEach((td) => {
+        td.addEventListener("input", (e) => {
+          const r = parseInt(e.target.dataset.r, 10);
+          const c = parseInt(e.target.dataset.c, 10);
+          if (!tableState.grid[r]) tableState.grid[r] = [];
+          tableState.grid[r][c] = e.target.textContent || "";
+        });
+      });
+
+      if (emptyHint) emptyHint.style.display = "none";
+      if (table) table.style.display = "table";
+      setTableActionsEnabled(true);
+    }
+
+    function setTableActionsEnabled(enabled) {
+      ["tableCopyTsvBtn", "tableDownloadCsvBtn", "tableCopyMdBtn", "tableSendToDocBtn", "tableSendToAiBtn", "tableAddRowBtn", "tableAddColBtn"].forEach((id) => {
+        const btn = $(id);
+        if (btn) btn.disabled = !enabled;
+      });
+    }
+
+    function getTableAsTsv() {
+      return tableState.grid.map((row) => row.map((c) => (c || "").replace(/[\t\r\n]/g, " ")).join("\t")).join("\r\n");
+    }
+
+    function getTableAsCsv() {
+      return "\uFEFF" + tableState.grid.map((row) => row.map((cell) => {
+        const c = cell || "";
+        if (c.includes(",") || c.includes('"') || c.includes("\n")) {
+          return `"${c.replace(/"/g, '""')}"`;
+        }
+        return c;
+      }).join(",")).join("\r\n");
+    }
+
+    function getTableAsMarkdown() {
+      if (!tableState.grid.length) return "";
+      const colCount = Math.max(...tableState.grid.map((r) => r.length));
+      const rows = [];
+      const header = tableState.grid[0] || [];
+      const headerCells = [];
+      for (let c = 0; c < colCount; c++) {
+        headerCells.push((header[c] || `列${c + 1}`).replace(/\|/g, "\\|"));
+      }
+      rows.push("| " + headerCells.join(" | ") + " |");
+      rows.push("| " + new Array(colCount).fill("---").join(" | ") + " |");
+
+      for (let r = 1; r < tableState.grid.length; r++) {
+        const row = tableState.grid[r] || [];
+        const cells = [];
+        for (let c = 0; c < colCount; c++) {
+          cells.push((row[c] || "").replace(/\|/g, "\\|"));
+        }
+        rows.push("| " + cells.join(" | ") + " |");
+      }
+      return rows.join("\n");
+    }
+
+    async function acceptTableFile(file) {
+      if (!file) return;
+      const isPdf = file.name?.toLowerCase().endsWith(".pdf") || file.type === "application/pdf";
+      const isImg = /^image\//.test(file.type);
+
+      if (!isPdf && !isImg) {
+        showToast("请提供有效的图片或 PDF 文件");
+        return;
+      }
+
+      tableState.file = file;
+      tableState.fileName = file.name || (isPdf ? `表格_${Date.now()}.pdf` : `表格_${Date.now()}.png`);
+      tableState.isPdf = isPdf;
+      tableState.items = [];
+      tableState.grid = [];
+      tableState.isAborted = false;
+      renderTableGrid([]);
+
+      $("tableDropHint").style.display = "none";
+      $("tableRunBtn").disabled = !state.ocrReady;
+
+      if (isPdf) {
+        $("tablePreviewContainer").style.display = "none";
+        $("tablePdfPreviewContainer").style.display = "block";
+        $("tablePdfName").textContent = tableState.fileName;
+        const sizeMb = (file.size / 1048576).toFixed(1);
+        $("tablePdfMeta").textContent = `正在读取 PDF 结构 (${sizeMb} MB)…`;
+        $("tableStatus").textContent = "正在读取 PDF 页数…";
+
+        try {
+          const pdfjs = await getPdfjs();
+          const ab = await file.arrayBuffer();
+          const pdfDoc = await pdfjs.getDocument({
+            data: new Uint8Array(ab),
+            cMapUrl: "/vendor/cmaps/",
+            cMapPacked: true,
+            standardFontDataUrl: "/vendor/standard_fonts/"
+          }).promise;
+          tableState.pdfNumPages = pdfDoc.numPages;
+          $("tablePdfMeta").textContent = `PDF 表格文档 (${tableState.pdfNumPages} 页 · ${sizeMb} MB)`;
+          $("tableStatus").textContent = `已就绪：共 ${tableState.pdfNumPages} 页，点击“开始表格识别”进行跨页提取与智能拼接。`;
+          try { await pdfDoc.destroy(); } catch (_) {}
+        } catch (e) {
+          $("tablePdfMeta").textContent = `PDF 表格文档 (${sizeMb} MB)`;
+          $("tableStatus").textContent = "已选择 PDF 表格文件，点击“开始表格识别”。";
+        }
+      } else {
+        $("tablePdfPreviewContainer").style.display = "none";
+        $("tablePreviewContainer").style.display = "block";
+        $("tablePreviewImg").src = URL.createObjectURL(file);
+        $("tableStatus").textContent = `已就绪：${tableState.fileName}，点击“开始表格识别”。`;
+      }
+    }
+    const acceptTableImage = acceptTableFile;
+
+    async function runTableOcr() {
+      if (!state.ocrReady || !state.ocr || !tableState.file || tableState.isRunning) return;
+      tableState.isRunning = true;
+      tableState.isAborted = false;
+      tableState.grid = [];
+      tableState.items = [];
+
+      $("tableRunBtn").style.display = "none";
+      $("tableStopBtn").style.display = "inline-flex";
+      $("tableProgress").style.display = "block";
+      $("tableProgress").value = 0;
+
+      const dedupHeader = $("tableDedupHeaderCheck") ? $("tableDedupHeaderCheck").checked : true;
+
+      try {
+        if (tableState.isPdf) {
+          $("tableStatus").textContent = "正在解析 PDF 页面…";
+          const pdfjs = await getPdfjs();
+          const data = await tableState.file.arrayBuffer();
+          const pdfDoc = await pdfjs.getDocument({
+            data: new Uint8Array(data),
+            cMapUrl: "/vendor/cmaps/",
+            cMapPacked: true,
+            standardFontDataUrl: "/vendor/standard_fonts/"
+          }).promise;
+
+          const numPages = pdfDoc.numPages;
+          $("tableProgress").max = numPages;
+          let totalCells = 0;
+
+          for (let pageNo = 1; pageNo <= numPages; pageNo++) {
+            if (tableState.isAborted) break;
+            $("tableStatus").textContent = `正在识别表格第 ${pageNo} / ${numPages} 页…`;
+
+            const page = await pdfDoc.getPage(pageNo);
+            try {
+              const viewport = page.getViewport({ scale: 2.0 });
+              const canvas = document.createElement("canvas");
+              canvas.width = Math.floor(viewport.width);
+              canvas.height = Math.floor(viewport.height);
+              const ctx = canvas.getContext("2d", { alpha: false });
+              await page.render({ canvasContext: ctx, viewport }).promise;
+
+              if (tableState.isAborted) break;
+
+              const [result] = await state.ocr.predict(canvas, { textRecScoreThresh: 0.1 });
+              const items = result.items || [];
+              totalCells += items.length;
+
+              const pageGrid = clusterTableBoxes(items);
+              if (pageGrid.length > 0) {
+                tableState.grid = stitchTablePages(tableState.grid, pageGrid, dedupHeader);
+                renderTableGrid(tableState.grid);
+              }
+            } finally {
+              try { page.cleanup(); } catch (_) {}
+            }
+            $("tableProgress").value = pageNo;
+          }
+
+          try { await pdfDoc.destroy(); } catch (_) {}
+
+          const rowCount = tableState.grid.length;
+          const colCount = tableState.grid[0]?.length || 0;
+          if (tableState.isAborted) {
+            $("tableStatus").textContent = `已停止识别。当前已提取并拼接 ${rowCount} 行 ${colCount} 列表格数据。`;
+            showToast("已停止识别");
+          } else {
+            $("tableStatus").textContent = `PDF 表格识别完成！共处理 ${numPages} 页，智能拼接为 ${rowCount} 行 ${colCount} 列。`;
+            showToast(`PDF 表格跨页提取成功 (${rowCount} 行) ✓`);
+          }
+        } else {
+          // Single Image
+          $("tableStatus").textContent = "正在进行表格文字与拓扑结构识别…";
+          $("tableProgress").max = 1;
+          $("tableProgress").value = 0.5;
+
+          const [result] = await state.ocr.predict(tableState.file, { textRecScoreThresh: 0.1 });
+          const items = result.items || [];
+          tableState.items = items;
+
+          const grid = clusterTableBoxes(items);
+          tableState.grid = grid;
+          renderTableGrid(grid);
+          $("tableProgress").value = 1;
+
+          $("tableStatus").textContent = `表格识别完成！识别到 ${items.length} 个单元格，聚类为 ${grid.length} 行 ${grid[0]?.length || 0} 列。`;
+          showToast("表格识别完成 ✓");
+        }
+
+        // Save to History
+        if (tableState.grid.length > 0) {
+          const tsv = getTableAsTsv();
+          saveHistoryRecord({
+            type: "table",
+            title: tableState.fileName || "表格识别",
+            text: tsv,
+            meta: {
+              rows: tableState.grid.length,
+              cols: tableState.grid[0]?.length || 0,
+              isPdf: tableState.isPdf
+            }
+          });
+
+          if (getPreference("dali_pref_autocopy") === "true" && tsv) {
+            copyText(tsv);
+            showToast("表格识别完成，已自动复制为 Excel 格式 ✓");
+          }
+        }
+      } catch (err) {
+        $("tableStatus").textContent = "表格识别失败: " + err.message;
+        console.error(err);
+      } finally {
+        tableState.isRunning = false;
+        $("tableProgress").style.display = "none";
+        $("tableRunBtn").style.display = "inline-flex";
+        $("tableStopBtn").style.display = "none";
+        $("tableRunBtn").disabled = false;
+      }
+    }
+
+    function sendImageToTable(file) {
+      acceptTableFile(file);
+      switchTab("table");
+      if (state.ocrReady) {
+        setTimeout(runTableOcr, 100);
+      }
+    }
+
+    function sendPdfToTable(file) {
+      acceptTableFile(file);
+      switchTab("table");
+      showToast("已导入表格模块，可点击“开始表格识别”提取多页数据");
+    }
+
+    function initTableEvents() {
+      $("tableChooseBtn")?.addEventListener("click", () => $("tableFileInput").click());
+      $("tableFileInput")?.addEventListener("change", (e) => {
+        if (e.target.files?.length) acceptTableFile(e.target.files[0]);
+      });
+
+      $("tablePasteBtn")?.addEventListener("click", async () => {
+        try {
+          if (navigator.clipboard?.read) {
+            const items = await navigator.clipboard.read();
+            for (const item of items) {
+              for (const type of item.types) {
+                if (type.startsWith("image/")) {
+                  const blob = await item.getType(type);
+                  acceptTableFile(new File([blob], `表格粘贴_${Date.now()}.png`, { type }));
+                  return;
+                }
+              }
+            }
+          }
+          showToast("剪贴板未发现图片，可直接按 ⌘+V 粘贴");
+        } catch (_) {
+          showToast("请直接按 ⌘+V 粘贴表格图片");
+        }
+      });
+
+      $("tableSnipBtn")?.addEventListener("click", startSnip);
+      $("tableRunBtn")?.addEventListener("click", runTableOcr);
+      $("tableStopBtn")?.addEventListener("click", () => {
+        tableState.isAborted = true;
+      });
+
+      const dropzone = $("tableDropzone");
+      ["dragenter", "dragover"].forEach((evt) => dropzone?.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add("dragover"); }));
+      ["dragleave", "drop"].forEach((evt) => dropzone?.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove("dragover"); }));
+      dropzone?.addEventListener("drop", (e) => {
+        if (e.dataTransfer?.files?.length) acceptTableFile(e.dataTransfer.files[0]);
+      });
+
+      $("tableCopyTsvBtn")?.addEventListener("click", async () => {
+        const tsv = getTableAsTsv();
+        if (!tsv) return;
+        await copyText(tsv);
+        showToast("已复制为 Excel 表格格式，可直接在 Excel/Numbers/飞书 ⌘+V 粘贴！✓");
+      });
+
+      $("tableDownloadCsvBtn")?.addEventListener("click", () => {
+        const csv = getTableAsCsv();
+        if (!csv) return;
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `${tableState.fileName ? tableState.fileName.replace(/\.[^/.]+$/, "") : "Table"}_${Date.now()}.csv`;
+        a.click();
+        showToast("已导出 CSV 表格文件 ✓");
+      });
+
+      $("tableCopyMdBtn")?.addEventListener("click", async () => {
+        const md = getTableAsMarkdown();
+        if (!md) return;
+        await copyText(md);
+        showToast("已复制 Markdown 表格格式 ✓");
+      });
+
+      $("tableSendToDocBtn")?.addEventListener("click", () => {
+        const md = getTableAsMarkdown();
+        if (!md) return;
+        sendToDocEditor(md, tableState.fileName || "表格数据");
+      });
+
+      $("tableSendToAiBtn")?.addEventListener("click", () => {
+        const md = getTableAsMarkdown();
+        if (!md) return;
+        sendToAiAssistant(md, "invoice");
+      });
+
+      $("tableAddRowBtn")?.addEventListener("click", () => {
+        const colCount = Math.max(1, tableState.grid[0]?.length || 1);
+        tableState.grid.push(new Array(colCount).fill(""));
+        renderTableGrid(tableState.grid);
+        showToast("已在末尾添加新行");
+      });
+
+      $("tableAddColBtn")?.addEventListener("click", () => {
+        tableState.grid.forEach((row) => row.push(""));
+        renderTableGrid(tableState.grid);
+        showToast("已在右侧添加新列");
+      });
+
+      $("tableClearBtn")?.addEventListener("click", () => {
+        tableState.file = null;
+        tableState.fileName = "";
+        tableState.isPdf = false;
+        tableState.pdfNumPages = 0;
+        tableState.items = [];
+        tableState.grid = [];
+        tableState.isAborted = false;
+        $("tablePreviewContainer").style.display = "none";
+        $("tablePdfPreviewContainer").style.display = "none";
+        $("tableDropHint").style.display = "block";
+        $("tableRunBtn").disabled = true;
+        $("tableRunBtn").style.display = "inline-flex";
+        $("tableStopBtn").style.display = "none";
+        $("tableProgress").style.display = "none";
+        renderTableGrid([]);
+        $("tableStatus").textContent = "准备就绪。";
+      });
+    }
+
+    // ==========================================
+    // 11. AI Assistant & LLM Integration Engine
+    // ==========================================
+    const AI_PRESETS = {
+      deepseek: { endpoint: "https://api.deepseek.com/v1", model: "deepseek-chat" },
+      openai: { endpoint: "https://api.openai.com/v1", model: "gpt-4o-mini" },
+      moonshot: { endpoint: "https://api.moonshot.cn/v1", model: "moonshot-v1-8k" },
+      qwen: { endpoint: "https://dashscope.aliyuncs.com/compatible-mode/v1", model: "qwen-turbo" },
+      ollama: { endpoint: "http://localhost:11434/v1", model: "llama3.2" }
+    };
+
+    const AI_SYSTEM_PROMPTS = {
+      proofread: "你是一个专业的文字校对专家。请仔细校对以下由 OCR 识别生成的文本。修复因图像模糊、同音字、形近字导致的错别字、漏字、标点错误，修正不自然的跨行断裂与语病，但必须严格保留原文真实语义与结构。直接输出纠错后的完整最终文本，不要附带多余开场白或解释说明。",
+      translate: "你是一位专业翻译专家。请将以下文本翻译为目标语言（如果原文是中文，则翻译为地道严谨的英文；如果原文是英文或其他外语，则翻译为流畅通顺的简体中文）。忠实于原文，专业术语准确，句式自然。直接输出最终翻译结果，不要附带多余闲聊。",
+      summary: "你是一位高级商务与学术顾问。请对以下识别文本进行高价值提炼，输出清晰的执行摘要，包含：\n1. 【核心要点速览】(一句话概括主旨)\n2. 【关键数据与事实】(3-5条重要细节)\n3. 【行动项与结论】(如有)。条理清晰，言简意赅。",
+      invoice: "你是一位专业的财务票据智能分析专家。请从以下文本中提取关键字段，以规整的 Markdown 键值列表以及 JSON 格式输出。提取字段包括但不限于：票据类型、发票代码/号码、开票日期、购买方名称及税号、销售方名称及税号、金额合计、税额、价税合计（大小写）。如果某些字段未识别到则填 null。"
+    };
+
+    const aiState = {
+      isGenerating: false,
+      abortController: null
+    };
+
+    function sendToAiAssistant(text, suggestedTask = "proofread") {
+      $("aiInputText").value = text;
+      $("aiInputLen").textContent = `${text.length} 字`;
+      switchTab("ai");
+      showToast(`已导入 AI 智能助理，准备执行【${suggestedTask === "invoice" ? "结构化提取" : suggestedTask === "summary" ? "核心摘要" : "错别字校对"}】`);
+    }
+
+    async function runAiTask(taskType = "proofread") {
+      const inputText = ($("aiInputText")?.value || "").trim();
+      if (!inputText) {
+        showToast("请先在左侧输入或从 OCR 导入待处理文本");
+        return;
+      }
+
+      let endpoint = ($("aiEndpointInput")?.value || "").trim();
+      if (endpoint.endsWith("/")) endpoint = endpoint.slice(0, -1);
+      const apiKey = ($("aiKeyInput")?.value || "").trim();
+      const model = ($("aiModelInput")?.value || "").trim() || "deepseek-chat";
+      const systemPrompt = AI_SYSTEM_PROMPTS[taskType] || AI_SYSTEM_PROMPTS.proofread;
+
+      const outputBox = $("aiOutputBox");
+      const sendBtn = $("aiSendBtn");
+      const stopBtn = $("aiStopBtn");
+
+      aiState.isGenerating = true;
+      aiState.abortController = new AbortController();
+      sendBtn.style.display = "none";
+      stopBtn.style.display = "inline-flex";
+      outputBox.textContent = "";
+      outputBox.classList.add("streaming");
+
+      try {
+        const url = endpoint + "/chat/completions";
+        const headers = { "Content-Type": "application/json" };
+        if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers,
+          signal: aiState.abortController.signal,
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: inputText }
+            ],
+            stream: true,
+            temperature: 0.3
+          })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`API 请求失败 (${res.status}): ${errText}`);
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const clean = line.trim();
+            if (!clean || clean.startsWith(":") || clean === "data: [DONE]") continue;
+            if (clean.startsWith("data: ")) {
+              try {
+                const data = JSON.parse(clean.slice(6));
+                const delta = data.choices?.[0]?.delta?.content || "";
+                if (delta) {
+                  outputBox.textContent += delta;
+                  outputBox.scrollTop = outputBox.scrollHeight;
+                }
+              } catch (_) {}
+            }
+          }
+        }
+        showToast("AI 处理完成 ✓");
+      } catch (err) {
+        if (err.name === "AbortError") {
+          showToast("已停止生成");
+        } else {
+          outputBox.textContent = `❌ AI 处理出错: ${err.message}\n\n请检查 API 地址、API Key 是否正确，或是否配置了网络代理。`;
+        }
+      } finally {
+        aiState.isGenerating = false;
+        outputBox.classList.remove("streaming");
+        sendBtn.style.display = "inline-flex";
+        stopBtn.style.display = "none";
+      }
+    }
+
+    function initAiEvents() {
+      // Load saved AI credentials
+      const savedProvider = localStorage.getItem("dali_ai_provider") || "deepseek";
+      const savedEndpoint = localStorage.getItem("dali_ai_endpoint") || "https://api.deepseek.com/v1";
+      const savedKey = localStorage.getItem("dali_ai_key") || "";
+      const savedModel = localStorage.getItem("dali_ai_model") || "deepseek-chat";
+
+      if ($("aiProviderSelect")) $("aiProviderSelect").value = savedProvider;
+      if ($("aiEndpointInput")) $("aiEndpointInput").value = savedEndpoint;
+      if ($("aiKeyInput")) $("aiKeyInput").value = savedKey;
+      if ($("aiModelInput")) $("aiModelInput").value = savedModel;
+
+      $("aiProviderSelect")?.addEventListener("change", (e) => {
+        const val = e.target.value;
+        if (AI_PRESETS[val]) {
+          $("aiEndpointInput").value = AI_PRESETS[val].endpoint;
+          $("aiModelInput").value = AI_PRESETS[val].model;
+        }
+      });
+
+      $("aiSaveConfigBtn")?.addEventListener("click", () => {
+        localStorage.setItem("dali_ai_provider", $("aiProviderSelect").value);
+        localStorage.setItem("dali_ai_endpoint", $("aiEndpointInput").value);
+        localStorage.setItem("dali_ai_key", $("aiKeyInput").value);
+        localStorage.setItem("dali_ai_model", $("aiModelInput").value);
+        showToast("已保存 AI 模型配置 ✓");
+      });
+
+      $("aiInputText")?.addEventListener("input", (e) => {
+        $("aiInputLen").textContent = `${e.target.value.length} 字`;
+      });
+
+      $("aiSendBtn")?.addEventListener("click", () => runAiTask("proofread"));
+      $("aiStopBtn")?.addEventListener("click", () => {
+        if (aiState.abortController) aiState.abortController.abort();
+      });
+
+      $("aiPresetProofread")?.addEventListener("click", () => runAiTask("proofread"));
+      $("aiPresetTranslate")?.addEventListener("click", () => runAiTask("translate"));
+      $("aiPresetSummary")?.addEventListener("click", () => runAiTask("summary"));
+      $("aiPresetInvoice")?.addEventListener("click", () => runAiTask("invoice"));
+
+      $("aiClearInputBtn")?.addEventListener("click", () => {
+        $("aiInputText").value = "";
+        $("aiInputLen").textContent = "0 字";
+      });
+
+      $("aiCopyOutputBtn")?.addEventListener("click", async () => {
+        const text = $("aiOutputBox").textContent;
+        if (!text || text.includes("❌ AI 处理出错")) return;
+        await copyText(text);
+        showToast("已复制 AI 结果 ✓");
+      });
+
+      $("aiSendToFormatBtn")?.addEventListener("click", () => {
+        const text = $("aiOutputBox").textContent;
+        if (!text || text.includes("❌ AI 处理出错")) return;
+        sendToWorkbench(text, "AI 助理生成结果");
+      });
+
+      $("aiSendToDocBtn")?.addEventListener("click", () => {
+        const text = $("aiOutputBox").textContent;
+        if (!text || text.includes("❌ AI 处理出错")) return;
+        sendToDocEditor(text, "AI润色成稿");
+      });
+    }
+
+    // ==========================================
+    // 12. App Bootstrap
     // ==========================================
     window.addEventListener("DOMContentLoaded", () => {
       initTheme();
+      initCompactMode();
       initNavigation();
+      initPreferences();
+      initLicenseEvents();
+      initHistoryEvents();
+      initTableEvents();
+      initAiEvents();
       initImageEvents();
       initPdfEvents();
       initWorkbenchEvents();
