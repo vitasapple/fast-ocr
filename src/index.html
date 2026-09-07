@@ -31,7 +31,7 @@
       --radius-lg: 14px;
       --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
     [data-theme="dark"], @media (prefers-color-scheme: dark) {
@@ -65,7 +65,6 @@
       font-size: 14px;
     }
 
-    /* Main Desktop App Layout */
     .app-layout {
       display: flex;
       width: 100vw;
@@ -73,7 +72,6 @@
       overflow: hidden;
     }
 
-    /* Left Sidebar */
     .app-sidebar {
       width: 240px;
       flex-shrink: 0;
@@ -144,7 +142,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Sidebar Navigation Menu */
     .sidebar-nav {
       flex: 1;
       padding: 14px 10px;
@@ -236,7 +233,6 @@
       color: var(--accent-purple);
     }
 
-    /* Sidebar Footer */
     .sidebar-footer {
       padding: 14px 14px 16px;
       border-top: 1px solid var(--border-color);
@@ -318,7 +314,6 @@
       color: var(--text-primary);
     }
 
-    /* Main Content Area */
     .app-main {
       flex: 1;
       min-width: 0;
@@ -331,7 +326,7 @@
       display: none;
       max-width: 1000px;
       margin: 0 auto;
-      animation: fadeIn 0.2s ease;
+      animation: fadeIn 0.15s ease;
     }
 
     .tab-view.active {
@@ -339,13 +334,12 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
+      from { opacity: 0; transform: translateY(3px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* View Header */
     .view-header {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -353,7 +347,7 @@
     }
 
     .view-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       margin: 0 0 4px;
       color: var(--text-primary);
@@ -366,7 +360,6 @@
       line-height: 1.5;
     }
 
-    /* Common Card Styling */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -383,7 +376,6 @@
       align-items: center;
     }
 
-    /* Buttons & Inputs */
     button, select, input[type="text"] {
       font-family: inherit;
       font-size: 13px;
@@ -433,17 +425,6 @@
       border-color: var(--primary-hover);
     }
 
-    button.btn-accent {
-      background: linear-gradient(135deg, #8b5cf6, #6366f1);
-      color: #ffffff;
-      border: none;
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
-    }
-
-    button.btn-accent:hover:not(:disabled) {
-      filter: brightness(1.08);
-    }
-
     button.btn-send-format {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
@@ -456,31 +437,50 @@
       filter: brightness(1.1);
     }
 
-    button.btn-stop {
+    button.danger {
       background: #dc2626;
       color: #ffffff;
       border-color: #dc2626;
     }
 
-    button.btn-stop:hover:not(:disabled) {
+    button.danger:hover:not(:disabled) {
       background: #b91c1c;
       border-color: #b91c1c;
     }
 
-    button.active-toggle {
+    button.tab-btn {
+      border: none;
+      background: transparent;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button.tab-btn.active {
       background: var(--primary-light);
-      border-color: var(--primary);
       color: var(--primary);
       font-weight: 600;
     }
 
+    .view-tabs {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 2px;
+      border-radius: 8px;
+    }
+    [data-theme="dark"] .view-tabs { background: rgba(255, 255, 255, 0.06); }
+
     /* Dropzone Area */
-    .dropzone {
-      margin-top: 12px;
+    #dropzone, .dropzone {
+      margin-top: 10px;
       border: 2px dashed var(--border-color);
       border-radius: var(--radius-md);
-      min-height: 180px;
+      padding: 24px 16px;
+      min-height: 140px;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
@@ -489,258 +489,204 @@
       position: relative;
     }
 
-    .dropzone:hover, .dropzone.dragover {
+    #dropzone:hover, #dropzone.dragover, .dropzone:hover, .dropzone.dragover {
       border-color: var(--primary);
       background: var(--primary-light);
     }
 
-    .dropzone-hint {
+    #dropHint, .dropzone-hint {
       text-align: center;
       color: var(--text-muted);
       font-size: 13px;
-      pointer-events: none;
       line-height: 1.6;
     }
 
-    .dropzone-hint b {
-      color: var(--text-primary);
-    }
-
-    /* Image Preview & Vector Overlays */
-    .preview-wrap {
+    #previewContainer {
       position: relative;
       display: inline-block;
       max-width: 100%;
       margin: 0 auto;
+      line-height: 0;
     }
 
-    .preview-wrap img {
-      display: block;
+    #preview {
       max-width: 100%;
-      max-height: 480px;
+      max-height: 420px;
+      display: block;
+      margin: 0 auto;
       border-radius: var(--radius-sm);
-      user-select: none;
     }
 
-    .overlay-svg {
+    #overlaySvg {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       pointer-events: auto;
+      border-radius: var(--radius-sm);
     }
 
-    .ocr-box-polygon {
-      fill: rgba(37, 99, 235, 0.12);
+    .ocr-box {
+      fill: rgba(37, 99, 235, 0.15);
       stroke: #2563eb;
       stroke-width: 1.5;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
       cursor: pointer;
-      transition: fill 0.15s, stroke-width 0.15s;
+      transition: fill 0.12s ease, stroke 0.12s ease;
     }
 
-    .ocr-box-polygon:hover, .ocr-box-polygon.highlighted {
-      fill: rgba(236, 72, 153, 0.35);
-      stroke: #ec4899;
-      stroke-width: 2.5;
+    .ocr-box:hover, .ocr-box.active {
+      fill: rgba(16, 185, 129, 0.35) !important;
+      stroke: #10b981 !important;
+      stroke-width: 2.5 !important;
     }
 
     .box-tooltip {
       position: absolute;
       z-index: 50;
-      background: rgba(15, 23, 42, 0.95);
-      color: #ffffff;
+      background: rgba(15, 23, 42, 0.94);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.5;
       padding: 6px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       pointer-events: none;
-      white-space: pre-wrap;
-      max-width: 280px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      display: none;
+      word-break: break-all;
+      max-width: 340px;
+      transform: translate(-50%, -100%);
+      margin-top: -8px;
+    }
+
+    .overlay-toolbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
     }
 
     /* Batch Queue Card */
-    .batch-queue-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      margin-bottom: 16px;
-    }
-
-    .batch-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .batch-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .batch-badge {
-      background: var(--primary-light);
-      color: var(--primary);
-      font-size: 11px;
-      padding: 1px 6px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
     .batch-thumb-list {
       display: flex;
       gap: 10px;
       overflow-x: auto;
-      padding: 4px 2px 10px;
+      padding: 6px 2px;
+      scroll-behavior: smooth;
     }
 
     .batch-thumb-item {
       position: relative;
-      flex-shrink: 0;
-      width: 76px;
-      height: 76px;
+      flex: 0 0 88px;
+      border: 2px solid transparent;
       border-radius: 8px;
-      border: 2px solid var(--border-color);
       overflow: hidden;
       cursor: pointer;
-      background: #000;
-      transition: all 0.15s;
+      background: rgba(0, 0, 0, 0.04);
+      text-align: center;
+      padding: 4px;
+      transition: all 0.15s ease;
+      user-select: none;
     }
+    [data-theme="dark"] .batch-thumb-item { background: rgba(255, 255, 255, 0.06); }
 
-    .batch-thumb-item:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
+    .batch-thumb-item:hover { background: var(--primary-light); }
     .batch-thumb-item.active {
       border-color: var(--primary);
-      box-shadow: 0 0 0 2px var(--accent-glow);
-    }
-
-    .batch-thumb-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.85;
-    }
-
-    .batch-thumb-item.active img {
-      opacity: 1;
-    }
-
-    .batch-thumb-remove {
-      position: absolute;
-      top: 2px;
-      right: 2px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.65);
-      color: #fff;
-      font-size: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-
-    .batch-thumb-item:hover .batch-thumb-remove {
-      opacity: 1;
-    }
-
-    /* Result Panels & Textareas */
-    .result-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .btn-group {
-      display: inline-flex;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
-
-    .btn-group button {
-      border: none;
-      border-radius: 0;
-      border-right: 1px solid var(--border-color);
-      padding: 6px 12px;
-    }
-
-    .btn-group button:last-child {
-      border-right: none;
-    }
-
-    .text-editor {
-      width: 100%;
-      min-height: 280px;
-      padding: 14px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-color);
-      background: var(--input-bg);
-      color: var(--text-primary);
-      font-family: inherit;
-      font-size: 14px;
-      line-height: 1.7;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .text-editor:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    /* Results List View Table */
-    .result-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    .result-table th, .result-table td {
-      padding: 8px 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .result-table th {
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: rgba(0,0,0,0.02);
-    }
-
-    .result-table tr:hover {
       background: var(--primary-light);
     }
 
-    /* Smart Formatter Workbench Views */
-    .workbench-action-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 14px;
+    .batch-thumb-img {
+      width: 100%;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 5px;
+      display: block;
     }
 
+    .batch-thumb-name {
+      font-size: 11px;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0.8;
+    }
+
+    .batch-thumb-status {
+      font-size: 10px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .status-pending { background: rgba(0,0,0,0.08); color: #666; }
+    .status-processing { background: rgba(37,99,235,0.18); color: #2563eb; }
+    .status-done { background: rgba(16,185,129,0.18); color: #16a34a; }
+    .status-error { background: rgba(220,38,38,0.18); color: #dc2626; }
+
+    /* Results */
+    #result, #pdfResult {
+      width: 100%;
+      min-height: 240px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13.5px;
+      line-height: 1.7;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+    }
+
+    #status, #pdfStatus {
+      font-size: 13px; line-height: 1.6;
+      padding: 8px 12px; border-radius: 8px;
+      background: rgba(0,0,0,0.03);
+      min-height: 20px; word-break: break-all;
+    }
+    [data-theme="dark"] #status, [data-theme="dark"] #pdfStatus { background: rgba(255,255,255,0.05); }
+    #status.error, #pdfStatus.error { color: var(--danger); font-weight: 600; }
+    #status.ok, #pdfStatus.ok { color: var(--success); }
+
+    .result-list {
+      max-height: 280px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--input-bg);
+    }
+
+    .result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+    }
+    .result-item:hover, .result-item.highlight { background: var(--primary-light); }
+
+    #metrics {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: var(--text-secondary);
+    }
+
+    /* Workbench Formatter Styling */
     .find-replace-panel {
       background: rgba(0, 0, 0, 0.02);
       border: 1px solid var(--border-color);
@@ -765,54 +711,9 @@
       min-width: 220px;
       display: flex;
       align-items: center;
-      position: relative;
     }
 
-    .fr-input-wrap input {
-      width: 100%;
-      padding-right: 30px;
-    }
-
-    .fr-options-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      font-size: 12px;
-    }
-
-    .fr-options {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: var(--text-secondary);
-    }
-
-    .fr-options label {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .fr-match-badge {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 12px;
-      background: rgba(0, 0, 0, 0.06);
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-    [data-theme="dark"] .fr-match-badge { background: rgba(255, 255, 255, 0.08); }
-
-    .preset-chips-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
+    .fr-input-wrap input { width: 100%; }
 
     .preset-chip {
       display: inline-flex;
@@ -826,7 +727,6 @@
       border: 1px solid var(--border-color);
       cursor: pointer;
       transition: all 0.15s;
-      user-select: none;
     }
 
     .preset-chip:hover {
@@ -835,11 +735,10 @@
       background: var(--primary-light);
     }
 
-    /* Optimization Banner */
     .opt-banner {
       padding: 10px 14px;
       border-radius: var(--radius-sm);
-      background: rgba(16, 185, 129, 0.1);
+      background: rgba(16, 185, 129, 0.12);
       border: 1px solid rgba(16, 185, 129, 0.3);
       color: #065f46;
       font-size: 13px;
@@ -854,7 +753,6 @@
       color: #34d399;
     }
 
-    /* Dual Compare View Grid */
     .compare-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -877,10 +775,8 @@
       margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
 
-    /* Real-time Statistics Bar */
     .stats-bar {
       display: flex;
       flex-wrap: wrap;
@@ -896,19 +792,9 @@
     }
     [data-theme="dark"] .stats-bar { background: rgba(255, 255, 255, 0.02); }
 
-    .stat-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .stat-chip { display: inline-flex; align-items: center; gap: 4px; }
+    .stat-val { font-weight: 600; color: var(--text-primary); font-family: var(--font-mono); }
 
-    .stat-val {
-      font-weight: 600;
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-    }
-
-    /* Global Toast Notification */
     .app-toast {
       position: fixed;
       bottom: 24px;
@@ -923,59 +809,18 @@
       pointer-events: none;
       opacity: 0;
       transform: translateY(12px);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s ease;
       z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
-
-    .app-toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .app-toast.ok { background: rgba(15, 23, 42, 0.92); }
-    .app-toast.error { background: #b91c1c; }
-
-    /* Progress & Status Indicators */
-    progress {
-      width: 100%;
-      height: 8px;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-
-    progress::-webkit-progress-bar { background: rgba(0,0,0,0.06); }
-    progress::-webkit-progress-value { background: var(--primary); }
-
-    .status-msg {
-      font-size: 12.5px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-    .status-msg.error { color: var(--danger); font-weight: 600; }
-    .status-msg.ok { color: var(--success); }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .app-layout { flex-direction: column; }
-      .app-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
-      .sidebar-nav { flex-direction: row; overflow-x: auto; padding: 8px 10px; }
-      .nav-desc { display: none; }
-      .sidebar-footer { display: none; }
-      .app-main { height: auto; padding: 16px; }
-    }
+    .app-toast.show { opacity: 1; transform: translateY(0); }
   </style>
 </head>
 <body>
   <div class="app-layout">
     <!-- Left Navigation Sidebar -->
     <aside class="app-sidebar" id="appSidebar">
-      <!-- Brand Logo & Header -->
       <div class="sidebar-brand">
-        <div class="brand-logo" title="大梨 OCR PRO">
+        <div class="brand-logo">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
           </svg>
@@ -989,7 +834,6 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
       <nav class="sidebar-nav">
         <button class="nav-item active" data-tab="image" id="tabNavImage">
           <span class="nav-icon">🖼️</span>
@@ -1017,14 +861,13 @@
         </button>
       </nav>
 
-      <!-- Sidebar Footer -->
       <div class="sidebar-footer">
-        <div class="engine-status-box" id="engineStatusBox">
+        <div class="engine-status-box">
           <span class="engine-dot" id="engineDot"></span>
           <span id="engineStatusText">正在加载引擎…</span>
         </div>
         <div class="sidebar-tool-row">
-          <span>截图: <span class="shortcut-pill">Alt + S</span></span>
+          <span>截屏: <span class="shortcut-pill">Alt + S</span></span>
           <button class="theme-toggle-btn" id="themeToggleBtn" title="切换暗色/亮色外观">🌓 外观</button>
         </div>
       </div>
@@ -1042,113 +885,107 @@
           </div>
         </div>
 
-        <!-- Operations Card -->
         <div class="card">
-          <div class="row">
-            <input type="file" id="fileInput" accept="image/*" multiple style="display:none" />
-            <button type="button" id="chooseBtn" class="primary">📁 选择图片</button>
-            <button type="button" id="snipBtn" title="Alt+S">✂️ 截屏识别 (Alt+S)</button>
-            <button type="button" id="pasteBtn" title="Ctrl+V">📋 粘贴图片</button>
+          <div class="row" style="margin-bottom: 12px">
+            <input id="fileInput" type="file" accept="image/*" multiple hidden />
+            <button id="chooseBtn" class="primary">📁 选择图片 (可多选)</button>
+            <button id="snipBtn" type="button" title="截取屏幕或窗口 (快捷键 Alt+S 或 Option+S)">✂️ 截屏识别</button>
+            <button id="pasteBtn" type="button">📋 从剪贴板粘贴</button>
 
-            <label style="display:inline-flex;align-items:center;gap:6px;font-size:13px;margin-left:auto;">
-              <span>模型</span>
-              <select id="modelSelect">
-                <option value="v4_server">PP-OCRv4 Server (最高精度)</option>
-                <option value="v4_mobile" selected>PP-OCRv4 Mobile (极速平衡)</option>
-                <option value="v3_mobile">PP-OCRv3 Mobile (轻量)</option>
-              </select>
-            </label>
+            <label for="modelSelect" style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px;">识别模式</label>
+            <select id="modelSelect">
+              <option value="PP-OCRv5" selected>PP-OCRv5（推荐平衡）</option>
+              <option value="PP-OCRv6_small">PP-OCRv6 small（更高精度）</option>
+              <option value="PP-OCRv6_tiny">PP-OCRv6 tiny（极速模式）</option>
+            </select>
 
-            <button type="button" id="runBtn" class="primary" style="display:none">识别当前图片</button>
-            <button type="button" id="stopBatchBtn" class="btn-stop" style="display:none">停止批处理</button>
+            <button id="runBtn" class="primary" disabled>开始识别</button>
+            <button id="stopBatchBtn" class="danger" style="display: none;">⏹ 停止批量</button>
           </div>
 
-          <!-- Dropzone & Preview -->
-          <div class="dropzone" id="dropzone">
-            <div class="dropzone-hint" id="dropHint">
-              <b>拖拽图片到这里</b>，或使用上方按钮选择 / 截屏 / 粘贴<br />
-              <span style="opacity:0.75;font-size:12px;">支持单张识别或多张图片批量队列</span>
+          <div id="dropzone">
+            <div id="previewContainer" style="display: none;">
+              <img id="preview" alt="" />
+              <svg id="overlaySvg"></svg>
+              <div id="boxTooltip" class="box-tooltip" style="display: none;"></div>
             </div>
-
-            <div class="preview-wrap" id="previewContainer" style="display:none">
-              <img id="preview" alt="预览图" />
-              <svg id="overlaySvg" class="overlay-svg"></svg>
-              <div id="boxTooltip" class="box-tooltip"></div>
-            </div>
-          </div>
-
-          <!-- Image Overlay Toolbar -->
-          <div class="row" id="overlayToolbar" style="display:none;margin-top:10px;justify-content:space-between;">
-            <label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-secondary);">
-              <input type="checkbox" id="toggleBoxes" checked />
-              <span>显示高精识别边框 (<span id="boxCount">0</span>)</span>
-            </label>
-            <span class="status-msg" id="status">就绪</span>
-          </div>
-        </div>
-
-        <!-- Batch Queue Card -->
-        <div class="batch-queue-card" id="batchQueueCard" style="display:none">
-          <div class="batch-header">
-            <div class="batch-title">
-              <span>批量处理队列</span>
-              <span class="batch-badge" id="batchCount">0 张图片</span>
-              <span id="batchProgressLabel" style="font-size:12px;font-weight:normal;color:var(--text-secondary);margin-left:8px;"></span>
-            </div>
-            <div class="row" style="gap:8px">
-              <button type="button" id="addMoreImagesBtn" style="padding:4px 8px;font-size:12px;">+ 添加图片</button>
-              <button type="button" id="clearBatchBtn" style="padding:4px 8px;font-size:12px;">清空队列</button>
-            </div>
-          </div>
-          <div class="batch-thumb-list" id="batchThumbList"></div>
-          <progress id="batchProgress" value="0" max="100" style="display:none;"></progress>
-        </div>
-
-        <!-- OCR Results Card -->
-        <div class="card">
-          <div class="result-toolbar">
-            <div class="row" style="gap:8px">
-              <!-- Mode: TXT vs Markdown -->
-              <div class="btn-group" id="formatToolbar">
-                <button type="button" id="fmtTxtBtn" class="active-toggle">纯文本 (TXT)</button>
-                <button type="button" id="fmtMdBtn">Markdown</button>
-              </div>
-
-              <!-- TXT sub-options -->
-              <div class="btn-group" id="txtOptionsGroup">
-                <button type="button" id="fmtSmartBtn" class="active-toggle" title="自动接续跨行断句与标点">智能段落</button>
-                <button type="button" id="fmtRawBtn" title="保留 OCR 原始单行换行">原始换行</button>
-              </div>
-
-              <!-- Space cleaning -->
-              <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);margin-left:4px;cursor:pointer;">
-                <input type="checkbox" id="cleanSpacesCheck" checked />
-                <span>清理中文空格</span>
+            <div id="dropHint">点击上方按钮选择图片（支持多选），或把多张图片拖到这里，或直接 Ctrl/⌘+V 粘贴</div>
+            <div id="overlayToolbar" class="overlay-toolbar" style="display: none;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none;">
+                <input type="checkbox" id="toggleBoxes" checked />
+                <span>显示文字识别框 (<span id="boxCount">0</span> 处)</span>
               </label>
-
-              <!-- View toggle -->
-              <div class="btn-group" style="margin-left:6px">
-                <button type="button" id="viewRawBtn" class="active-toggle">文本视图</button>
-                <button type="button" id="viewListBtn">表格详情</button>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="row" style="gap:8px">
-              <button type="button" id="copyBtn">📋 复制</button>
-              <button type="button" id="downloadBtn">💾 下载</button>
-              <button type="button" id="sendToFormatBtn" class="btn-send-format" title="导入智能排版工作台进行批量查找替换与排版修复">🚀 发送到智能排版</button>
-              <button type="button" id="copyAllBatchBtn" style="display:none">📋 复制整批</button>
-              <button type="button" id="downloadBatchBtn" style="display:none">💾 下载整批</button>
-              <button type="button" id="clearBtn">🗑️ 清空</button>
-              <span id="copyTip" style="font-size:12px;color:var(--success);display:none;">已复制 ✓</span>
+              <span style="opacity:0.75;">💡 鼠标移到图上文字框可预览，点击方框直接复制该行</span>
             </div>
           </div>
 
-          <textarea id="result" class="text-editor" placeholder="识别文本将显示在此处…"></textarea>
-          <div id="resultList" style="display:none;max-height:360px;overflow-y:auto;"></div>
+          <div id="status" style="margin-top: 12px">正在启动 OCR 引擎…</div>
+        </div>
 
-          <div class="status-msg" id="metrics" style="margin-top:10px;">就绪</div>
+        <div id="batchQueueCard" class="card" style="display: none; margin-bottom: 16px;">
+          <div class="row" style="justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div class="row" style="gap: 10px; align-items: center;">
+              <h2 style="font-size: 14px; margin: 0">📁 批量图片队列 (<span id="batchCount">0</span>)</h2>
+              <span id="batchProgressLabel" style="font-size:12px;opacity:0.7;"></span>
+            </div>
+            <div class="row" style="gap: 8px;">
+              <button id="addMoreImagesBtn" type="button">➕ 添加图片</button>
+              <button id="clearBatchBtn" type="button">清空队列</button>
+            </div>
+          </div>
+          <div id="batchThumbList" class="batch-thumb-list"></div>
+          <progress id="batchProgress" max="100" value="0" style="display: none; width: 100%; margin-top: 8px;"></progress>
+        </div>
+
+        <div class="card">
+          <div class="row" style="margin-bottom: 10px; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div class="row" style="gap: 10px; align-items: center;">
+              <h2 style="font-size: 14px; margin: 0">识别结果</h2>
+              <div class="view-tabs">
+                <button id="viewRawBtn" class="tab-btn active" type="button">全文文本</button>
+                <button id="viewListBtn" class="tab-btn" type="button">逐行对照</button>
+              </div>
+            </div>
+            <div class="row" style="gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button id="copyBtn" class="primary" disabled>📋 复制结果</button>
+              <button id="downloadBtn" disabled>💾 导出 TXT</button>
+              <button id="sendToFormatBtn" class="btn-send-format" title="导入智能排版工作台进行批量替换与断行接续">🚀 发送到智能排版</button>
+              <button id="copyAllBatchBtn" style="display: none;">📦 复制全部图片结果</button>
+              <button id="downloadBatchBtn" style="display: none;">💾 导出合并 TXT</button>
+              <button id="clearBtn">清空</button>
+              <span id="copyTip" style="font-size:12px;color:var(--success);"></span>
+            </div>
+          </div>
+
+          <div id="formatToolbar" class="row" style="gap: 12px; margin-bottom: 10px; font-size: 13px; align-items: center; background: rgba(0,0,0,0.03); padding: 6px 12px; border-radius: 8px; flex-wrap: wrap;">
+            <div class="row" style="gap: 6px; align-items: center;">
+              <span style="font-size: 12px; opacity: 0.75; font-weight: 600;">格式:</span>
+              <div class="view-tabs">
+                <button id="fmtTxtBtn" class="tab-btn active" type="button">📄 纯文本 (TXT)</button>
+                <button id="fmtMdBtn" class="tab-btn" type="button">📝 Markdown (.md)</button>
+              </div>
+            </div>
+            <div id="txtOptionsGroup" class="row" style="gap: 6px; align-items: center;">
+              <span style="font-size: 12px; opacity: 0.75;">排版:</span>
+              <div class="view-tabs">
+                <button id="fmtSmartBtn" class="tab-btn active" type="button">✨ 智能段落</button>
+                <button id="fmtRawBtn" class="tab-btn" type="button">原始换行</button>
+              </div>
+            </div>
+            <label style="display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; font-size: 12px;">
+              <input type="checkbox" id="cleanSpacesCheck" checked />
+              <span>去除中文多余空格</span>
+            </label>
+          </div>
+
+          <textarea id="result" readonly placeholder="识别出的文字会出现在这里……"></textarea>
+          <div id="resultList" class="result-list" style="display: none;"></div>
+          <div style="margin-top: 8px; font-size: 12px; opacity: 0.65;">💡 支持随时在纯文本与 Markdown 间动态切换。Markdown 自动保留各级标题与列表格式。</div>
+        </div>
+
+        <div class="card">
+          <h2 style="font-size: 14px; margin: 0 0 8px">运行信息</h2>
+          <pre id="metrics">暂无</pre>
         </div>
       </section>
 
@@ -1157,43 +994,42 @@
         <div class="view-header">
           <div>
             <h1 class="view-title">PDF 文档识别</h1>
-            <p class="view-desc">支持扫描件与多页 PDF 智能提取，流式边识别边预览，支持中断与导出。</p>
+            <p class="view-desc">支持扫描件与多页 PDF 智能提取，逐页流式边识别边预览，支持随时中断与格式化导出。</p>
           </div>
         </div>
 
         <div class="card">
-          <div class="row">
+          <div class="row" style="margin-bottom: 12px">
             <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none" />
             <button type="button" id="pdfChooseBtn" class="primary">📁 选择 PDF 文档</button>
             <span id="pdfFileInfo" style="font-size:13px;color:var(--text-secondary);">未选择文件</span>
 
             <button type="button" id="pdfRunBtn" class="primary" style="margin-left:auto;" disabled>开始识别整个 PDF</button>
-            <button type="button" id="pdfStopBtn" class="btn-stop" style="display:none;margin-left:auto;">⏹ 停止识别</button>
+            <button type="button" id="pdfStopBtn" class="danger" style="display:none;margin-left:auto;">⏹ 停止识别</button>
           </div>
 
-          <div class="dropzone" id="pdfDropzone" style="min-height:120px;margin-top:12px;">
+          <div class="dropzone" id="pdfDropzone">
             <div class="dropzone-hint" id="pdfDropHint">
               <b>拖拽 PDF 文件到这里</b>，或点击上方“选择 PDF 文档”<br />
               <span style="opacity:0.75;font-size:12px;">自动分页渲染为高清图像，逐页流式高精度 OCR 识别</span>
             </div>
           </div>
 
-          <progress id="pdfProgress" value="0" max="100" hidden></progress>
-          <div class="status-msg" id="pdfStatus" style="margin-top:8px;">准备就绪。</div>
+          <progress id="pdfProgress" value="0" max="100" style="display:none; width: 100%; margin-top: 10px;"></progress>
+          <div id="pdfStatus" style="margin-top: 10px;">准备就绪。</div>
         </div>
 
-        <!-- PDF Results Card -->
         <div class="card">
-          <div class="result-toolbar">
-            <div class="row" style="gap:8px">
-              <div class="btn-group" id="pdfFormatToolbar">
-                <button type="button" id="pdfFmtTxtBtn" class="active-toggle">纯文本 (TXT)</button>
-                <button type="button" id="pdfFmtMdBtn">Markdown</button>
+          <div class="row" style="margin-bottom: 10px; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div class="row" style="gap: 8px">
+              <div class="view-tabs" id="pdfFormatToolbar">
+                <button type="button" id="pdfFmtTxtBtn" class="tab-btn active">纯文本 (TXT)</button>
+                <button type="button" id="pdfFmtMdBtn" class="tab-btn">Markdown</button>
               </div>
 
-              <div class="btn-group" id="pdfTxtOptionsGroup">
-                <button type="button" id="pdfFmtSmartBtn" class="active-toggle">智能段落</button>
-                <button type="button" id="pdfFmtRawBtn">原始换行</button>
+              <div class="view-tabs" id="pdfTxtOptionsGroup">
+                <button type="button" id="pdfFmtSmartBtn" class="tab-btn active">智能段落</button>
+                <button type="button" id="pdfFmtRawBtn" class="tab-btn">原始换行</button>
               </div>
 
               <label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary);cursor:pointer;">
@@ -1202,16 +1038,15 @@
               </label>
             </div>
 
-            <div class="row" style="gap:8px">
+            <div class="row" style="gap: 8px">
               <button type="button" id="pdfCopyBtn" disabled>📋 复制</button>
               <button type="button" id="pdfDownloadBtn" disabled>💾 下载 .txt</button>
-              <button type="button" id="pdfSendToFormatBtn" class="btn-send-format" title="导入智能排版工作台进行批量替换与排版修复">🚀 发送到智能排版</button>
+              <button type="button" id="pdfSendToFormatBtn" class="btn-send-format">🚀 发送到智能排版</button>
               <button type="button" id="pdfClearBtn">🗑️ 清空</button>
-              <span id="pdfCopyTip" style="font-size:12px;color:var(--success);display:none;">已复制 ✓</span>
             </div>
           </div>
 
-          <textarea id="pdfResult" class="text-editor" placeholder="PDF 识别结果将实时逐页流式追加在此处…"></textarea>
+          <textarea id="pdfResult" readonly placeholder="PDF 识别结果将逐页流式追加在此处…"></textarea>
         </div>
       </section>
 
@@ -1224,19 +1059,17 @@
           </div>
         </div>
 
-        <!-- Workbench Quick Action Toolbar -->
         <div class="card" style="padding:14px 18px 10px;">
-          <div class="workbench-action-bar">
-            <button type="button" id="wbSmartFormatBtn" class="primary" title="根据中英文语义、标点符号与行末特征，智能连接意外截断的断行">✨ 一键智能重排 (接续断行)</button>
-            <button type="button" id="wbCleanSpacesBtn" title="清洗中文字符之间的多余空格">🧹 清洗多余空格</button>
+          <div class="row" style="gap: 8px; margin-bottom: 12px;">
+            <button type="button" id="wbSmartFormatBtn" class="primary" title="根据中文语义、标点符号与行末特征，智能连接意外截断的断行">✨ 一键智能重排 (接续断行)</button>
+            <button type="button" id="wbCleanSpacesBtn" title="清洗汉字之间的多余空格">🧹 清洗多余空格</button>
             <button type="button" id="wbIndentBtn" title="为每个自然段首行添加或移除两字符缩进">⇥ 智能首行缩进</button>
-            <button type="button" id="wbFwToHwBtn" title="将全角英文字母、数字和常见标点转换为标准半角">🔤 全角转半角</button>
+            <button type="button" id="wbFwToHwBtn" title="将全角字符转为半角">🔤 全角转半角</button>
             <button type="button" id="wbHwToFwBtn" title="将半角字符转为全角">🔠 半角转全角</button>
-            <button type="button" id="wbRevertBtn" title="撤销所有排版与替换，恢复最开始导入或粘贴的原始内容" style="margin-left:auto;">↩️ 恢复原始内容</button>
+            <button type="button" id="wbRevertBtn" style="margin-left:auto;" title="恢复最初粘贴或导入的状态">↩️ 恢复原始内容</button>
           </div>
 
-          <!-- Batch Find & Replace Panel -->
-          <div class="find-replace-panel" id="wbFindReplacePanel">
+          <div class="find-replace-panel">
             <div class="fr-input-row">
               <div class="fr-input-wrap">
                 <input type="text" id="wbFindInput" placeholder="查找内容 (支持文字、\n 换行符或正则表达式)..." />
@@ -1245,89 +1078,79 @@
                 <input type="text" id="wbReplaceInput" placeholder="替换为 (留空则为删除)..." />
               </div>
               <div class="row" style="gap:6px">
-                <button type="button" id="wbFindNextBtn">查找下一个</button>
                 <button type="button" id="wbReplaceNextBtn">替换下一个</button>
                 <button type="button" id="wbReplaceAllBtn" class="primary">全部替换</button>
               </div>
             </div>
 
-            <div class="fr-options-row">
-              <div class="fr-options">
-                <label><input type="checkbox" id="wbCaseSensitiveCheck" /> 区分大小写 [Aa]</label>
-                <label><input type="checkbox" id="wbRegexCheck" /> 正则表达式 [.*]</label>
-                <span class="fr-match-badge" id="wbMatchBadge">0 处匹配</span>
+            <div class="row" style="justify-content: space-between; align-items: center; font-size: 12px;">
+              <div class="row" style="gap: 12px;">
+                <label style="cursor:pointer;"><input type="checkbox" id="wbCaseSensitiveCheck" /> 区分大小写 [Aa]</label>
+                <label style="cursor:pointer;"><input type="checkbox" id="wbRegexCheck" /> 正则表达式 [.*]</label>
+                <span id="wbMatchBadge" style="opacity:0.75; font-size: 11px;">0 处匹配</span>
               </div>
 
-              <!-- Quick Presets -->
-              <div class="preset-chips-row">
-                <span style="font-size:11px;color:var(--text-muted);">常用快捷处理:</span>
-                <button type="button" class="preset-chip" id="chipMergeInlineBreaks" title="将单换行连接，保留双换行段落">⚡ 清除行内截断断行</button>
-                <button type="button" class="preset-chip" id="chipCompressBlankLines" title="将 3 个以上连续空行压缩为 1 个空行">⚡ 压缩多余空行</button>
-                <button type="button" class="preset-chip" id="chipTrimLineSpaces" title="清除每行最前和最后的空格">⚡ 清除行首尾空格</button>
-                <button type="button" class="preset-chip" id="chipRemoveCjkSpaces" title="去除中文汉字之间的所有空格">⚡ 去除汉字间空格</button>
+              <div class="row" style="gap: 6px;">
+                <span style="opacity: 0.6; font-size: 11px;">快捷预设:</span>
+                <button type="button" class="preset-chip" id="chipMergeInlineBreaks">⚡ 清除行内断行</button>
+                <button type="button" class="preset-chip" id="chipCompressBlankLines">⚡ 压缩多余空行</button>
+                <button type="button" class="preset-chip" id="chipTrimLineSpaces">⚡ 清除行首尾空格</button>
+                <button type="button" class="preset-chip" id="chipRemoveCjkSpaces">⚡ 去除汉字间空格</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Workbench Main Editor Card -->
         <div class="card">
-          <!-- View Switcher & Export Toolbar -->
-          <div class="result-toolbar">
-            <div class="row" style="gap:8px">
-              <div class="btn-group" id="wbViewModeGroup">
-                <button type="button" id="wbViewCompareBtn" class="active-toggle" title="左右两栏对比原始与排版效果">左右对比视图</button>
-                <button type="button" id="wbViewSingleBtn" title="单栏大屏专注编辑">单栏编辑视图</button>
+          <div class="row" style="justify-content: space-between; margin-bottom: 10px;">
+            <div class="row" style="gap: 8px;">
+              <div class="view-tabs">
+                <button type="button" id="wbViewCompareBtn" class="tab-btn active">左右对比视图</button>
+                <button type="button" id="wbViewSingleBtn" class="tab-btn">单栏编辑视图</button>
               </div>
-
-              <div class="btn-group" id="wbDocFormatGroup">
-                <button type="button" id="wbFmtTxtBtn" class="active-toggle">纯文本 (TXT)</button>
-                <button type="button" id="wbFmtMdBtn">Markdown</button>
+              <div class="view-tabs">
+                <button type="button" id="wbFmtTxtBtn" class="tab-btn active">纯文本 (TXT)</button>
+                <button type="button" id="wbFmtMdBtn" class="tab-btn">Markdown</button>
               </div>
             </div>
 
-            <div class="row" style="gap:8px">
+            <div class="row" style="gap: 8px;">
               <button type="button" id="wbCopyBtn" class="primary">📋 复制排版结果</button>
               <button type="button" id="wbDownloadBtn">💾 导出文件</button>
               <button type="button" id="wbClearBtn">🗑️ 清空</button>
-              <span id="wbCopyTip" style="font-size:12px;color:var(--success);display:none;">已复制 ✓</span>
             </div>
           </div>
 
-          <!-- Dynamic Optimization Summary Banner -->
           <div class="opt-banner" id="wbOptBanner">
-            <span id="wbOptBannerText">✨ 排版优化完成：已自动接续断行并重组段落</span>
-            <button type="button" id="wbOptBannerClose" style="background:transparent;border:none;cursor:pointer;font-size:14px;color:inherit;">✕</button>
+            <span id="wbOptBannerText">✨ 排版优化完成</span>
+            <button type="button" id="wbOptBannerClose" style="background:transparent;border:none;cursor:pointer;color:inherit;">✕</button>
           </div>
 
-          <!-- Dual Compare View Container -->
           <div class="compare-grid" id="wbCompareContainer">
             <div class="compare-col">
               <div class="compare-col-header">
-                <span>原始文本 (可随时编辑或重新粘贴)</span>
-                <span id="wbOriginalLen" style="font-weight:normal;">0 字</span>
+                <span>原始文本 (可编辑或随时粘贴)</span>
+                <span id="wbOriginalLen">0 字</span>
               </div>
-              <textarea id="wbOriginalText" class="text-editor" style="min-height:420px;" placeholder="在此粘贴外部杂乱文本或从 OCR 发送过来的原始内容…"></textarea>
+              <textarea id="wbOriginalText" style="min-height:380px;" placeholder="在此粘贴外部文本或从 OCR 发送过来的原始内容…"></textarea>
             </div>
             <div class="compare-col">
               <div class="compare-col-header">
-                <span style="color:var(--primary);font-weight:600;">✨ 智能排版结果 (已修复断行与格式)</span>
-                <span id="wbProcessedLen" style="font-weight:normal;">0 字</span>
+                <span style="color:var(--primary);font-weight:600;">✨ 智能排版结果</span>
+                <span id="wbProcessedLen">0 字</span>
               </div>
-              <textarea id="wbProcessedText" class="text-editor" style="min-height:420px;" placeholder="点击上方“一键智能重排”或执行批量替换后，格式化结果将在此实时呈现…"></textarea>
+              <textarea id="wbProcessedText" style="min-height:380px;" placeholder="点击“一键智能重排”或执行批量替换后，结果将在此呈现…"></textarea>
             </div>
           </div>
 
-          <!-- Single Fullscreen View Container -->
           <div id="wbSingleContainer" style="display:none">
-            <div class="compare-col-header" style="margin-bottom:8px;">
-              <span>主编辑区</span>
+            <div class="compare-col-header" style="margin-bottom:6px;">
+              <span>编辑主视图</span>
             </div>
-            <textarea id="wbSingleEditor" class="text-editor" style="min-height:480px;" placeholder="在此编辑或粘贴文本…"></textarea>
+            <textarea id="wbSingleEditor" style="min-height:440px;" placeholder="在此编辑或粘贴文本…"></textarea>
           </div>
 
-          <!-- Real-time Live Statistics Bar -->
-          <div class="stats-bar" id="wbStatsBar">
+          <div class="stats-bar">
             <div class="stat-chip">总字符数 (含空格): <span class="stat-val" id="statTotalChars">0</span></div>
             <div class="stat-chip">字符数 (不含空格): <span class="stat-val" id="statNoSpaceChars">0</span></div>
             <div class="stat-chip">汉字数: <span class="stat-val" id="statCjkChars">0</span></div>
@@ -1341,10 +1164,9 @@
     </main>
   </div>
 
-  <!-- Global Toast Notification -->
   <div class="app-toast" id="appToast">已完成操作</div>
 
-  <!-- JavaScript Module -->
+  <!-- Main JavaScript Module -->
   <script type="module">
     const ORT_WASM_PATHS = "/npm2/onnxruntime-web@1.26.0/dist/";
     const PDFJS_LIB = "/vendor/pdf.mjs";
@@ -1353,32 +1175,66 @@
     const $ = (id) => document.getElementById(id);
 
     // ==========================================
-    // 0. Global Toast & Theme Management
+    // 0. Global Toast & Status
     // ==========================================
     let toastTimer = null;
-    function showToast(msg, type = "ok") {
+    function showToast(msg) {
       const toast = $("appToast");
       if (!toast) return;
       toast.textContent = msg;
-      toast.className = `app-toast show ${type}`;
+      toast.className = "app-toast show";
       if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toast.className = "app-toast";
-      }, 2500);
+      toastTimer = setTimeout(() => { toast.className = "app-toast"; }, 2500);
+    }
+
+    function updateSidebarEngineStatus(text, ready = false) {
+      const dot = $("engineDot");
+      const label = $("engineStatusText");
+      if (label) label.textContent = text;
+      if (dot) dot.className = "engine-dot " + (ready ? "ready" : "");
+    }
+
+    // ==========================================
+    // 1. Navigation Routing
+    // ==========================================
+    function switchTab(targetTab) {
+      const validTabs = ["image", "pdf", "format"];
+      if (!validTabs.includes(targetTab)) targetTab = "image";
+
+      document.querySelectorAll(".nav-item").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === targetTab);
+      });
+
+      $("viewImage").classList.toggle("active", targetTab === "image");
+      $("viewPdf").classList.toggle("active", targetTab === "pdf");
+      $("viewFormat").classList.toggle("active", targetTab === "format");
+
+      history.replaceState(null, "", `#${targetTab}`);
+
+      if (targetTab === "format") {
+        updateWorkbenchStats();
+        updateFindMatchCount();
+      }
+    }
+
+    function initNavigation() {
+      document.querySelectorAll(".nav-item").forEach((btn) => {
+        btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+      });
+      window.addEventListener("hashchange", () => {
+        const hash = window.location.hash.replace("#", "");
+        if (hash) switchTab(hash);
+      });
+      const initialHash = window.location.hash.replace("#", "");
+      if (initialHash) switchTab(initialHash);
     }
 
     function initTheme() {
       const saved = localStorage.getItem("dali_theme");
-      if (saved) {
-        document.documentElement.setAttribute("data-theme", saved);
-      }
+      if (saved) document.documentElement.setAttribute("data-theme", saved);
       $("themeToggleBtn")?.addEventListener("click", () => {
         const current = document.documentElement.getAttribute("data-theme");
-        let next = "dark";
-        if (current === "dark") next = "light";
-        else if (current === "light") next = "auto";
-        else next = "dark";
-
+        let next = current === "dark" ? "light" : current === "light" ? "auto" : "dark";
         if (next === "auto") {
           document.documentElement.removeAttribute("data-theme");
           localStorage.removeItem("dali_theme");
@@ -1392,49 +1248,7 @@
     }
 
     // ==========================================
-    // 1. Tab Navigation Routing
-    // ==========================================
-    function switchTab(targetTab) {
-      const validTabs = ["image", "pdf", "format"];
-      if (!validTabs.includes(targetTab)) targetTab = "image";
-
-      // Update sidebar nav items
-      document.querySelectorAll(".nav-item").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.tab === targetTab);
-      });
-
-      // Update tab views
-      $("viewImage").classList.toggle("active", targetTab === "image");
-      $("viewPdf").classList.toggle("active", targetTab === "pdf");
-      $("viewFormat").classList.toggle("active", targetTab === "format");
-
-      // Update hash without scrolling
-      history.replaceState(null, "", `#${targetTab}`);
-
-      if (targetTab === "format") {
-        updateWorkbenchStats();
-        updateFindMatchCount();
-      }
-    }
-
-    function initNavigation() {
-      document.querySelectorAll(".nav-item").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          switchTab(btn.dataset.tab);
-        });
-      });
-
-      window.addEventListener("hashchange", () => {
-        const hash = window.location.hash.replace("#", "");
-        if (hash) switchTab(hash);
-      });
-
-      const initialHash = window.location.hash.replace("#", "");
-      if (initialHash) switchTab(initialHash);
-    }
-
-    // ==========================================
-    // 2. Shared Formatting & Grammar Engine
+    // 2. Shared Formatting Engine (Safe & Loop-guarded)
     // ==========================================
     function cleanOcrSpaces(str) {
       if (!str) return "";
@@ -1447,10 +1261,12 @@
       const r2 = new RegExp(`(${cjk})${hSpace}(${punct})`, "g");
       const r3 = new RegExp(`(${punct})${hSpace}(${cjk})`, "g");
 
+      let maxLoops = 25;
       do {
         prev = res;
         res = res.replace(r1, "$1$2").replace(r2, "$1$2").replace(r3, "$1$2");
-      } while (res !== prev);
+        maxLoops--;
+      } while (res !== prev && maxLoops > 0);
 
       return res.replace(/[ \t]+/g, " ").replace(/[ \t]+$/gm, "");
     }
@@ -1459,26 +1275,6 @@
       if (!str) return false;
       const trimmed = str.trim().replace(/['"”’\)）\]】》]+$/, "");
       return /[。？！?!;；…]$/.test(trimmed) || /([。？！?!;；…][’”"'\)）\]】》]*)$/.test(str.trim());
-    }
-
-    function fullwidthToHalfwidth(str) {
-      return str.replace(/[！-～]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
-                .replace(/　/g, " ");
-    }
-
-    function halfwidthToFullwidth(str) {
-      return str.replace(/[!-~]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0xfee0))
-                .replace(/ /g, "　");
-    }
-
-    function toggleIndentText(text) {
-      const lines = text.split(/\r?\n/);
-      const hasIndent = lines.some((l) => l.startsWith("　　") || l.startsWith("  "));
-      if (hasIndent) {
-        return lines.map((l) => l.replace(/^[ \t\u3000]+/, "")).join("\n");
-      } else {
-        return lines.map((l) => l.trim() ? "　　" + l.trim() : "").join("\n");
-      }
     }
 
     function formatSmartParagraphs(itemsOrLines, cleanSpaces = true) {
@@ -1635,7 +1431,6 @@
         }
       }
 
-      // Merge consecutive text lines into paragraphs
       const finalBlocks = [];
       let buf = [];
       for (const line of mdLines) {
@@ -1656,539 +1451,727 @@
       return finalBlocks.join("\n\n").replace(/\n{3,}/g, "\n\n").trim();
     }
 
+    function fullwidthToHalfwidth(str) {
+      return str.replace(/[！-～]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0)).replace(/　/g, " ");
+    }
+
+    function halfwidthToFullwidth(str) {
+      return str.replace(/[!-~]/g, (c) => String.fromCharCode(c.charCodeAt(0) + 0xfee0)).replace(/ /g, "　");
+    }
+
+    function toggleIndentText(text) {
+      const lines = text.split(/\r?\n/);
+      const hasIndent = lines.some((l) => l.startsWith("　　") || l.startsWith("  "));
+      if (hasIndent) {
+        return lines.map((l) => l.replace(/^[ \t\u3000]+/, "")).join("\n");
+      } else {
+        return lines.map((l) => l.trim() ? "　　" + l.trim() : "").join("\n");
+      }
+    }
+
     // ==========================================
-    // 3. Shared OCR Engine & SDK Lifecycle
+    // 3. Robust PaddleOCR Initialization Engine
     // ==========================================
-    const sharedState = {
-      ocr: null,
-      ocrReady: false,
-      modelPreset: "v4_mobile",
-      pdfjsLib: null,
+    const ui = {
+      fileInput: $("fileInput"),
+      chooseBtn: $("chooseBtn"),
+      snipBtn: $("snipBtn"),
+      pasteBtn: $("pasteBtn"),
+      modelSelect: $("modelSelect"),
+      runBtn: $("runBtn"),
+      stopBatchBtn: $("stopBatchBtn"),
+      dropzone: $("dropzone"),
+      previewContainer: $("previewContainer"),
+      preview: $("preview"),
+      overlaySvg: $("overlaySvg"),
+      boxTooltip: $("boxTooltip"),
+      overlayToolbar: $("overlayToolbar"),
+      toggleBoxes: $("toggleBoxes"),
+      boxCount: $("boxCount"),
+      dropHint: $("dropHint"),
+      status: $("status"),
+      batchQueueCard: $("batchQueueCard"),
+      batchCount: $("batchCount"),
+      batchProgressLabel: $("batchProgressLabel"),
+      addMoreImagesBtn: $("addMoreImagesBtn"),
+      clearBatchBtn: $("clearBatchBtn"),
+      batchThumbList: $("batchThumbList"),
+      batchProgress: $("batchProgress"),
+      viewRawBtn: $("viewRawBtn"),
+      viewListBtn: $("viewListBtn"),
+      formatToolbar: $("formatToolbar"),
+      fmtTxtBtn: $("fmtTxtBtn"),
+      fmtMdBtn: $("fmtMdBtn"),
+      txtOptionsGroup: $("txtOptionsGroup"),
+      fmtSmartBtn: $("fmtSmartBtn"),
+      fmtRawBtn: $("fmtRawBtn"),
+      cleanSpacesCheck: $("cleanSpacesCheck"),
+      result: $("result"),
+      resultList: $("resultList"),
+      copyBtn: $("copyBtn"),
+      downloadBtn: $("downloadBtn"),
+      copyAllBatchBtn: $("copyAllBatchBtn"),
+      downloadBatchBtn: $("downloadBatchBtn"),
+      clearBtn: $("clearBtn"),
+      copyTip: $("copyTip"),
+      metrics: $("metrics"),
+      sendToFormatBtn: $("sendToFormatBtn")
     };
 
-    function setEngineStatus(text, ready = false, busy = false) {
-      const dot = $("engineDot");
-      const label = $("engineStatusText");
-      if (label) label.textContent = text;
-      if (dot) {
-        dot.className = `engine-dot ${ready ? "ready" : ""} ${busy ? "busy" : ""}`;
-      }
-      const st = $("status");
-      if (st) st.textContent = text;
-    }
-
-    function getModelNames(preset) {
-      switch (preset) {
-        case "v4_server":
-          return {
-            det: "ch_PP-OCRv4_det_server_infer.onnx",
-            rec: "ch_PP-OCRv4_rec_server_infer.onnx",
-            cls: "ch_ppocr_mobile_v2.0_cls_infer.onnx",
-            recDict: "ppocr_keys_v1.txt"
-          };
-        case "v3_mobile":
-          return {
-            det: "ch_PP-OCRv3_det_infer.onnx",
-            rec: "ch_PP-OCRv3_rec_infer.onnx",
-            cls: "ch_ppocr_mobile_v2.0_cls_infer.onnx",
-            recDict: "ppocr_keys_v1.txt"
-          };
-        case "v4_mobile":
-        default:
-          return {
-            det: "ch_PP-OCRv4_det_infer.onnx",
-            rec: "ch_PP-OCRv4_rec_infer.onnx",
-            cls: "ch_ppocr_mobile_v2.0_cls_infer.onnx",
-            recDict: "ppocr_keys_v1.txt"
-          };
-      }
-    }
-
-    async function loadSdk() {
-      if (window.PaddleOCR) return window.PaddleOCR;
-      setEngineStatus("正在加载 PaddleOCR SDK…", false, true);
-      const mod = await import("/npm2/@paddleocr/paddleocr-js@0.4.2/+esm");
-      window.PaddleOCR = mod.PaddleOCR || mod.default?.PaddleOCR || mod.default;
-      return window.PaddleOCR;
-    }
-
-    async function getPdfjs() {
-      if (sharedState.pdfjsLib) return sharedState.pdfjsLib;
-      setEngineStatus("正在加载 PDF 引擎…", false, true);
-      const pdfjs = await import(PDFJS_LIB);
-      pdfjs.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
-      sharedState.pdfjsLib = pdfjs;
-      return pdfjs;
-    }
-
-    async function initializeOcr(preset = "v4_mobile") {
-      sharedState.ocrReady = false;
-      setEngineStatus("正在初始化 ONNX 模型…", false, true);
-      $("runBtn").disabled = true;
-      if ($("pdfRunBtn")) $("pdfRunBtn").disabled = true;
-
-      try {
-        const PaddleOCR = await loadSdk();
-        const files = getModelNames(preset);
-        const ocr = new PaddleOCR({
-          ortWasmPaths: ORT_WASM_PATHS,
-          detModelPath: `/models/${files.det}`,
-          recModelPath: `/models/${files.rec}`,
-          clsModelPath: `/models/${files.cls}`,
-          recDictPath: `/models/${files.recDict}`
-        });
-
-        await ocr.init();
-        sharedState.ocr = ocr;
-        sharedState.ocrReady = true;
-        sharedState.modelPreset = preset;
-        setEngineStatus("ONNX 引擎就绪 (离线)", true, false);
-        $("runBtn").disabled = false;
-        if ($("pdfRunBtn") && pdfState.file) $("pdfRunBtn").disabled = false;
-      } catch (e) {
-        console.error("OCR init error:", e);
-        setEngineStatus("引擎初始化失败: " + (e.message || e), false, false);
-      }
-    }
-
-    // ==========================================
-    // 4. View 1: Image OCR Controller
-    // ==========================================
-    const imgState = {
-      imageFiles: [],
+    const state = {
+      ocr: null,
+      ocrReady: false,
+      images: [],
       currentIndex: -1,
-      batchResults: [],
-      isRunningBatch: false,
-      abortBatch: false,
-      lastText: "",
       docFormat: "txt",
       formatMode: "smart",
       cleanSpaces: true,
-      lastBoxes: []
+      isBatchRunning: false,
+      isAborted: false
     };
 
-    function renderImageResult() {
-      const cur = imgState.batchResults[imgState.currentIndex];
-      if (!cur || !cur.items || !cur.items.length) {
-        $("result").value = "";
-        $("metrics").textContent = "就绪";
-        $("sendToFormatBtn").disabled = true;
+    function setStatus(text, type = "") {
+      ui.status.textContent = text;
+      ui.status.className = type;
+    }
+    function setError(e) {
+      console.error(e);
+      setStatus("出错了：" + (e instanceof Error ? e.message : String(e)), "error");
+      updateSidebarEngineStatus("引擎初始化失败", false);
+    }
+
+    function getModelNames(preset) {
+      if (preset === "PP-OCRv5") return { det: "PP-OCRv5_mobile_det", rec: "PP-OCRv5_mobile_rec" };
+      return { det: preset + "_det", rec: preset + "_rec" };
+    }
+
+    async function loadSdk() {
+      const mod = await import("/npm2/@paddleocr/paddleocr-js@0.4.2/+esm");
+      if (mod.PaddleOCR) return mod.PaddleOCR;
+      throw new Error("OCR 核心模块加载失败");
+    }
+
+    async function initializeOcr() {
+      state.ocrReady = false;
+      ui.runBtn.disabled = true;
+      setStatus("正在加载 OCR 引擎与本地模型库…");
+      updateSidebarEngineStatus("正在加载模型…", false);
+
+      try {
+        const PaddleOCR = await loadSdk();
+        setStatus("正在初始化 OCR 引擎（加载本地模型）…");
+
+        const threadCount = self.crossOriginIsolated
+          ? Math.min(4, Math.max(1, (navigator.hardwareConcurrency || 2) - 1))
+          : 1;
+
+        const { det, rec } = getModelNames(ui.modelSelect.value);
+        const ocr = await PaddleOCR.create({
+          initialize: false,
+          worker: false,
+          textDetectionModelName: det,
+          textDetectionModelAsset: { url: "/models/" + det + "_onnx_infer.tar" },
+          textRecognitionModelName: rec,
+          textRecognitionModelAsset: { url: "/models/" + rec + "_onnx_infer.tar" },
+          ortOptions: {
+            backend: "auto",
+            wasmPaths: ORT_WASM_PATHS,
+            numThreads: threadCount,
+            simd: true
+          }
+        });
+
+        const summary = await ocr.initialize();
+        state.ocr = ocr;
+        state.ocrReady = true;
+        ui.runBtn.disabled = state.images.length === 0;
+
+        const totalBytes = summary.assets.map((a) => a.bytes).reduce((s, b) => s + b, 0);
+        const modelSize = totalBytes >= 1048576
+          ? (totalBytes / 1048576).toFixed(1) + " MB"
+          : (totalBytes / 1024).toFixed(0) + " KB";
+
+        const lines = [
+          "OCR 引擎已就绪",
+          `线程数：${threadCount}（${self.crossOriginIsolated ? "多线程" : "单线程"}）`,
+          `初始化耗时：${summary.elapsedMs.toFixed()} ms`,
+          `模型体积：${modelSize}`
+        ];
+        ui.metrics.textContent = lines.join("\n");
+        setStatus("就绪：选择图片、截屏或粘贴，然后点击“开始识别”。", "ok");
+        updateSidebarEngineStatus("ONNX 引擎就绪 (离线)", true);
+
+        if (pdfState.file && $("pdfRunBtn")) {
+          $("pdfRunBtn").disabled = false;
+        }
+      } catch (e) {
+        setError(e);
+      }
+    }
+
+    // ==========================================
+    // 4. View 1: Image OCR & Vector Overlay
+    // ==========================================
+    function escapeHtml(str) {
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function clearOverlay() {
+      ui.overlaySvg.innerHTML = "";
+      ui.boxTooltip.style.display = "none";
+      ui.overlayToolbar.style.display = "none";
+      ui.boxCount.textContent = "0";
+    }
+
+    function showTooltip(text, x, y) {
+      ui.boxTooltip.textContent = text;
+      ui.boxTooltip.style.left = `${x}px`;
+      ui.boxTooltip.style.top = `${y}px`;
+      ui.boxTooltip.style.display = "block";
+    }
+    function moveTooltip(x, y) {
+      ui.boxTooltip.style.left = `${x}px`;
+      ui.boxTooltip.style.top = `${y}px`;
+    }
+    function hideTooltip() {
+      ui.boxTooltip.style.display = "none";
+    }
+
+    function highlightItem(index, active) {
+      const polygon = ui.overlaySvg.querySelector(`polygon[data-index="${index}"]`);
+      if (polygon) polygon.classList.toggle("active", active);
+      const row = ui.resultList.querySelector(`.result-item[data-index="${index}"]`);
+      if (row) row.classList.toggle("highlight", active);
+    }
+
+    function renderBoxes(result) {
+      clearOverlay();
+      if (!result || !result.image || !result.items || !result.items.length) return;
+
+      const { width, height } = result.image;
+      ui.overlaySvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      ui.boxCount.textContent = String(result.items.length);
+      ui.overlayToolbar.style.display = "flex";
+
+      result.items.forEach((item, index) => {
+        if (!item.poly || item.poly.length < 4) return;
+        const points = item.poly.map((pt) => `${pt[0]},${pt[1]}`).join(" ");
+        const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+        polygon.setAttribute("points", points);
+        polygon.setAttribute("class", "ocr-box");
+        polygon.dataset.index = index;
+
+        polygon.addEventListener("mouseenter", (e) => {
+          const rect = ui.previewContainer.getBoundingClientRect();
+          showTooltip(`${item.text} (${(item.score * 100).toFixed(1)}%)`, e.clientX - rect.left, e.clientY - rect.top);
+          highlightItem(index, true);
+        });
+        polygon.addEventListener("mousemove", (e) => {
+          const rect = ui.previewContainer.getBoundingClientRect();
+          moveTooltip(e.clientX - rect.left, e.clientY - rect.top);
+        });
+        polygon.addEventListener("mouseleave", () => {
+          hideTooltip();
+          highlightItem(index, false);
+        });
+        polygon.addEventListener("click", async () => {
+          polygon.classList.add("copied");
+          await copyText(item.text);
+          flashCopyTip(`已复制：${item.text.slice(0, 16)}…`);
+          setTimeout(() => polygon.classList.remove("copied"), 600);
+        });
+
+        ui.overlaySvg.appendChild(polygon);
+      });
+    }
+
+    function renderResultList(items) {
+      ui.resultList.innerHTML = "";
+      if (!items || !items.length) {
+        ui.resultList.innerHTML = '<div style="padding: 16px; text-align: center; color: #888; font-size: 13px;">暂无识别结果</div>';
+        return;
+      }
+
+      items.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "result-item";
+        row.dataset.index = index;
+
+        const scorePercent = (item.score * 100).toFixed(0) + "%";
+        row.innerHTML = `
+          <div class="result-item-left">
+            <span class="result-index">#${index + 1}</span>
+            <span class="result-score" title="识别置信度">${scorePercent}</span>
+            <span class="result-text">${escapeHtml(item.text)}</span>
+          </div>
+          <button type="button" class="row-copy-btn" title="复制此行文字">复制</button>
+        `;
+
+        row.addEventListener("mouseenter", () => highlightItem(index, true));
+        row.addEventListener("mouseleave", () => highlightItem(index, false));
+        row.querySelector(".row-copy-btn").addEventListener("click", async (e) => {
+          e.stopPropagation();
+          await copyText(item.text);
+          flashCopyTip(`已复制第 ${index + 1} 行文字 ✓`);
+        });
+
+        ui.resultList.appendChild(row);
+      });
+    }
+
+    function updateBatchUI() {
+      const count = state.images.length;
+      if (count > 1) {
+        ui.batchQueueCard.style.display = "block";
+        ui.batchCount.textContent = count;
+      } else {
+        ui.batchQueueCard.style.display = "none";
+      }
+    }
+
+    function renderBatchThumbnails() {
+      ui.batchThumbList.innerHTML = "";
+      state.images.forEach((img, idx) => {
+        const item = document.createElement("div");
+        item.className = "batch-thumb-item" + (idx === state.currentIndex ? " active" : "");
+        item.innerHTML = `
+          <img src="${img.previewUrl}" class="batch-thumb-img" alt="" />
+          <div class="batch-thumb-name" title="${escapeHtml(img.name)}">${escapeHtml(img.name)}</div>
+          <span class="batch-thumb-status status-${img.status}">${getStatusLabel(img.status)}</span>
+        `;
+        item.addEventListener("click", () => selectImageIndex(idx));
+        ui.batchThumbList.appendChild(item);
+      });
+    }
+
+    function getStatusLabel(status) {
+      if (status === "done") return "已完成";
+      if (status === "processing") return "识别中";
+      if (status === "error") return "出错";
+      return "待识别";
+    }
+
+    function selectImageIndex(index) {
+      if (index < 0 || index >= state.images.length) return;
+      state.currentIndex = index;
+      const img = state.images[index];
+
+      ui.preview.src = img.previewUrl;
+      ui.preview.hidden = false;
+      ui.previewContainer.style.display = "inline-block";
+      ui.dropHint.style.display = "none";
+
+      if (img.result) {
+        renderBoxes(img.result);
+        renderResultList(img.items);
+      } else {
+        clearOverlay();
+        renderResultList([]);
+      }
+
+      updateResultDisplay();
+      renderBatchThumbnails();
+    }
+
+    function updateResultDisplay() {
+      const currentImg = state.images[state.currentIndex];
+      if (!currentImg || currentImg.status !== "done") {
+        ui.result.value = "";
+        ui.copyBtn.disabled = true;
+        ui.downloadBtn.disabled = true;
+        ui.sendToFormatBtn.disabled = true;
         return;
       }
 
       let text = "";
-      if (imgState.docFormat === "md") {
-        text = formatMarkdown(cur.items, imgState.cleanSpaces);
+      if (state.docFormat === "md") {
+        text = currentImg.mdText || formatMarkdown(currentImg.items, state.cleanSpaces);
+      } else if (state.formatMode === "smart") {
+        text = currentImg.formattedText || formatSmartParagraphs(currentImg.items, state.cleanSpaces);
       } else {
-        text = imgState.formatMode === "smart"
-          ? formatSmartParagraphs(cur.items, imgState.cleanSpaces)
-          : cur.items.map((it) => it.text).join("\n");
+        text = currentImg.text;
       }
 
-      imgState.lastText = text;
-      $("result").value = text;
-      $("sendToFormatBtn").disabled = !text;
-
-      const dur = (cur.metrics?.totalMs / 1000).toFixed(2);
-      const chars = text.length;
-      $("metrics").textContent = `完成：${cur.items.length} 行识别，${chars} 字符，耗时 ${dur} 秒`;
+      ui.result.value = text;
+      ui.copyBtn.disabled = !text;
+      ui.downloadBtn.disabled = !text;
+      ui.sendToFormatBtn.disabled = !text;
+      ui.downloadBtn.textContent = state.docFormat === "md" ? "💾 导出 Markdown" : "💾 导出 TXT";
     }
 
-    function renderSvgBoxes(items, imgWidth, imgHeight) {
-      const svg = $("overlaySvg");
-      svg.innerHTML = "";
-      if (!items || !items.length || !imgWidth || !imgHeight) return;
-
-      svg.setAttribute("viewBox", `0 0 ${imgWidth} ${imgHeight}`);
-      const tooltip = $("boxTooltip");
-
-      items.forEach((item, idx) => {
-        if (!item.poly || item.poly.length < 4) return;
-        const pts = item.poly.map((p) => `${p[0]},${p[1]}`).join(" ");
-        const poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        poly.setAttribute("points", pts);
-        poly.setAttribute("class", "ocr-box-polygon");
-        poly.dataset.index = idx;
-
-        poly.addEventListener("mouseenter", (e) => {
-          tooltip.style.display = "block";
-          tooltip.textContent = `${item.text} (${(item.score * 100).toFixed(0)}%)`;
-          positionTooltip(e);
-        });
-        poly.addEventListener("mousemove", positionTooltip);
-        poly.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
-        poly.addEventListener("click", () => {
-          navigator.clipboard.writeText(item.text);
-          showToast(`已复制: ${item.text}`);
-        });
-
-        svg.appendChild(poly);
-      });
-
-      $("boxCount").textContent = items.length;
-      $("overlayToolbar").style.display = "flex";
-    }
-
-    function positionTooltip(e) {
-      const tooltip = $("boxTooltip");
-      const container = $("previewContainer").getBoundingClientRect();
-      const x = e.clientX - container.left + 12;
-      const y = e.clientY - container.top + 12;
-      tooltip.style.left = `${Math.min(x, container.width - 200)}px`;
-      tooltip.style.top = `${Math.min(y, container.height - 40)}px`;
-    }
-
-    async function runImageOcr(file, index) {
-      if (!sharedState.ocrReady || !sharedState.ocr) {
-        showToast("OCR 引擎正在准备中，请稍等…", "error");
+    function acceptFiles(files) {
+      if (!files || !files.length) return;
+      const imageFiles = Array.from(files).filter((f) => /^image\//.test(f.type));
+      if (!imageFiles.length) {
+        setStatus("未检测到图片文件，请选择或拖入图片。", "error");
         return;
       }
-      setEngineStatus(`正在识别第 ${index + 1} / ${imgState.imageFiles.length} 张图片…`, true, true);
 
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = async () => {
-          try {
-            const [res] = await sharedState.ocr.predict(img, { textRecScoreThresh: 0.1 });
-            URL.revokeObjectURL(url);
-            imgState.batchResults[index] = {
-              file,
-              items: res.items || [],
-              metrics: res.metrics || { totalMs: 0 },
-              imgWidth: img.naturalWidth,
-              imgHeight: img.naturalHeight
-            };
-            resolve(imgState.batchResults[index]);
-          } catch (e) {
-            URL.revokeObjectURL(url);
-            reject(e);
-          }
-        };
-        img.onerror = () => {
-          URL.revokeObjectURL(url);
-          reject(new Error("图片载入失败"));
-        };
-        img.src = url;
-      });
-    }
+      const isFirst = state.images.length === 0;
 
-    async function runSingleOrBatch() {
-      if (!imgState.imageFiles.length) return;
-      if (imgState.isRunningBatch) return;
-
-      imgState.isRunningBatch = true;
-      imgState.abortBatch = false;
-      $("runBtn").style.display = "none";
-      $("stopBatchBtn").style.display = imgState.imageFiles.length > 1 ? "inline-flex" : "none";
-
-      const total = imgState.imageFiles.length;
-      const progress = $("batchProgress");
-      if (total > 1) {
-        progress.style.display = "block";
-        progress.max = total;
-        progress.value = 0;
+      for (const file of imageFiles) {
+        state.images.push({
+          id: Math.random().toString(36).slice(2),
+          file,
+          name: file.name || `图片_${Date.now()}`,
+          size: file.size,
+          previewUrl: URL.createObjectURL(file),
+          status: "pending",
+          result: null,
+          text: "",
+          formattedText: "",
+          mdText: "",
+          items: []
+        });
       }
 
-      for (let i = 0; i < total; i++) {
-        if (imgState.abortBatch) break;
-        if (imgState.batchResults[i]) continue; // Already processed
+      updateBatchUI();
+      renderBatchThumbnails();
+
+      if (isFirst) {
+        selectImageIndex(0);
+      }
+
+      ui.runBtn.disabled = !state.ocrReady;
+      if (state.images.length === 1) {
+        setStatus(`已选择图片：${state.images[0].name}，点击“开始识别”。`, "ok");
+      } else {
+        setStatus(`已载入 ${state.images.length} 张图片，点击“开始识别”。`, "ok");
+      }
+    }
+
+    async function runOcr() {
+      if (!state.ocrReady || !state.ocr) {
+        setStatus("OCR 引擎还未就绪，请稍候…", "error");
+        return;
+      }
+      if (!state.images.length) {
+        setStatus("请先选择、粘贴或截取图片。", "error");
+        return;
+      }
+
+      if (state.images.length === 1) {
+        const img = state.images[0];
+        ui.runBtn.disabled = true;
+        try {
+          setStatus("正在识别…");
+          const [result] = await state.ocr.predict(img.file, { textRecScoreThresh: 0.1 });
+          img.result = result;
+          img.items = result.items || [];
+          img.text = (result.items || []).map((it) => it.text).join("\n");
+          img.formattedText = formatSmartParagraphs(img.items, state.cleanSpaces);
+          img.mdText = formatMarkdown(img.items, state.cleanSpaces);
+          img.status = "done";
+
+          renderBoxes(result);
+          updateResultDisplay();
+
+          const metricsLines = [
+            `识别到 ${result.metrics.recognizedCount} 行文字`,
+            `文字检测：${result.metrics.detMs.toFixed(1)} ms`,
+            `文字识别：${result.metrics.recMs.toFixed(1)} ms`,
+            `总耗时：${result.metrics.totalMs.toFixed(1)} ms`
+          ];
+          ui.metrics.textContent = metricsLines.join("\n");
+          setStatus(`识别完成，共 ${result.metrics.recognizedCount} 行文字。`, "ok");
+        } catch (e) {
+          setError(e);
+          img.status = "error";
+        } finally {
+          ui.runBtn.disabled = false;
+        }
+        return;
+      }
+
+      state.isBatchRunning = true;
+      state.isAborted = false;
+      ui.runBtn.style.display = "none";
+      ui.stopBatchBtn.style.display = "inline-block";
+      ui.batchProgress.style.display = "block";
+
+      const total = state.images.length;
+      let doneCount = state.images.filter((img) => img.status === "done").length;
+
+      for (let i = 0; i < state.images.length; i++) {
+        if (state.isAborted) break;
+        const img = state.images[i];
+        if (img.status === "done") continue;
+
+        selectImageIndex(i);
+        img.status = "processing";
+        renderBatchThumbnails();
+        setStatus(`[${i + 1}/${total}] 正在识别：${img.name}…`);
 
         try {
-          $("batchProgressLabel").textContent = `处理中 (${i + 1}/${total})`;
-          await runImageOcr(imgState.imageFiles[i], i);
-          if (i === 0 || imgState.currentIndex === i) {
-            selectBatchImage(i);
+          const [result] = await state.ocr.predict(img.file, { textRecScoreThresh: 0.1 });
+          img.result = result;
+          img.items = result.items || [];
+          img.text = (result.items || []).map((it) => it.text).join("\n");
+          img.formattedText = formatSmartParagraphs(img.items, state.cleanSpaces);
+          img.mdText = formatMarkdown(img.items, state.cleanSpaces);
+          img.status = "done";
+          doneCount++;
+
+          if (state.currentIndex === i) {
+            renderBoxes(result);
+            updateResultDisplay();
           }
-        } catch (err) {
-          console.error(`Image ${i} error:`, err);
+        } catch (e) {
+          console.error(e);
+          img.status = "error";
         }
-        if (total > 1) progress.value = i + 1;
+
+        renderBatchThumbnails();
+        ui.batchProgress.value = Math.round((doneCount / total) * 100);
+        ui.batchProgressLabel.textContent = `已完成 ${doneCount} / ${total} 张`;
       }
 
-      imgState.isRunningBatch = false;
-      $("stopBatchBtn").style.display = "none";
-      $("runBtn").style.display = "inline-flex";
-      setEngineStatus("ONNX 引擎就绪 (离线)", true, false);
-      $("batchProgressLabel").textContent = "全部处理完成";
-      if (imgState.currentIndex >= 0) selectBatchImage(imgState.currentIndex);
-    }
+      state.isBatchRunning = false;
+      ui.runBtn.style.display = "inline-block";
+      ui.stopBatchBtn.style.display = "none";
 
-    function selectBatchImage(index) {
-      if (index < 0 || index >= imgState.imageFiles.length) return;
-      imgState.currentIndex = index;
-
-      // Update thumbnails UI
-      document.querySelectorAll(".batch-thumb-item").forEach((el, idx) => {
-        el.classList.toggle("active", idx === index);
-      });
-
-      const file = imgState.imageFiles[index];
-      const preview = $("preview");
-      const url = URL.createObjectURL(file);
-      preview.src = url;
-      $("previewContainer").style.display = "block";
-      $("dropHint").style.display = "none";
-
-      const res = imgState.batchResults[index];
-      if (res) {
-        renderSvgBoxes(res.items, res.imgWidth, res.imgHeight);
-        renderImageResult();
+      if (state.isAborted) {
+        setStatus(`批量识别已中止，已完成 ${doneCount} / ${total} 张。`, "ok");
       } else {
-        $("overlaySvg").innerHTML = "";
-        $("result").value = "正在等待识别…";
-        runImageOcr(file, index).then(() => {
-          if (imgState.currentIndex === index) selectBatchImage(index);
-        });
+        setStatus(`批量识别完成！共处理 ${total} 张图片。`, "ok");
       }
     }
 
-    function acceptImageFiles(files) {
-      if (!files || !files.length) return;
-      const valid = Array.from(files).filter((f) => f.type.startsWith("image/"));
-      if (!valid.length) {
-        showToast("未检测到有效图片文件", "error");
-        return;
-      }
-
-      imgState.imageFiles.push(...valid);
-      updateBatchThumbnails();
-
-      if (imgState.imageFiles.length === 1) {
-        selectBatchImage(0);
-        runSingleOrBatch();
-      } else {
-        $("batchQueueCard").style.display = "block";
-        $("batchCount").textContent = `${imgState.imageFiles.length} 张图片`;
-        $("copyAllBatchBtn").style.display = "inline-flex";
-        $("downloadBatchBtn").style.display = "inline-flex";
-        if (imgState.currentIndex === -1) selectBatchImage(0);
-        runSingleOrBatch();
-      }
-    }
-
-    function updateBatchThumbnails() {
-      const container = $("batchThumbList");
-      container.innerHTML = "";
-      imgState.imageFiles.forEach((f, idx) => {
-        const item = document.createElement("div");
-        item.className = `batch-thumb-item ${idx === imgState.currentIndex ? "active" : ""}`;
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(f);
-        item.appendChild(img);
-
-        const rm = document.createElement("button");
-        rm.className = "batch-thumb-remove";
-        rm.innerHTML = "✕";
-        rm.title = "移除此图";
-        rm.onclick = (e) => {
-          e.stopPropagation();
-          imgState.imageFiles.splice(idx, 1);
-          imgState.batchResults.splice(idx, 1);
-          if (imgState.currentIndex >= imgState.imageFiles.length) {
-            imgState.currentIndex = imgState.imageFiles.length - 1;
-          }
-          updateBatchThumbnails();
-          if (imgState.imageFiles.length > 0) selectBatchImage(Math.max(0, imgState.currentIndex));
-          else clearAllImages();
-        };
-        item.appendChild(rm);
-
-        item.onclick = () => selectBatchImage(idx);
-        container.appendChild(item);
-      });
-      $("batchCount").textContent = `${imgState.imageFiles.length} 张图片`;
-    }
-
-    function clearAllImages() {
-      imgState.imageFiles = [];
-      imgState.batchResults = [];
-      imgState.currentIndex = -1;
-      $("previewContainer").style.display = "none";
-      $("dropHint").style.display = "block";
-      $("overlayToolbar").style.display = "none";
-      $("batchQueueCard").style.display = "none";
-      $("result").value = "";
-      $("copyAllBatchBtn").style.display = "none";
-      $("downloadBatchBtn").style.display = "none";
-      $("sendToFormatBtn").disabled = true;
-    }
-
-    // Snip Screen Alt+S
-    async function triggerScreenSnip() {
+    async function startSnip() {
       if (window.__TAURI__?.core?.invoke) {
         try {
-          setEngineStatus("正在启动原生截图…", true, true);
+          setStatus("正在启动截图工具…");
           const bytes = await window.__TAURI__.core.invoke("capture_screen");
           if (bytes && bytes.length) {
             const blob = new Blob([new Uint8Array(bytes)], { type: "image/png" });
-            const file = new File([blob], `截屏_${Date.now()}.png`, { type: "image/png" });
-            acceptImageFiles([file]);
+            const file = new File([blob], `截屏_${new Date().toLocaleTimeString().replace(/:/g, "-")}.png`, { type: "image/png" });
+            acceptFiles([file]);
+            if (state.ocrReady) runOcr();
             return;
           }
         } catch (e) {
-          if (!String(e).toLowerCase().includes("cancel")) {
-            console.warn("Tauri capture error, fallback to displayMedia:", e);
-          } else {
-            setEngineStatus("已取消截图", true, false);
+          if (String(e).toLowerCase().includes("cancel")) {
+            setStatus("已取消截图。", "");
             return;
           }
         }
       }
 
-      // Web DisplayMedia Fallback
       if (navigator.mediaDevices?.getDisplayMedia) {
         try {
-          setEngineStatus("请在系统弹窗中选择截取区域…", true, true);
+          setStatus("请在系统弹窗中选择要截取的屏幕或窗口…");
           const stream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: "never" } });
           const video = document.createElement("video");
           video.srcObject = stream;
           await video.play();
+
           const canvas = document.createElement("canvas");
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
-          canvas.getContext("2d").drawImage(video, 0, 0);
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(video, 0, 0);
+
           stream.getTracks().forEach((t) => t.stop());
+          video.srcObject = null;
+
           canvas.toBlob((blob) => {
             if (blob) {
-              const file = new File([blob], `截屏_${Date.now()}.png`, { type: "image/png" });
-              acceptImageFiles([file]);
+              const file = new File([blob], `截屏_${new Date().toLocaleTimeString().replace(/:/g, "-")}.png`, { type: "image/png" });
+              acceptFiles([file]);
+              if (state.ocrReady) runOcr();
             }
           }, "image/png");
         } catch (e) {
-          setEngineStatus("截图已取消或未授权", true, false);
+          setStatus("已取消截屏或未授权。", "");
         }
       } else {
-        showToast("当前环境暂不支持网页截屏 API", "error");
+        setStatus("当前浏览器不支持屏幕截取 API，请直接截图后按 Ctrl/⌘+V 粘贴。", "error");
       }
     }
 
+    async function copyText(text) {
+      if (!text) return;
+      await navigator.clipboard.writeText(text);
+    }
+    function flashCopyTip(msg = "已复制全部内容 ✓") {
+      ui.copyTip.textContent = msg;
+      ui.copyTip.style.display = "inline";
+      setTimeout(() => { ui.copyTip.style.display = "none"; }, 2000);
+    }
+
     function initImageEvents() {
-      $("chooseBtn").addEventListener("click", () => $("fileInput").click());
-      $("addMoreImagesBtn")?.addEventListener("click", () => $("fileInput").click());
-      $("fileInput").addEventListener("change", (e) => acceptImageFiles(e.target.files));
+      ui.chooseBtn.addEventListener("click", () => ui.fileInput.click());
+      ui.addMoreImagesBtn.addEventListener("click", () => ui.fileInput.click());
+      ui.snipBtn.addEventListener("click", startSnip);
 
-      $("snipBtn").addEventListener("click", triggerScreenSnip);
-      window.addEventListener("keydown", (e) => {
-        if (e.altKey && (e.key === "s" || e.key === "S")) {
-          e.preventDefault();
-          triggerScreenSnip();
-        }
+      ui.fileInput.addEventListener("change", (e) => {
+        acceptFiles(e.target.files);
+        ui.fileInput.value = "";
       });
 
-      // Paste
-      $("pasteBtn").addEventListener("click", async () => {
-        try {
-          const items = await navigator.clipboard.read();
-          for (const item of items) {
-            for (const type of item.types) {
-              if (type.startsWith("image/")) {
-                const blob = await item.getType(type);
-                const file = new File([blob], `粘贴_${Date.now()}.png`, { type });
-                acceptImageFiles([file]);
-                return;
-              }
-            }
-          }
-          showToast("剪贴板中没有图像数据", "error");
-        } catch (e) {
-          showToast("请直接在页面上按 Cmd+V 或 Ctrl+V 粘贴", "ok");
-        }
-      });
-
-      document.addEventListener("paste", (e) => {
-        const items = e.clipboardData?.items;
-        if (!items) return;
-        for (const item of items) {
-          if (item.type.startsWith("image/")) {
-            const file = item.getAsFile();
-            if (file) acceptImageFiles([file]);
-          }
-        }
-      });
-
-      // Drag and drop
-      const dz = $("dropzone");
+      const dz = ui.dropzone;
       ["dragenter", "dragover"].forEach((evt) => dz.addEventListener(evt, (e) => { e.preventDefault(); dz.classList.add("dragover"); }));
       ["dragleave", "drop"].forEach((evt) => dz.addEventListener(evt, (e) => { e.preventDefault(); dz.classList.remove("dragover"); }));
       dz.addEventListener("drop", (e) => {
-        if (e.dataTransfer?.files?.length) acceptImageFiles(e.dataTransfer.files);
+        if (e.dataTransfer?.files?.length) acceptFiles(e.dataTransfer.files);
       });
 
-      // Format toggles
-      $("fmtTxtBtn").addEventListener("click", () => {
-        imgState.docFormat = "txt";
-        $("fmtTxtBtn").classList.add("active-toggle");
-        $("fmtMdBtn").classList.remove("active-toggle");
-        $("txtOptionsGroup").style.display = "inline-flex";
-        renderImageResult();
-      });
-
-      $("fmtMdBtn").addEventListener("click", () => {
-        imgState.docFormat = "md";
-        $("fmtMdBtn").classList.add("active-toggle");
-        $("fmtTxtBtn").classList.remove("active-toggle");
-        $("txtOptionsGroup").style.display = "none";
-        renderImageResult();
-      });
-
-      $("fmtSmartBtn").addEventListener("click", () => {
-        imgState.formatMode = "smart";
-        $("fmtSmartBtn").classList.add("active-toggle");
-        $("fmtRawBtn").classList.remove("active-toggle");
-        renderImageResult();
-      });
-
-      $("fmtRawBtn").addEventListener("click", () => {
-        imgState.formatMode = "raw";
-        $("fmtRawBtn").classList.add("active-toggle");
-        $("fmtSmartBtn").classList.remove("active-toggle");
-        renderImageResult();
-      });
-
-      $("cleanSpacesCheck").addEventListener("change", (e) => {
-        imgState.cleanSpaces = e.target.checked;
-        renderImageResult();
-      });
-
-      $("toggleBoxes").addEventListener("change", (e) => {
-        $("overlaySvg").style.display = e.target.checked ? "block" : "none";
-      });
-
-      // Send to Formatter Button
-      $("sendToFormatBtn").addEventListener("click", () => {
-        const text = $("result").value;
-        if (!text.trim()) {
-          showToast("暂无可发送的识别文本", "error");
+      // Paste
+      window.addEventListener("paste", (e) => {
+        if (document.activeElement && (document.activeElement.tagName === "TEXTAREA" || document.activeElement.tagName === "INPUT")) {
           return;
         }
-        sendToWorkbench(text, "图片识别结果");
+        const items = e.clipboardData?.items;
+        if (!items) return;
+        const files = [];
+        for (const item of items) {
+          if (item.type.startsWith("image/")) {
+            const file = item.getAsFile();
+            if (file) files.push(file);
+          }
+        }
+        if (files.length) {
+          e.preventDefault();
+          switchTab("image");
+          acceptFiles(files);
+          if (state.ocrReady) runOcr();
+        }
       });
 
-      // Copy & Download
-      $("copyBtn").addEventListener("click", () => {
-        const text = $("result").value;
-        if (!text) return;
-        navigator.clipboard.writeText(text);
-        showToast("已复制到剪贴板 ✓");
+      ui.pasteBtn.addEventListener("click", async () => {
+        try {
+          if (navigator.clipboard?.read) {
+            const items = await navigator.clipboard.read();
+            const files = [];
+            for (const item of items) {
+              for (const type of item.types) {
+                if (type.startsWith("image/")) {
+                  const blob = await item.getType(type);
+                  if (blob) files.push(new File([blob], `粘贴_${Date.now()}.png`, { type }));
+                }
+              }
+            }
+            if (files.length) {
+              acceptFiles(files);
+              if (state.ocrReady) runOcr();
+              return;
+            }
+            setStatus("剪贴板里没有图片。也可以直接 Ctrl/⌘+V 粘贴。", "error");
+          } else {
+            setStatus("请直接按 Ctrl/⌘+V 粘贴图片。", "ok");
+          }
+        } catch (e) {
+          setStatus("请直接按 Ctrl/⌘+V 粘贴图片。", "ok");
+        }
       });
 
-      $("downloadBtn").addEventListener("click", () => {
-        const text = $("result").value;
-        if (!text) return;
-        const ext = imgState.docFormat === "md" ? "md" : "txt";
-        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      ui.runBtn.addEventListener("click", runOcr);
+      ui.stopBatchBtn.addEventListener("click", () => {
+        state.isAborted = true;
+        setStatus("正在停止批量识别…");
+      });
+
+      ui.fmtTxtBtn.addEventListener("click", () => {
+        state.docFormat = "txt";
+        ui.fmtTxtBtn.classList.add("active");
+        ui.fmtMdBtn.classList.remove("active");
+        ui.txtOptionsGroup.style.display = "inline-flex";
+        updateResultDisplay();
+      });
+
+      ui.fmtMdBtn.addEventListener("click", () => {
+        state.docFormat = "md";
+        ui.fmtMdBtn.classList.add("active");
+        ui.fmtTxtBtn.classList.remove("active");
+        ui.txtOptionsGroup.style.display = "none";
+        updateResultDisplay();
+      });
+
+      ui.fmtSmartBtn.addEventListener("click", () => {
+        state.formatMode = "smart";
+        ui.fmtSmartBtn.classList.add("active");
+        ui.fmtRawBtn.classList.remove("active");
+        updateResultDisplay();
+      });
+
+      ui.fmtRawBtn.addEventListener("click", () => {
+        state.formatMode = "raw";
+        ui.fmtRawBtn.classList.add("active");
+        ui.fmtSmartBtn.classList.remove("active");
+        updateResultDisplay();
+      });
+
+      ui.cleanSpacesCheck.addEventListener("change", (e) => {
+        state.cleanSpaces = e.target.checked;
+        updateResultDisplay();
+      });
+
+      ui.copyBtn.addEventListener("click", async () => {
+        if (!ui.result.value) return;
+        await copyText(ui.result.value);
+        flashCopyTip();
+      });
+
+      ui.downloadBtn.addEventListener("click", () => {
+        if (!ui.result.value) return;
+        const ext = state.docFormat === "md" ? "md" : "txt";
+        const blob = new Blob([ui.result.value], { type: "text/plain;charset=utf-8" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
         a.download = `OCR_${Date.now()}.${ext}`;
         a.click();
       });
 
-      $("clearBtn").addEventListener("click", clearAllImages);
-      $("clearBatchBtn")?.addEventListener("click", clearAllImages);
+      ui.clearBtn.addEventListener("click", () => {
+        state.images = [];
+        state.currentIndex = -1;
+        ui.previewContainer.style.display = "none";
+        ui.dropHint.style.display = "block";
+        ui.batchQueueCard.style.display = "none";
+        clearOverlay();
+        renderResultList([]);
+        ui.result.value = "";
+        ui.runBtn.disabled = true;
+        ui.copyBtn.disabled = true;
+        ui.downloadBtn.disabled = true;
+        ui.sendToFormatBtn.disabled = true;
+        setStatus("已清空全部图片。");
+      });
 
-      $("modelSelect").addEventListener("change", (e) => {
-        initializeOcr(e.target.value);
+      ui.sendToFormatBtn.addEventListener("click", () => {
+        const text = ui.result.value;
+        if (!text.trim()) {
+          showToast("暂无可发送的识别文本");
+          return;
+        }
+        sendToWorkbench(text, "图片识别结果");
+      });
+
+      ui.toggleBoxes.addEventListener("change", (e) => {
+        ui.overlaySvg.style.display = e.target.checked ? "block" : "none";
+      });
+
+      ui.viewRawBtn.addEventListener("click", () => {
+        ui.viewRawBtn.classList.add("active");
+        ui.viewListBtn.classList.remove("active");
+        ui.result.style.display = "block";
+        ui.resultList.style.display = "none";
+      });
+
+      ui.viewListBtn.addEventListener("click", () => {
+        ui.viewListBtn.classList.add("active");
+        ui.viewRawBtn.classList.remove("active");
+        ui.result.style.display = "none";
+        ui.resultList.style.display = "block";
+      });
+
+      ui.modelSelect.addEventListener("change", () => initializeOcr().catch(setError));
+
+      window.addEventListener("keydown", (e) => {
+        if (e.altKey && (e.key === "s" || e.key === "S")) {
+          e.preventDefault();
+          startSnip();
+        }
       });
     }
 
@@ -2197,14 +2180,21 @@
     // ==========================================
     const pdfState = {
       file: null,
+      pages: [],
       isRunning: false,
       isAborted: false,
-      pages: [],
-      lastText: "",
       docFormat: "txt",
       formatMode: "smart",
       cleanSpaces: true
     };
+    let pdfjsLib = null;
+
+    async function getPdfjs() {
+      if (pdfjsLib) return pdfjsLib;
+      pdfjsLib = await import(PDFJS_LIB);
+      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      return pdfjsLib;
+    }
 
     function renderPdfResult() {
       if (!pdfState.pages.length) {
@@ -2230,44 +2220,42 @@
         }
       });
 
-      pdfState.lastText = pageTexts.join(isMd ? "\n\n---\n\n" : "\n\n");
-      $("pdfResult").value = pdfState.lastText;
-      $("pdfCopyBtn").disabled = !pdfState.lastText;
-      $("pdfDownloadBtn").disabled = !pdfState.lastText;
-      $("pdfDownloadBtn").textContent = isMd ? "💾 下载 .md" : "💾 下载 .txt";
-      $("pdfSendToFormatBtn").disabled = !pdfState.lastText;
+      const full = pageTexts.join(isMd ? "\n\n---\n\n" : "\n\n");
+      $("pdfResult").value = full;
+      $("pdfCopyBtn").disabled = !full;
+      $("pdfDownloadBtn").disabled = !full;
+      $("pdfSendToFormatBtn").disabled = !full;
     }
 
     function acceptPdfFile(file) {
       if (!file || !file.name.toLowerCase().endsWith(".pdf")) {
-        showToast("请选择有效的 PDF 文件", "error");
+        showToast("请选择有效的 PDF 文件");
         return;
       }
       pdfState.file = file;
       pdfState.pages = [];
-      pdfState.lastText = "";
       const sizeMb = (file.size / 1048576).toFixed(1);
       $("pdfFileInfo").textContent = `${file.name} (${sizeMb} MB)`;
       $("pdfDropHint").style.display = "none";
-      $("pdfRunBtn").disabled = !sharedState.ocrReady;
-      $("pdfStatus").textContent = "已就绪，点击“开始识别整个 PDF”。";
+      $("pdfRunBtn").disabled = !state.ocrReady;
+      $("pdfStatus").textContent = "已选择 PDF，点击“开始识别整个 PDF”。";
     }
 
     async function recognizePdf() {
-      if (!sharedState.ocrReady || !sharedState.ocr || !pdfState.file) return;
+      if (!state.ocrReady || !state.ocr || !pdfState.file || pdfState.isRunning) return;
+
       pdfState.isRunning = true;
       pdfState.isAborted = false;
       pdfState.pages = [];
-      pdfState.lastText = "";
       $("pdfResult").value = "";
 
       $("pdfRunBtn").style.display = "none";
       $("pdfStopBtn").style.display = "inline-flex";
-      $("pdfProgress").hidden = false;
+      $("pdfProgress").style.display = "block";
 
       let pdfDoc = null;
       try {
-        setEngineStatus("正在解析 PDF 结构…", true, true);
+        $("pdfStatus").textContent = "正在解析 PDF 结构…";
         const pdfjs = await getPdfjs();
         const data = await pdfState.file.arrayBuffer();
         pdfDoc = await pdfjs.getDocument({
@@ -2287,7 +2275,6 @@
         for (let pageNo = 1; pageNo <= numPages; pageNo++) {
           if (pdfState.isAborted) break;
           $("pdfStatus").textContent = `正在识别第 ${pageNo} / ${numPages} 页…`;
-          setEngineStatus(`正在识别 PDF 第 ${pageNo} / ${numPages} 页…`, true, true);
 
           const page = await pdfDoc.getPage(pageNo);
           try {
@@ -2300,10 +2287,10 @@
 
             if (pdfState.isAborted) break;
 
-            const [res] = await sharedState.ocr.predict(canvas, { textRecScoreThresh: 0.1 });
-            const items = res.items || [];
+            const [result] = await state.ocr.predict(canvas, { textRecScoreThresh: 0.1 });
+            const items = result.items || [];
             totalLines += items.length;
-            totalMs += res.metrics?.totalMs || 0;
+            totalMs += result.metrics?.totalMs || 0;
 
             pdfState.pages.push({ pageNo, items });
             renderPdfResult();
@@ -2313,23 +2300,17 @@
           $("pdfProgress").value = pageNo;
         }
 
-        if (pdfState.isAborted) {
-          $("pdfStatus").textContent = `已停止：共处理 ${pdfState.pages.length} 页（保留当前结果）。`;
-        } else {
-          $("pdfStatus").textContent = `识别完成：共 ${numPages} 页、${totalLines} 行文字，总耗时 ${(totalMs / 1000).toFixed(1)} 秒。`;
-        }
+        $("pdfStatus").textContent = pdfState.isAborted ? "已停止识别。" : `识别完成：共 ${numPages} 页，${totalLines} 行文字，耗时 ${(totalMs/1000).toFixed(1)} 秒。`;
       } catch (err) {
-        console.error("PDF OCR error:", err);
-        $("pdfStatus").textContent = "PDF 识别出错: " + err.message;
+        $("pdfStatus").textContent = "PDF 识别失败: " + err.message;
       } finally {
         pdfState.isRunning = false;
         if (pdfDoc && typeof pdfDoc.destroy === "function") {
           try { await pdfDoc.destroy(); } catch (_) {}
         }
-        $("pdfProgress").hidden = true;
+        $("pdfProgress").style.display = "none";
         $("pdfRunBtn").style.display = "inline-flex";
         $("pdfStopBtn").style.display = "none";
-        setEngineStatus("ONNX 引擎就绪 (离线)", true, false);
       }
     }
 
@@ -2347,38 +2328,35 @@
       });
 
       $("pdfRunBtn").addEventListener("click", recognizePdf);
-      $("pdfStopBtn").addEventListener("click", () => {
-        pdfState.isAborted = true;
-        $("pdfStatus").textContent = "正在停止…";
-      });
+      $("pdfStopBtn").addEventListener("click", () => { pdfState.isAborted = true; });
 
       $("pdfFmtTxtBtn").addEventListener("click", () => {
         pdfState.docFormat = "txt";
-        $("pdfFmtTxtBtn").classList.add("active-toggle");
-        $("pdfFmtMdBtn").classList.remove("active-toggle");
+        $("pdfFmtTxtBtn").classList.add("active");
+        $("pdfFmtMdBtn").classList.remove("active");
         $("pdfTxtOptionsGroup").style.display = "inline-flex";
         renderPdfResult();
       });
 
       $("pdfFmtMdBtn").addEventListener("click", () => {
         pdfState.docFormat = "md";
-        $("pdfFmtMdBtn").classList.add("active-toggle");
-        $("pdfFmtTxtBtn").classList.remove("active-toggle");
+        $("pdfFmtMdBtn").classList.add("active");
+        $("pdfFmtTxtBtn").classList.remove("active");
         $("pdfTxtOptionsGroup").style.display = "none";
         renderPdfResult();
       });
 
       $("pdfFmtSmartBtn").addEventListener("click", () => {
         pdfState.formatMode = "smart";
-        $("pdfFmtSmartBtn").classList.add("active-toggle");
-        $("pdfFmtRawBtn").classList.remove("active-toggle");
+        $("pdfFmtSmartBtn").classList.add("active");
+        $("pdfFmtRawBtn").classList.remove("active");
         renderPdfResult();
       });
 
       $("pdfFmtRawBtn").addEventListener("click", () => {
         pdfState.formatMode = "raw";
-        $("pdfFmtRawBtn").classList.add("active-toggle");
-        $("pdfFmtSmartBtn").classList.remove("active-toggle");
+        $("pdfFmtRawBtn").classList.add("active");
+        $("pdfFmtSmartBtn").classList.remove("active");
         renderPdfResult();
       });
 
@@ -2387,54 +2365,48 @@
         renderPdfResult();
       });
 
-      $("pdfSendToFormatBtn").addEventListener("click", () => {
-        const text = $("pdfResult").value;
-        if (!text.trim()) {
-          showToast("暂无可发送的 PDF 识别文本", "error");
-          return;
-        }
-        sendToWorkbench(text, "PDF 文档识别结果");
-      });
-
-      $("pdfCopyBtn").addEventListener("click", () => {
-        const text = $("pdfResult").value;
-        if (!text) return;
-        navigator.clipboard.writeText(text);
-        showToast("已复制全部 PDF 识别文本 ✓");
+      $("pdfCopyBtn").addEventListener("click", async () => {
+        if (!$("pdfResult").value) return;
+        await copyText($("pdfResult").value);
+        showToast("已复制全部 PDF 文本 ✓");
       });
 
       $("pdfDownloadBtn").addEventListener("click", () => {
-        const text = $("pdfResult").value;
-        if (!text) return;
+        if (!$("pdfResult").value) return;
         const ext = pdfState.docFormat === "md" ? "md" : "txt";
-        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const blob = new Blob([$("pdfResult").value], { type: "text/plain;charset=utf-8" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = `${pdfState.file?.name || "PDF_OCR"}_${Date.now()}.${ext}`;
+        a.download = `PDF_OCR_${Date.now()}.${ext}`;
         a.click();
       });
 
       $("pdfClearBtn").addEventListener("click", () => {
         pdfState.file = null;
         pdfState.pages = [];
-        pdfState.lastText = "";
         $("pdfResult").value = "";
         $("pdfFileInfo").textContent = "未选择文件";
         $("pdfDropHint").style.display = "block";
         $("pdfRunBtn").disabled = true;
-        $("pdfCopyBtn").disabled = true;
-        $("pdfDownloadBtn").disabled = true;
-        $("pdfSendToFormatBtn").disabled = true;
+      });
+
+      $("pdfSendToFormatBtn").addEventListener("click", () => {
+        const text = $("pdfResult").value;
+        if (!text.trim()) {
+          showToast("暂无可发送的识别文本");
+          return;
+        }
+        sendToWorkbench(text, "PDF 识别结果");
       });
     }
 
     // ==========================================
-    // 6. View 3: Smart Formatter Workbench Controller
+    // 6. View 3: Smart Formatter Workbench
     // ==========================================
     const wbState = {
       originalSnapshot: "",
-      viewMode: "compare", // "compare" | "single"
-      docFormat: "txt" // "txt" | "md"
+      viewMode: "compare",
+      docFormat: "txt"
     };
 
     function sendToWorkbench(text, sourceTitle = "OCR 识别结果") {
@@ -2443,24 +2415,18 @@
       $("wbProcessedText").value = text;
       $("wbSingleEditor").value = text;
       switchTab("format");
-
-      // Auto-run smart format once on import to instantly demonstrate value
       runWorkbenchSmartFormat();
-      showToast(`已从【${sourceTitle}】导入智能排版工作台！`, "ok");
+      showToast(`已从【${sourceTitle}】导入智能排版工作台！`);
     }
 
     function runWorkbenchSmartFormat() {
       const raw = $("wbOriginalText").value;
       if (!raw.trim()) {
-        showToast("请输入或粘贴要排版的文本", "error");
+        showToast("请输入或粘贴要排版的文本");
         return;
       }
 
-      // Count pre-format line breaks
       const preBreaks = (raw.match(/\r?\n/g) || []).length;
-      const preParas = raw.split(/\n\s*\n+/).filter((p) => p.trim()).length;
-
-      // Smart paragraph fusion
       const lines = raw.split(/\r?\n/);
       let processed = formatSmartParagraphs(lines, true);
 
@@ -2471,10 +2437,9 @@
       $("wbProcessedText").value = processed;
       $("wbSingleEditor").value = processed;
 
-      // Show optimization banner
       const banner = $("wbOptBanner");
       const bannerText = $("wbOptBannerText");
-      bannerText.textContent = `✨ 排版成功：已自动修复并接续 ${healedBreaks} 处意外跨行断裂，重组为 ${postParas} 个自然段落。`;
+      bannerText.textContent = `✨ 排版成功：已自动接续 ${healedBreaks} 处意外跨行断裂，重组为 ${postParas} 个自然段落。`;
       banner.style.display = "flex";
 
       updateWorkbenchStats();
@@ -2508,7 +2473,7 @@
       const findStr = $("wbFindInput").value;
       const replaceStr = $("wbReplaceInput").value;
       if (!findStr) {
-        showToast("请输入查找内容", "error");
+        showToast("请输入查找内容");
         return;
       }
 
@@ -2531,7 +2496,7 @@
         const count = (currentText.match(new RegExp(regex.source, (isCase ? "" : "i") + "g")) || []).length;
 
         if (count === 0) {
-          showToast("未找到匹配内容", "ok");
+          showToast("未找到匹配内容");
           return;
         }
 
@@ -2542,9 +2507,9 @@
 
         updateWorkbenchStats();
         updateFindMatchCount();
-        showToast(replaceAll ? `已成功替换全部 ${count} 处匹配！` : "已替换当前匹配项 ✓");
+        showToast(replaceAll ? `已成功替换全部 ${count} 处匹配！` : "已替换匹配项 ✓");
       } catch (e) {
-        showToast("正则解析错误: " + e.message, "error");
+        showToast("表达式无效: " + e.message);
       }
     }
 
@@ -2570,24 +2535,19 @@
           pattern = new RegExp(escaped, (isCase ? "" : "i") + "g");
         }
         const matches = activeText.match(pattern);
-        const count = matches ? matches.length : 0;
-        badge.textContent = `${count} 处匹配`;
+        badge.textContent = `${matches ? matches.length : 0} 处匹配`;
       } catch (e) {
         badge.textContent = "表达式无效";
       }
     }
 
     function initWorkbenchEvents() {
-      // Check if there is pending text sent from PDF or other pages
       const pendingText = localStorage.getItem("dali_pending_format_text");
       if (pendingText) {
         localStorage.removeItem("dali_pending_format_text");
-        setTimeout(() => {
-          sendToWorkbench(pendingText, "外部导入文本");
-        }, 100);
+        setTimeout(() => sendToWorkbench(pendingText, "外部导入文本"), 100);
       }
 
-      // Sync text between single and compare editors
       $("wbProcessedText").addEventListener("input", () => {
         $("wbSingleEditor").value = $("wbProcessedText").value;
         updateWorkbenchStats();
@@ -2600,7 +2560,6 @@
       });
       $("wbOriginalText").addEventListener("input", updateWorkbenchStats);
 
-      // Quick Action Buttons
       $("wbSmartFormatBtn").addEventListener("click", runWorkbenchSmartFormat);
 
       $("wbCleanSpacesBtn").addEventListener("click", () => {
@@ -2641,17 +2600,16 @@
 
       $("wbRevertBtn").addEventListener("click", () => {
         if (!wbState.originalSnapshot) {
-          showToast("暂无可恢复的原始快照", "error");
+          showToast("暂无可恢复的原始快照");
           return;
         }
         $("wbProcessedText").value = wbState.originalSnapshot;
         $("wbSingleEditor").value = wbState.originalSnapshot;
         $("wbOriginalText").value = wbState.originalSnapshot;
         updateWorkbenchStats();
-        showToast("已恢复最原始文本快照 ✓");
+        showToast("已恢复最初原始内容 ✓");
       });
 
-      // Find & Replace
       $("wbFindInput").addEventListener("input", updateFindMatchCount);
       $("wbRegexCheck").addEventListener("change", updateFindMatchCount);
       $("wbCaseSensitiveCheck").addEventListener("change", updateFindMatchCount);
@@ -2659,7 +2617,6 @@
       $("wbReplaceNextBtn").addEventListener("click", () => performFindReplace(false));
       $("wbReplaceAllBtn").addEventListener("click", () => performFindReplace(true));
 
-      // Preset chips
       $("chipMergeInlineBreaks").addEventListener("click", () => {
         $("wbFindInput").value = "(?<!\\n)\\n(?!\\n)";
         $("wbReplaceInput").value = "";
@@ -2692,11 +2649,10 @@
         performFindReplace(true);
       });
 
-      // View Mode Toggle
       $("wbViewCompareBtn").addEventListener("click", () => {
         wbState.viewMode = "compare";
-        $("wbViewCompareBtn").classList.add("active-toggle");
-        $("wbViewSingleBtn").classList.remove("active-toggle");
+        $("wbViewCompareBtn").classList.add("active");
+        $("wbViewSingleBtn").classList.remove("active");
         $("wbCompareContainer").style.display = "grid";
         $("wbSingleContainer").style.display = "none";
         $("wbProcessedText").value = $("wbSingleEditor").value;
@@ -2705,33 +2661,31 @@
 
       $("wbViewSingleBtn").addEventListener("click", () => {
         wbState.viewMode = "single";
-        $("wbViewSingleBtn").classList.add("active-toggle");
-        $("wbViewCompareBtn").classList.remove("active-toggle");
+        $("wbViewSingleBtn").classList.add("active");
+        $("wbViewCompareBtn").classList.remove("active");
         $("wbCompareContainer").style.display = "none";
         $("wbSingleContainer").style.display = "block";
         $("wbSingleEditor").value = $("wbProcessedText").value;
         updateWorkbenchStats();
       });
 
-      // Doc Format Toggle
       $("wbFmtTxtBtn").addEventListener("click", () => {
         wbState.docFormat = "txt";
-        $("wbFmtTxtBtn").classList.add("active-toggle");
-        $("wbFmtMdBtn").classList.remove("active-toggle");
+        $("wbFmtTxtBtn").classList.add("active");
+        $("wbFmtMdBtn").classList.remove("active");
       });
 
       $("wbFmtMdBtn").addEventListener("click", () => {
         wbState.docFormat = "md";
-        $("wbFmtMdBtn").classList.add("active-toggle");
-        $("wbFmtTxtBtn").classList.remove("active-toggle");
+        $("wbFmtMdBtn").classList.add("active");
+        $("wbFmtTxtBtn").classList.remove("active");
       });
 
-      // Copy & Download
-      $("wbCopyBtn").addEventListener("click", () => {
+      $("wbCopyBtn").addEventListener("click", async () => {
         const text = wbState.viewMode === "single" ? $("wbSingleEditor").value : $("wbProcessedText").value;
         if (!text) return;
-        navigator.clipboard.writeText(text);
-        showToast("排版结果已复制到剪贴板 ✓");
+        await copyText(text);
+        showToast("已复制排版结果 ✓");
       });
 
       $("wbDownloadBtn").addEventListener("click", () => {
@@ -2769,7 +2723,7 @@
       initImageEvents();
       initPdfEvents();
       initWorkbenchEvents();
-      initializeOcr("v4_mobile");
+      initializeOcr().catch(setError);
     });
   </script>
 </body>
