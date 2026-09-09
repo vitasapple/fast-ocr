@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>大梨快传 · 手机跨屏协同</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-gradient: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --radius: 14px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b0f19;
+        --card-bg: #151d2f;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: 0 14px 40px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* 顶部导航 */
+    .mobile-header {
+      padding: 20px 4px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-pill {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--success);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+      box-shadow: 0 0 6px var(--success);
+    }
+
+    /* 选项卡/模块卡片 */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 大按钮网格 */
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .action-btn:active {
+      transform: scale(0.97);
+      background: rgba(37, 99, 235, 0.08);
+    }
+    .action-btn.primary {
+      background: var(--primary-gradient);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+    }
+    .action-btn .btn-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    /* 目标流转单选 */
+    .flow-selector {
+      display: flex;
+      gap: 6px;
+      background: rgba(148, 163, 184, 0.12);
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .flow-option {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      padding: 6px 0;
+      border-radius: 7px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 500;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .flow-option.active {
+      background: var(--card-bg);
+      color: var(--primary);
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* 文本输入框与发送按钮 */
+    .text-input {
+      width: 100%;
+      height: 90px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      padding: 10px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      margin-bottom: 10px;
+    }
+    .send-text-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .send-text-btn:active { opacity: 0.85; }
+
+    /* 电脑分享文件列表 */
+    .shared-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .shared-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .shared-item:last-child { border-bottom: none; }
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+    }
+    .file-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+    .file-size {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .download-btn {
+      padding: 5px 12px;
+      font-size: 12px;
+      border-radius: 6px;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* 进度条与悬浮提示 */
+    .progress-bar-wrap {
+      display: none;
+      width: 100%;
+      height: 5px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 0.2s ease;
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 999;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部状态栏 -->
+  <header class="mobile-header">
+    <div class="brand-title">
+      <img src="./logo.png" style="width:24px;height:24px;border-radius:6px;object-fit:contain;vertical-align:middle;margin-right:2px;" alt="Logo"/>
+      <span>大梨快传</span>
+      <span style="font-size:11px;background:#2563eb;color:#fff;padding:1px 5px;border-radius:4px;">PRO</span>
+    </div>
+    <div class="status-pill" id="statusPill">
+      <span class="status-dot"></span>
+      <span id="statusText">已连电脑</span>
+    </div>
+  </header>
+
+  <!-- 上传进度条 -->
+  <div class="progress-bar-wrap" id="progressWrap">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+
+  <!-- 卡片 1: 拍照 / 选图快传到 OCR -->
+  <section class="card">
+    <h2 class="card-title">📸 拍照 / 选图发送至电脑 OCR</h2>
+    
+    <!-- 目标工作流 -->
+    <div class="flow-selector" id="flowSelector">
+      <div class="flow-option active" data-target="image">📷 图片识别</div>
+      <div class="flow-option" data-target="table">📊 表格识别</div>
+      <div class="flow-option" data-target="doc">📝 智能文档</div>
+    </div>
+
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" />
+    <input type="file" id="albumInput" accept="image/*" multiple style="display:none;" />
+
+    <div class="btn-grid">
+      <button type="button" class="action-btn primary" id="cameraBtn">
+        <span class="btn-icon">📷</span>
+        <span>即时拍照直传</span>
+      </button>
+      <button type="button" class="action-btn" id="albumBtn">
+        <span class="btn-icon">🖼️</span>
+        <span>相册批量选图</span>
+      </button>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);text-align:center;">
+      💡 手机点击拍照，照片自动 0 秒秒传到电脑屏幕并启动识别
+    </div>
+  </section>
+
+  <!-- 卡片 2: 本地 PDF / 文件快传 -->
+  <section class="card">
+    <h2 class="card-title">📑 发送 PDF / 办公文档到电脑</h2>
+    <input type="file" id="docFileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.md,.json,.log,application/*,text/*" multiple style="display:none;" />
+    <button type="button" class="action-btn" id="docFileBtn" style="width:100%;padding:14px;">
+      <span class="btn-icon">📁</span>
+      <span>从手机选择 PDF 或办公文档</span>
+    </button>
+  </section>
+
+  <!-- 卡片 3: 手机文字极速发送 (剪贴板同步) -->
+  <section class="card">
+    <h2 class="card-title">📋 手机文字 / 剪贴板快速投送</h2>
+    <textarea class="text-input" id="textInput" placeholder="在此粘贴长文本、微信消息或手机备忘录，一键发送至电脑智能排版…"></textarea>
+    <button type="button" class="send-text-btn" id="sendTextBtn">🚀 一键推送到电脑端排版</button>
+  </section>
+
+  <!-- 卡片 4: 接收电脑端分享的文件 -->
+  <section class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h2 class="card-title" style="margin:0;">📥 电脑端分享的文件</h2>
+      <button type="button" id="refreshSharedBtn" style="border:none;background:none;color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;">🔄 刷新</button>
+    </div>
+    <div id="sharedEmptyHint" style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px 0;">
+      电脑端尚未投送文件，在电脑端点击分享后在此下载
+    </div>
+    <ul class="shared-list" id="sharedList"></ul>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let currentTarget = "image";
+
+    // 目标工作流切换
+    document.querySelectorAll(".flow-option").forEach((opt) => {
+      opt.addEventListener("click", () => {
+        document.querySelectorAll(".flow-option").forEach((o) => o.classList.remove("active"));
+        opt.classList.add("active");
+        currentTarget = opt.dataset.target;
+      });
+    });
+
+    function showToast(msg) {
+      const toast = $("toast");
+      toast.textContent = msg;
+      toast.className = "toast show";
+      if (navigator.vibrate) navigator.vibrate(30);
+      setTimeout(() => { toast.className = "toast"; }, 2500);
+    }
+
+    // 上传文件逻辑
+    async function uploadFiles(files) {
+      if (!files || files.length === 0) return;
+      const formData = new FormData();
+      formData.append("target", currentTarget);
+      for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+      }
+
+      const pWrap = $("progressWrap");
+      const pBar = $("progressBar");
+      pWrap.style.display = "block";
+      pBar.style.width = "40%";
+
+      try {
+        const res = await fetch("/api/connect/upload", {
+          method: "POST",
+          body: formData
+        });
+        pBar.style.width = "100%";
+        const result = await res.json();
+        if (result.success) {
+          if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+          showToast(`已成功发送 ${files.length} 个文件到电脑！`);
+        } else {
+          showToast("上传失败: " + (result.error || "未知错误"));
+        }
+      } catch (err) {
+        showToast("网络错误，请确保与电脑连接同一WiFi");
+      } finally {
+        setTimeout(() => {
+          pWrap.style.display = "none";
+          pBar.style.width = "0%";
+        }, 500);
+      }
+    }
+
+    // 绑定按钮事件
+    $("cameraBtn").addEventListener("click", () => $("cameraInput").click());
+    $("albumBtn").addEventListener("click", () => $("albumInput").click());
+    $("docFileBtn").addEventListener("click", () => $("docFileInput").click());
+
+    $("cameraInput").addEventListener("change", (e) => {
+      if (e.target.files?.length) uploadFiles(e.target.files);
+      e.target.value = "";
+    });
+    $("albumInput").addEventListener("change", (e) => {
+      if (e.target.files?.length) uploadFiles(e.target.files);
+      e.target.value = "";
+    });
+    $("docFileInput").addEventListener("change", (e) => {
+      if (e.target.files?.length) uploadFiles(e.target.files);
+      e.target.value = "";
+    });
+
+    // 发送文本
+    $("sendTextBtn").addEventListener("click", async () => {
+      const text = $("textInput").value.trim();
+      if (!text) {
+        showToast("请输入或粘贴文字");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/connect/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: text,
+            title: "手机剪贴板",
+            target: "format"
+          })
+        });
+        const result = await res.json();
+        if (result.success) {
+          $("textInput").value = "";
+          showToast("文字已成功发送至电脑智能排版！✓");
+        } else {
+          showToast("发送失败: " + (result.error || ""));
+        }
+      } catch (e) {
+        showToast("网络连接失败，请检查同一WiFi");
+      }
+    });
+
+    // 刷新电脑分享的文件列表
+    async function loadSharedFiles() {
+      try {
+        const res = await fetch("/api/connect/shared");
+        const data = await res.json();
+        const list = $("sharedList");
+        const emptyHint = $("sharedEmptyHint");
+        list.innerHTML = "";
+        if (!data.files || data.files.length === 0) {
+          emptyHint.style.display = "block";
+          return;
+        }
+        emptyHint.style.display = "none";
+        data.files.forEach((file) => {
+          const li = document.createElement("li");
+          li.className = "shared-item";
+          const sizeKb = (file.size / 1024).toFixed(1);
+          li.innerHTML = `
+            <div class="file-info">
+              <span style="font-size:20px;">📄</span>
+              <div>
+                <div class="file-name" title="${file.name}">${file.name}</div>
+                <div class="file-size">${sizeKb} KB</div>
+              </div>
+            </div>
+            <a href="/api/connect/shared/${file.id}" download="${file.name}" class="download-btn">下载</a>
+          `;
+          list.appendChild(li);
+        });
+      } catch (_) {}
+    }
+
+    $("refreshSharedBtn").addEventListener("click", () => {
+      loadSharedFiles();
+      showToast("已刷新文件列表 ✓");
+    });
+
+    // 检查服务连通性
+    async function checkHealth() {
+      try {
+        const res = await fetch("/api/connect/info");
+        if (res.ok) {
+          $("statusText").textContent = "已连电脑";
+          $("statusPill").style.color = "var(--success)";
+        }
+      } catch (_) {
+        $("statusText").textContent = "未连接";
+        $("statusPill").style.color = "#ef4444";
+      }
+    }
+
+    setInterval(checkHealth, 5000);
+    setInterval(loadSharedFiles, 4000);
+    loadSharedFiles();
+  </script>
+</body>
+</html>

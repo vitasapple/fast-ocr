@@ -1900,15 +1900,47 @@
       applyLanguage();
     }
 
-    // 渲染预览
-    function updatePreview() {
-      let text = editor.value;
-      let placeholders = [];
+    function protectHtmlTables(text) {
+      const placeholders = [];
+      let counter = 0;
 
+      const parts = text.split(/(```[\s\S]*?```|`[^`\n]*`)/g);
+      const out = parts.map(part => {
+        if (part.startsWith('```') || part.startsWith('`')) return part;
+
+        return part.replace(/<table[\s\S]*?<\/table>/gi, match => {
+          const key = '<!--HTML_TABLE_' + counter++ + '-->';
+          placeholders.push({ key, value: match });
+          return '\n\n' + key + '\n\n';
+        });
+      }).join('');
+
+      return { text: out, placeholders };
+    }
+
+    function restoreHtmlTables(html, placeholders) {
+      placeholders.forEach(({ key, value }) => {
+        html = html.split('<p>' + key + '</p>').join(value);
+        html = html.split(key).join(value);
+      });
+      return html;
+    }
+
+    function renderMarkdownToHtml(md) {
+      let text = md || '';
+      let mathPlaceholders = [];
+      let htmlPlaceholders = [];
+
+      // 1. 保护 HTML 复杂表格，避免因内部空行或 4 空格缩进被误判为 Markdown 缩进代码块
+      const protectedHtml = protectHtmlTables(text);
+      text = protectedHtml.text;
+      htmlPlaceholders = protectedHtml.placeholders;
+
+      // 2. 保护数学公式
       if (typeof renderMathInElement !== 'undefined') {
         const protected = protectMath(text);
         text = protected.text;
-        placeholders = protected.placeholders;
+        mathPlaceholders = protected.placeholders;
       }
 
       let html = '';
@@ -1918,9 +1950,24 @@
         html = '<pre style="white-space:pre-wrap">' + escapeHtml(text) + '</pre>';
       }
 
-      if (placeholders.length) {
-        html = restoreMath(html, placeholders);
+      // 3. 还原数学公式
+      if (mathPlaceholders.length) {
+        html = restoreMath(html, mathPlaceholders);
       }
+
+      // 4. 还原 HTML 复杂表格
+      if (htmlPlaceholders.length) {
+        html = restoreHtmlTables(html, htmlPlaceholders);
+      }
+
+      return html;
+    }
+
+    // 渲染预览
+    function updatePreview() {
+      if (!editor || !preview) return;
+      const text = editor.value;
+      const html = renderMarkdownToHtml(text);
 
       preview.innerHTML = '<div class="markdown-body">' + html + '</div>';
       styleTaskLists();
@@ -2064,12 +2111,7 @@
       name = name.replace(/\.md$/i, '').replace(/\.markdown$/i, '') + '.doc';
 
       const md = editor.value;
-      let bodyHtml;
-      if (typeof marked !== 'undefined') {
-        bodyHtml = marked.parse(md);
-      } else {
-        bodyHtml = '<pre style="white-space:pre-wrap">' + escapeHtml(md) + '</pre>';
-      }
+      const bodyHtml = renderMarkdownToHtml(md);
 
       const fullHtml = `<!DOCTYPE html>
 <html>
@@ -2121,12 +2163,7 @@ ${bodyHtml}
       name = name.replace(/\.md$/i, '').replace(/\.markdown$/i, '') + '.html';
 
       const md = editor.value;
-      let bodyHtml;
-      if (typeof marked !== 'undefined') {
-        bodyHtml = marked.parse(md);
-      } else {
-        bodyHtml = '<pre style="white-space:pre-wrap">' + escapeHtml(md) + '</pre>';
-      }
+      const bodyHtml = renderMarkdownToHtml(md);
 
       const fullHtml = `<!DOCTYPE html>
 <html lang="zh-CN">

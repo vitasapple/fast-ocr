@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>大梨OCR PRO - 极速离线识别与智能排版</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
   <style>
     :root {
       color-scheme: light dark;
@@ -888,6 +889,123 @@
       color: #818cf8 !important;
     }
 
+    /* Dali Connect CSS */
+    .btn-badge-lan {
+      background: linear-gradient(135deg, rgba(234, 88, 12, 0.12), rgba(245, 158, 11, 0.12)) !important;
+      color: #ea580c !important;
+      border-color: rgba(234, 88, 12, 0.3) !important;
+    }
+    [data-theme="dark"] .btn-badge-lan {
+      color: #fb923c !important;
+    }
+
+    .connect-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .connect-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .connect-qr-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px 16px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+    .qr-canvas-box {
+      width: 200px;
+      height: 200px;
+      padding: 8px;
+      background: #ffffff;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-canvas-box canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    .connect-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      margin-bottom: 12px;
+    }
+    .connect-inbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    .inbox-item-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      transition: border-color 0.15s;
+    }
+    .inbox-item-card:hover {
+      border-color: var(--primary);
+    }
+    .inbox-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      overflow: hidden;
+      flex: 1;
+    }
+    .inbox-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .inbox-meta {
+      overflow: hidden;
+    }
+    .inbox-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+    .inbox-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      gap: 8px;
+    }
+    .inbox-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
     #viewDoc {
       max-width: 100%;
       height: calc(100vh - 48px);
@@ -1238,10 +1356,8 @@
     <!-- Left Navigation Sidebar -->
     <aside class="app-sidebar" id="appSidebar">
       <div class="sidebar-brand">
-        <div class="brand-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 7V4h16v3M9 20h6M12 4v16"/>
-          </svg>
+        <div class="brand-logo" style="background: transparent; box-shadow: none;">
+          <img src="./logo.png" alt="大梨 OCR" style="width: 36px; height: 36px; border-radius: 9px; object-fit: contain; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);" />
         </div>
         <div class="brand-info">
           <div class="brand-title-row">
@@ -1304,6 +1420,16 @@
             <div class="nav-desc">纠错/中英翻译/摘要</div>
           </div>
           <span class="nav-tag" style="background:rgba(16,185,129,0.15);color:#10b981;">AI</span>
+        </button>
+
+        <div class="nav-section-title">协同与互联</div>
+        <button class="nav-item" data-tab="connect" id="tabNavConnect" title="手机扫码快传与局域网协同 (Dali Connect)">
+          <span class="nav-icon">🚀</span>
+          <div class="nav-meta">
+            <div class="nav-title">大梨快传</div>
+            <div class="nav-desc">手机扫码直传/协同</div>
+          </div>
+          <span class="nav-tag" style="background:rgba(234,88,12,0.15);color:#ea580c;">LAN</span>
         </button>
 
         <button class="nav-item" data-tab="history" id="tabNavHistory" title="识别历史记录">
@@ -1507,6 +1633,7 @@
             <div class="row" style="gap: 8px">
               <button type="button" id="pdfCopyBtn" disabled>📋 复制</button>
               <button type="button" id="pdfDownloadBtn" disabled>💾 下载 .txt</button>
+              <button type="button" id="pdfSendToConnectBtn" class="btn-badge-lan" disabled title="将识别文本直接分享到手机端扫码下载">📱 飞送手机</button>
               <button type="button" id="pdfSendToFormatBtn" class="btn-send-format">🚀 发送到排版</button>
               <button type="button" id="pdfSendToDocBtn" class="btn-badge-doc" disabled title="将当前 PDF 识别文本发送到智能文档编辑器导出 Word/PDF/长图">📝 发送到文档</button>
               <button type="button" id="pdfSendToTableBtn" class="btn-badge-table" disabled title="将当前 PDF 发送到表格识别模块进行跨页提取">📊 转为表格</button>
@@ -1588,6 +1715,7 @@
             <div class="row" style="gap: 8px;">
               <button type="button" id="wbCopyBtn" class="primary">📋 复制排版结果</button>
               <button type="button" id="wbDownloadBtn">💾 导出文件</button>
+              <button type="button" id="wbSendToConnectBtn" class="btn-badge-lan" title="将当前排版文本直接分享到手机端扫码下载">📱 飞送手机</button>
               <button type="button" id="wbSendToDocBtn" class="btn-badge-doc" title="将当前排版文本发送到智能文档编辑器导出 Word/PDF/长图">📝 发送到文档</button>
               <button type="button" id="wbSendToAiBtn" class="btn-badge-ai">🤖 发送到 AI 助手</button>
               <button type="button" id="wbClearBtn">🗑️ 清空</button>
@@ -1691,10 +1819,12 @@
             </div>
 
             <div class="row" style="gap: 8px; flex-wrap: wrap;">
-              <button type="button" id="tableCopyTsvBtn" class="primary" disabled title="复制为 Tab 分隔文本，可在 Excel/Numbers/飞书直接 Ctrl/Cmd+V 粘贴为多单元格">📋 复制为 Excel 格式</button>
+              <button type="button" id="tableSendToDocBtn" class="btn-badge-doc" disabled title="将高保真合并表格发送到智能文档工作台，支持实时预览与导出 Word/PDF/长图">📝 发送到智能文档</button>
+              <button type="button" id="tableCopySchemeABtn" class="primary" disabled title="复制高保真 HTML-in-Markdown 格式（自动保留跨行跨列合并单元格，可直接贴入文档）">⭐ 复制高保真表格</button>
+              <button type="button" id="tableCopyTsvBtn" disabled title="复制为 Tab 分隔文本，可在 Excel/Numbers/飞书直接 Ctrl/Cmd+V 粘贴为多单元格">📋 复制为 Excel 格式</button>
               <button type="button" id="tableDownloadCsvBtn" disabled title="导出为带 UTF-8 BOM 的 .csv 表格文件">💾 导出 CSV</button>
-              <button type="button" id="tableCopyMdBtn" disabled title="复制为 Markdown 表格语法">📝 复制 Markdown 表格</button>
-              <button type="button" id="tableSendToDocBtn" class="btn-badge-doc" disabled title="将表格 Markdown 发送到智能文档编辑器导出 Word/PDF/长图">📝 发送到文档</button>
+              <button type="button" id="tableSendToConnectBtn" class="btn-badge-lan" disabled title="将表格导出为 CSV 分享给手机扫码下载">📱 飞送手机</button>
+              <button type="button" id="tableCopyMdBtn" disabled title="复制为普通 Markdown 纯管道符表格（平铺矩阵）">📝 复制普通 MD 表格</button>
               <button type="button" id="tableSendToAiBtn" class="btn-badge-ai" disabled title="发送到 AI 提取结构化数据">🤖 AI 结构化提取</button>
               <button type="button" id="tableAddRowBtn" disabled>➕ 添加行</button>
               <button type="button" id="tableAddColBtn" disabled>➕ 添加列</button>
@@ -1807,6 +1937,90 @@
                 </div>
               </div>
               <div class="ai-output-container" id="aiOutputBox">点击上方预设卡片或点击“开始 AI 处理”后，AI 分析和润色结果将在此流式呈现…</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB: 大梨快传 (Dali Connect) ==================== -->
+      <section class="tab-view" id="viewConnect">
+        <div class="view-header">
+          <div>
+            <h1 class="view-title">🚀 大梨快传 (Dali Connect) · 局域网协同办公</h1>
+            <p class="view-desc">手机免装 App 扫码即传照片与文档至电脑 OCR，支持来图全自动流转识别、局域网协同分发与电脑成稿回传手机。</p>
+          </div>
+        </div>
+
+        <div class="connect-grid">
+          <!-- 左侧：扫码接入控制台 -->
+          <div class="connect-qr-panel">
+            <div class="connect-status-pill">
+              <span class="engine-dot" style="background:#10b981;"></span>
+              <span id="connectStatusText">局域网服务就绪</span>
+            </div>
+
+            <div class="qr-canvas-box" id="connectQrBox"></div>
+
+            <div style="font-size:13px;font-weight:700;margin-bottom:6px;">📱 手机扫码直连</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;line-height:1.4;">
+              同 WiFi 下使用手机（微信 / 相机 / 浏览器）扫码，免安装任何 App，拍照即传电脑！
+            </div>
+
+            <div class="row" style="width:100%;gap:6px;margin-bottom:8px;">
+              <select id="connectIpSelect" style="flex:1;font-size:12px;padding:4px 6px;">
+                <option value="">正在检测局域网IP…</option>
+              </select>
+              <button type="button" id="connectCopyUrlBtn" style="font-size:11px;padding:4px 8px;" title="复制手机直连网址">📋 复制</button>
+            </div>
+
+            <input type="text" id="connectUrlInput" readonly style="width:100%;font-size:11px;text-align:center;background:var(--input-bg);color:var(--text-muted);margin-bottom:12px;" />
+
+            <div style="width:100%;text-align:left;background:var(--bg-app);padding:10px;border-radius:8px;border:1px solid var(--border-color);">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;user-select:none;">
+                <input type="checkbox" id="connectAutoOcrCheck" checked />
+                <span style="font-weight:600;">⚡ 手机来图自动启动 OCR 识别</span>
+              </label>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;padding-left:20px;">
+                开启后，手机拍照上传完毕，电脑直接自动识别文字并复制结果，无需人工点击！
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：手机来件与投送看板 -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <!-- 来件收件箱 (Inbox) -->
+            <div class="card" style="margin:0;">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div class="row" style="gap:8px;align-items:center;">
+                  <h2 style="font-size:14px;margin:0;">📥 手机来件收件箱 (<span id="connectInboxCount">0</span>)</h2>
+                  <span id="connectPollingIndicator" style="font-size:11px;color:var(--text-muted);">● 实时监听中</span>
+                </div>
+                <div class="row" style="gap:6px;">
+                  <button type="button" id="connectRefreshBtn" style="font-size:11px;padding:3px 8px;">🔄 刷新</button>
+                  <button type="button" id="connectClearBtn" style="font-size:11px;padding:3px 8px;">🧹 清空</button>
+                </div>
+              </div>
+
+              <div id="connectInboxEmpty" style="text-align:center;padding:36px 0;color:var(--text-muted);font-size:13px;">
+                <div style="font-size:32px;margin-bottom:8px;">📱</div>
+                <div>等待手机连接并上传…</div>
+                <div style="font-size:11px;margin-top:4px;opacity:0.8;">手机扫码后拍照或选择图片/PDF，此处将即时呈现并支持一键流转</div>
+              </div>
+
+              <div class="connect-inbox-list" id="connectInboxList" style="display:none;"></div>
+            </div>
+
+            <!-- 电脑投送给手机 (Outbox) -->
+            <div class="card" style="margin:0;">
+              <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h2 style="font-size:14px;margin:0;">📤 电脑分享文件给手机 (扫码即可下载)</h2>
+                <button type="button" id="connectShareChooseBtn" class="primary" style="font-size:11px;padding:3px 10px;">➕ 分享文件给手机</button>
+                <input type="file" id="connectShareFileInput" style="display:none;" />
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
+                电脑端导出的 Word、Excel、PDF 或任意资料，可拖入此处或点击分享，手机端即可一键极速下载。
+              </div>
+              <div id="connectSharedList" style="display:flex;flex-direction:column;gap:6px;"></div>
             </div>
           </div>
         </div>
@@ -1981,6 +2195,9 @@
 
   <div class="app-toast" id="appToast">已完成操作</div>
 
+  <!-- Offline QR Code Engine -->
+  <script src="vendor/qrcode.min.js"></script>
+
   <!-- Main JavaScript Module -->
   <script type="module">
     const ORT_WASM_PATHS = "/npm2/onnxruntime-web@1.26.0/dist/";
@@ -2013,7 +2230,7 @@
     // 1. Navigation Routing & Layout Modes
     // ==========================================
     function switchTab(targetTab) {
-      const validTabs = ["image", "pdf", "table", "format", "doc", "ai", "history", "settings"];
+      const validTabs = ["image", "pdf", "table", "format", "doc", "ai", "connect", "history", "settings"];
       if (!validTabs.includes(targetTab)) targetTab = "image";
       state.currentTab = targetTab;
 
@@ -2027,6 +2244,7 @@
       $("viewFormat")?.classList.toggle("active", targetTab === "format");
       $("viewDoc")?.classList.toggle("active", targetTab === "doc");
       $("viewAi")?.classList.toggle("active", targetTab === "ai");
+      $("viewConnect")?.classList.toggle("active", targetTab === "connect");
       $("viewHistory")?.classList.toggle("active", targetTab === "history");
       $("viewSettings")?.classList.toggle("active", targetTab === "settings");
 
@@ -2035,6 +2253,10 @@
       if (targetTab === "format") {
         updateWorkbenchStats();
         updateFindMatchCount();
+      } else if (targetTab === "connect") {
+        refreshConnectInfo();
+        pollConnectEvents(true);
+        loadDesktopSharedFiles();
       } else if (targetTab === "history") {
         refreshHistoryView();
       } else if (targetTab === "settings") {
@@ -3157,6 +3379,7 @@
       $("pdfResult").value = full;
       $("pdfCopyBtn").disabled = !full;
       $("pdfDownloadBtn").disabled = !full;
+      if ($("pdfSendToConnectBtn")) $("pdfSendToConnectBtn").disabled = !full;
       $("pdfSendToFormatBtn").disabled = !full;
       if ($("pdfSendToDocBtn")) $("pdfSendToDocBtn").disabled = !full;
       if ($("pdfSendToAiBtn")) $("pdfSendToAiBtn").disabled = !full;
@@ -3330,6 +3553,14 @@
         a.click();
       });
 
+      $("pdfSendToConnectBtn")?.addEventListener("click", () => {
+        const text = $("pdfResult").value;
+        if (!text) return;
+        const ext = pdfState.docFormat === "md" ? "md" : "txt";
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        shareToMobileDevice(blob, `PDF识别成稿_${Date.now()}.${ext}`);
+      });
+
       $("pdfClearBtn").addEventListener("click", () => {
         pdfState.file = null;
         pdfState.pages = [];
@@ -3337,6 +3568,7 @@
         $("pdfFileInfo").textContent = "未选择文件";
         $("pdfDropHint").style.display = "block";
         $("pdfRunBtn").disabled = true;
+        if ($("pdfSendToConnectBtn")) $("pdfSendToConnectBtn").disabled = true;
         if ($("pdfSendToTableBtn")) $("pdfSendToTableBtn").disabled = true;
         if ($("pdfSendToDocBtn")) $("pdfSendToDocBtn").disabled = true;
         if ($("pdfSendToAiBtn")) $("pdfSendToAiBtn").disabled = true;
@@ -3707,6 +3939,17 @@
         a.href = URL.createObjectURL(blob);
         a.download = `Formatted_${Date.now()}.${ext}`;
         a.click();
+      });
+
+      $("wbSendToConnectBtn")?.addEventListener("click", () => {
+        const text = wbState.viewMode === "single" ? $("wbSingleEditor").value : $("wbProcessedText").value;
+        if (!text) {
+          showToast("暂无可分享的排版文本");
+          return;
+        }
+        const ext = wbState.docFormat === "md" ? "md" : "txt";
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        shareToMobileDevice(blob, `排版成稿_${Date.now()}.${ext}`);
       });
 
       $("wbClearBtn").addEventListener("click", () => {
@@ -4516,7 +4759,7 @@
     }
 
     function setTableActionsEnabled(enabled) {
-      ["tableCopyTsvBtn", "tableDownloadCsvBtn", "tableCopyMdBtn", "tableSendToDocBtn", "tableSendToAiBtn", "tableAddRowBtn", "tableAddColBtn"].forEach((id) => {
+      ["tableCopySchemeABtn", "tableCopyTsvBtn", "tableDownloadCsvBtn", "tableSendToConnectBtn", "tableCopyMdBtn", "tableSendToDocBtn", "tableSendToAiBtn", "tableAddRowBtn", "tableAddColBtn"].forEach((id) => {
         const btn = $(id);
         if (btn) btn.disabled = !enabled;
       });
@@ -4557,6 +4800,197 @@
         rows.push("| " + cells.join(" | ") + " |");
       }
       return rows.join("\n");
+    }
+
+    function computeTableSpans(grid) {
+      if (!grid || !grid.length) return { cellOwner: [], rowCount: 0, colCount: 0 };
+      const rowCount = grid.length;
+      const colCount = Math.max(...grid.map((r) => r ? r.length : 0));
+      if (!colCount) return { cellOwner: [], rowCount: 0, colCount: 0 };
+
+      const cellOwner = Array.from({ length: rowCount }, () => Array(colCount).fill(null));
+
+      // 1. 第一遍扫描：横向计算同一行内的连续空单元格（colspan 跨列合并）
+      for (let r = 0; r < rowCount; r++) {
+        for (let c = 0; c < colCount; c++) {
+          if (cellOwner[r][c]) continue;
+          const text = (grid[r] && grid[r][c] !== undefined ? String(grid[r][c]).trim() : "");
+          if (!text) continue;
+
+          let colspan = 1;
+          while (c + colspan < colCount) {
+            const nextText = (grid[r] && grid[r][c + colspan] !== undefined ? String(grid[r][c + colspan]).trim() : "");
+            if (nextText === "" && !cellOwner[r][c + colspan]) {
+              colspan++;
+            } else {
+              break;
+            }
+          }
+
+          const cellInfo = { r, c, text, colspan, rowspan: 1 };
+          for (let dc = 0; dc < colspan; dc++) {
+            cellOwner[r][c + dc] = cellInfo;
+          }
+        }
+      }
+
+      // 2. 第二遍扫描：纵向计算下方整列的空单元格（rowspan 跨行合并）
+      for (let r = 0; r < rowCount; r++) {
+        for (let c = 0; c < colCount; c++) {
+          const owner = cellOwner[r][c];
+          if (!owner || owner.r !== r || owner.c !== c) continue;
+
+          // 避免全宽行误向下吞噬其他数据行
+          if (owner.colspan > 2 && colCount >= 4) continue;
+
+          let rowspan = 1;
+          let canExtend = true;
+          while (r + rowspan < rowCount && canExtend) {
+            for (let dc = 0; dc < owner.colspan; dc++) {
+              const belowOwner = cellOwner[r + rowspan][c + dc];
+              if (belowOwner !== null) {
+                canExtend = false;
+                break;
+              }
+            }
+            if (canExtend) {
+              rowspan++;
+            }
+          }
+
+          if (rowspan > 1) {
+            owner.rowspan = rowspan;
+            for (let dr = 1; dr < rowspan; dr++) {
+              for (let dc = 0; dc < owner.colspan; dc++) {
+                cellOwner[r + dr][c + dc] = owner;
+              }
+            }
+          }
+        }
+      }
+
+      return { cellOwner, rowCount, colCount };
+    }
+
+    function getTableAsSchemeA(options = {}) {
+      if (!tableState.grid.length) return "";
+      let workingGrid = tableState.grid.map((row) => row.map((c) => (c || "").trim()));
+
+      // 剔除末尾多余的全空行
+      while (workingGrid.length && workingGrid[workingGrid.length - 1].every((c) => !c)) {
+        workingGrid.pop();
+      }
+      if (!workingGrid.length) return "";
+
+      const maxRowCols = Math.max(...workingGrid.map((r) => r.filter((c) => c).length));
+
+      // 1. 智能抽取表头之上的标题行 (单格居中或前两行总字数少的文本)
+      const titles = [];
+      while (workingGrid.length > 2) {
+        const firstRowNonEmpties = workingGrid[0].filter((c) => c.length > 0);
+        if (firstRowNonEmpties.length <= 2 && maxRowCols >= 3) {
+          const text = firstRowNonEmpties.join(" | ");
+          if (titles.length === 0) {
+            titles.push({ level: 1, text });
+          } else {
+            titles.push({ level: 2, text });
+          }
+          workingGrid.shift();
+        } else {
+          break;
+        }
+      }
+
+      // 2. 智能抽取末尾备注
+      let detectedRemark = options.remarks || "";
+      if (!detectedRemark && workingGrid.length > 2) {
+        const lastRowNonEmpties = workingGrid[workingGrid.length - 1].filter((c) => c.length > 0);
+        if (lastRowNonEmpties.length === 1 && (/^备注|^注[：:]/i.test(lastRowNonEmpties[0]) || lastRowNonEmpties[0].length > 15)) {
+          detectedRemark = lastRowNonEmpties[0];
+          workingGrid.pop();
+        }
+      }
+
+      const colCount = Math.max(...workingGrid.map((r) => r.length));
+      const rowCount = workingGrid.length;
+      workingGrid = workingGrid.map((r) => {
+        while (r.length < colCount) r.push("");
+        return r;
+      });
+
+      const { cellOwner } = computeTableSpans(workingGrid);
+      const htmlRows = [];
+
+      for (let r = 0; r < rowCount; r++) {
+        const rowCells = [];
+        const isHeaderRow = (r === 0);
+
+        for (let c = 0; c < colCount; c++) {
+          const owner = cellOwner[r][c];
+          if (!owner) {
+            const tag = isHeaderRow ? "th" : "td";
+            rowCells.push(`<${tag}>-</${tag}>`);
+            continue;
+          }
+          if (owner.r !== r || owner.c !== c) {
+            continue;
+          }
+
+          const tag = (isHeaderRow && owner.rowspan === 1) ? "th" : "td";
+          const attrs = [];
+          if (owner.colspan > 1) attrs.push(`colspan="${owner.colspan}"`);
+          if (owner.rowspan > 1) attrs.push(`rowspan="${owner.rowspan}"`);
+
+          const styles = [];
+          if (isHeaderRow) {
+            styles.push("background:#f3f5f8; font-weight:bold;");
+          } else if (owner.colspan >= 3 && owner.rowspan === 1) {
+            styles.push("background:#fff7ed; font-weight:600; color:#c2410c;");
+          }
+
+          if (owner.rowspan >= 3 && owner.text.length <= 4) {
+            styles.push("background:#eff6ff; font-weight:bold; width:6%; writing-mode:vertical-rl; letter-spacing:4px; color:#1d4ed8;");
+          }
+
+          if (styles.length) {
+            attrs.push(`style="${styles.join(" ")}"`);
+          }
+
+          const attrStr = attrs.length ? (" " + attrs.join(" ")) : "";
+          const safeText = escapeHtml(owner.text).replace(/\n/g, "<br>");
+          rowCells.push(`<${tag}${attrStr}>${safeText}</${tag}>`);
+        }
+
+        if (rowCells.length > 0) {
+          htmlRows.push(`<tr>\n${rowCells.join("\n")}\n</tr>`);
+        }
+      }
+
+      const baseName = (tableState.fileName || "表格数据").replace(/\.[^/.]+$/, "");
+      let md = "";
+      if (titles.length) {
+        titles.forEach((t) => {
+          if (t.level === 1) md += `# ${t.text}\n\n`;
+          else md += `> **${t.text}**\n\n`;
+        });
+      } else {
+        md += `# ${options.title || baseName}\n\n`;
+        if (options.subtitle) {
+          md += `> ${options.subtitle}\n\n`;
+        }
+      }
+
+      md += `<table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse; width:100%; text-align:center; font-size:13px; margin: 16px 0;">\n`;
+      md += `<tbody>\n`;
+      md += htmlRows.join("\n") + "\n";
+      md += `</tbody>\n`;
+      md += `</table>\n`;
+
+      if (detectedRemark) {
+        md += `\n> 📌 **备注**：${escapeHtml(detectedRemark.replace(/^备注[：:]\s*/, ""))}\n`;
+      }
+
+      return md;
     }
 
     async function acceptTableFile(file) {
@@ -4806,21 +5240,36 @@
         showToast("已导出 CSV 表格文件 ✓");
       });
 
+      $("tableSendToConnectBtn")?.addEventListener("click", () => {
+        const csv = getTableAsCsv();
+        if (!csv) return;
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        const name = `${tableState.fileName ? tableState.fileName.replace(/\.[^/.]+$/, "") : "Table"}_${Date.now()}.csv`;
+        shareToMobileDevice(blob, name);
+      });
+
+      $("tableCopySchemeABtn")?.addEventListener("click", async () => {
+        const md = getTableAsSchemeA();
+        if (!md) return;
+        await copyText(md);
+        showToast("已复制高保真 HTML-in-Markdown 表格（方案 A 模式，保留合并单元格） ✓");
+      });
+
       $("tableCopyMdBtn")?.addEventListener("click", async () => {
         const md = getTableAsMarkdown();
         if (!md) return;
         await copyText(md);
-        showToast("已复制 Markdown 表格格式 ✓");
+        showToast("已复制普通 Markdown 纯管道符表格 ✓");
       });
 
       $("tableSendToDocBtn")?.addEventListener("click", () => {
-        const md = getTableAsMarkdown();
+        const md = getTableAsSchemeA();
         if (!md) return;
         sendToDocEditor(md, tableState.fileName || "表格数据");
       });
 
       $("tableSendToAiBtn")?.addEventListener("click", () => {
-        const md = getTableAsMarkdown();
+        const md = getTableAsSchemeA();
         if (!md) return;
         sendToAiAssistant(md, "invoice");
       });
@@ -5046,6 +5495,392 @@
     }
 
     // ==========================================
+    // 11. Dali Connect Engine (局域网协同与手机快传)
+    // ==========================================
+    const connectState = {
+      info: null,
+      events: [],
+      sharedFiles: [],
+      pollTimer: null,
+      autoOcr: localStorage.getItem("dali_connect_auto_ocr") !== "false",
+      processedIds: new Set(),
+      qrInstance: null
+    };
+
+    async function initConnectService() {
+      // 偏好设置
+      const autoOcrCheck = $("connectAutoOcrCheck");
+      if (autoOcrCheck) {
+        autoOcrCheck.checked = connectState.autoOcr;
+        autoOcrCheck.addEventListener("change", (e) => {
+          connectState.autoOcr = e.target.checked;
+          localStorage.setItem("dali_connect_auto_ocr", e.target.checked ? "true" : "false");
+          showToast(e.target.checked ? "已开启：手机来图自动识别 OCR" : "已关闭自动识别");
+        });
+      }
+
+      $("connectCopyUrlBtn")?.addEventListener("click", async () => {
+        const url = $("connectUrlInput").value;
+        if (!url) return;
+        await copyText(url);
+        showToast("已复制手机直连网址到剪贴板 ✓");
+      });
+
+      $("connectIpSelect")?.addEventListener("change", (e) => {
+        let chosenIp = e.target.value;
+        if (chosenIp === "custom") {
+          const manual = prompt("请输入您电脑当前的局域网 IP（例如 192.168.1.100 或 10.0.0.15）:");
+          if (manual && manual.trim()) {
+            chosenIp = manual.trim();
+            const opt = document.createElement("option");
+            opt.value = chosenIp;
+            opt.textContent = `${chosenIp} (手动设置)`;
+            $("connectIpSelect").insertBefore(opt, $("connectIpSelect").firstChild);
+            $("connectIpSelect").value = chosenIp;
+          } else {
+            $("connectIpSelect").value = connectState.info?.primaryIp || "";
+            return;
+          }
+        }
+        if (!chosenIp) return;
+        const port = connectState.info?.port || (window.location.port || 8000);
+        const mobileUrl = `http://${chosenIp}:${port}/mobile.html`;
+        $("connectUrlInput").value = mobileUrl;
+        renderQrCode(mobileUrl);
+      });
+
+      $("connectRefreshBtn")?.addEventListener("click", () => {
+        pollConnectEvents(true);
+        loadDesktopSharedFiles();
+        showToast("已刷新手机来件箱 ✓");
+      });
+
+      $("connectClearBtn")?.addEventListener("click", async () => {
+        try {
+          await fetch("/api/connect/clear", { method: "POST" });
+          connectState.events = [];
+          renderConnectInbox();
+          showToast("已清空手机来件列表");
+        } catch (_) {}
+      });
+
+      // 电脑分享文件给手机
+      const shareInput = $("connectShareFileInput");
+      $("connectShareChooseBtn")?.addEventListener("click", () => shareInput?.click());
+      shareInput?.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files.length) {
+          uploadFileToShared(e.target.files[0]);
+        }
+        e.target.value = "";
+      });
+
+      // 获取服务端连接信息并生成二维码
+      await refreshConnectInfo();
+
+      // 启动轮询监听（每 1.5 秒拉取一次手机来件）
+      startConnectPolling();
+      loadDesktopSharedFiles();
+    }
+
+    function isPhysicalLanIp(ip) {
+      if (!ip || typeof ip !== "string") return false;
+      if (ip.startsWith("127.") || ip.startsWith("198.18.") || ip.startsWith("198.19.") || ip.startsWith("169.254.") || ip.startsWith("0.")) return false;
+      return ip.startsWith("192.168.") || ip.startsWith("10.") || /^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(ip);
+    }
+
+    async function refreshConnectInfo() {
+      try {
+        const res = await fetch("/api/connect/info");
+        if (res.ok) {
+          const info = await res.json();
+          connectState.info = info;
+
+          const rawIps = Array.isArray(info.allIps) ? info.allIps : (info.primaryIp ? [info.primaryIp] : []);
+          const validIps = rawIps.filter(isPhysicalLanIp);
+
+          // 优先检测当前访问浏览器的 hostname 是否为有效局域网 IP
+          const curHost = window.location.hostname;
+          if (isPhysicalLanIp(curHost) && !validIps.includes(curHost)) {
+            validIps.unshift(curHost);
+          }
+
+          const primary = validIps[0] || info.primaryIp || curHost || "127.0.0.1";
+          const port = info.port || window.location.port || 8000;
+
+          const ipSelect = $("connectIpSelect");
+          ipSelect.innerHTML = "";
+          validIps.forEach((ip) => {
+            const opt = document.createElement("option");
+            opt.value = ip;
+            opt.textContent = `${ip} ${ip.startsWith("192.168.") ? "(局域网 WiFi / 推荐)" : "(物理网卡)"}`;
+            ipSelect.appendChild(opt);
+          });
+
+          // 添加手动输入选项
+          const customOpt = document.createElement("option");
+          customOpt.value = "custom";
+          customOpt.textContent = "✏️ 手动输入局域网 IP…";
+          ipSelect.appendChild(customOpt);
+
+          ipSelect.value = primary;
+
+          const mobileUrl = `http://${primary}:${port}/mobile.html`;
+          $("connectUrlInput").value = mobileUrl;
+          $("connectStatusText").textContent = `服务就绪 :${port}`;
+
+          renderQrCode(mobileUrl);
+        }
+      } catch (err) {
+        $("connectStatusText").textContent = "离线/独立模式";
+        const curHost = window.location.hostname || "127.0.0.1";
+        const port = window.location.port || 8000;
+        const fallbackUrl = `http://${curHost}:${port}/mobile.html`;
+        $("connectUrlInput").value = fallbackUrl;
+        renderQrCode(fallbackUrl);
+      }
+    }
+
+    function renderQrCode(url) {
+      const qrBox = $("connectQrBox");
+      if (!qrBox) return;
+      qrBox.innerHTML = "";
+      if (typeof QRCode !== "undefined") {
+        try {
+          new QRCode(qrBox, {
+            text: url,
+            width: 184,
+            height: 184,
+            colorDark: "#0f172a",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        } catch (_) {}
+      } else {
+        qrBox.innerHTML = `<div style="font-size:11px;color:#94a3b8;padding:40px 10px;">二维码渲染就绪<br>${url}</div>`;
+      }
+    }
+
+    function startConnectPolling() {
+      if (connectState.pollTimer) clearInterval(connectState.pollTimer);
+      connectState.pollTimer = setInterval(() => {
+        pollConnectEvents(false);
+      }, 1500);
+    }
+
+    async function pollConnectEvents(manual = false) {
+      try {
+        const res = await fetch("/api/connect/events");
+        if (!res.ok) return;
+        const data = await res.json();
+        const incomingEvents = data.events || [];
+
+        // 检查是否有全新来件
+        let newItems = [];
+        incomingEvents.forEach((item) => {
+          if (!connectState.processedIds.has(item.id)) {
+            newItems.push(item);
+            connectState.processedIds.add(item.id);
+          }
+        });
+
+        connectState.events = incomingEvents;
+        renderConnectInbox();
+
+        // 收到全新来件时的反馈
+        if (newItems.length > 0 && !manual) {
+          const first = newItems[0];
+          showToast(`📱 收到来自手机的来件: ${first.name}`);
+
+          // 如果开启了自动 OCR 且首个来件是图片
+          if (connectState.autoOcr && first.category === "image") {
+            setTimeout(() => {
+              dispatchConnectItem(first, "ocr_image", true);
+            }, 300);
+          }
+        }
+      } catch (_) {}
+    }
+
+    function renderConnectInbox() {
+      const list = $("connectInboxList");
+      const empty = $("connectInboxEmpty");
+      const countLabel = $("connectInboxCount");
+      if (!list || !empty) return;
+
+      const events = connectState.events || [];
+      countLabel.textContent = events.length;
+
+      if (events.length === 0) {
+        empty.style.display = "block";
+        list.style.display = "none";
+        list.innerHTML = "";
+        return;
+      }
+
+      empty.style.display = "none";
+      list.style.display = "flex";
+      list.innerHTML = "";
+
+      events.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "inbox-item-card";
+
+        let icon = "📄";
+        if (item.category === "image") icon = "🖼️";
+        else if (item.category === "pdf") icon = "📑";
+        else if (item.category === "text") icon = "📋";
+
+        const sizeKb = (item.size / 1024).toFixed(1);
+        const timeStr = new Date(item.timestamp * 1000).toLocaleTimeString();
+
+        let actionHtml = "";
+        if (item.category === "image") {
+          actionHtml = `
+            <button type="button" class="btn-badge-ai" data-id="${item.id}" data-action="ocr_image" style="font-size:11px;padding:3px 8px;">⚡ 图片OCR</button>
+            <button type="button" class="btn-badge-table" data-id="${item.id}" data-action="ocr_table" style="font-size:11px;padding:3px 8px;">📊 表格</button>
+            <button type="button" class="btn-badge-doc" data-id="${item.id}" data-action="doc_insert" style="font-size:11px;padding:3px 8px;">📝 文档</button>
+          `;
+        } else if (item.category === "pdf") {
+          actionHtml = `
+            <button type="button" class="primary" data-id="${item.id}" data-action="ocr_pdf" style="font-size:11px;padding:3px 8px;">📑 PDF识别</button>
+            <button type="button" class="btn-badge-table" data-id="${item.id}" data-action="ocr_table" style="font-size:11px;padding:3px 8px;">📊 表格</button>
+          `;
+        } else if (item.category === "text") {
+          actionHtml = `
+            <button type="button" class="primary" data-id="${item.id}" data-action="format" style="font-size:11px;padding:3px 8px;">✨ 智能排版</button>
+            <button type="button" class="btn-badge-doc" data-id="${item.id}" data-action="doc_insert" style="font-size:11px;padding:3px 8px;">📝 文档</button>
+          `;
+        }
+        actionHtml += `
+          <a href="/api/connect/file/${item.id}" download="${item.name}" style="font-size:11px;padding:3px 8px;border:1px solid var(--border-color);border-radius:var(--radius-sm);text-decoration:none;color:var(--text-primary);display:inline-flex;align-items:center;">💾 下载</a>
+        `;
+
+        card.innerHTML = `
+          <div class="inbox-item-left">
+            <div class="inbox-icon">${icon}</div>
+            <div class="inbox-meta">
+              <div class="inbox-name" title="${item.name}">${item.name}</div>
+              <div class="inbox-sub">
+                <span>${sizeKb} KB</span>
+                <span>来自 ${item.senderIp || "手机"}</span>
+                <span>${timeStr}</span>
+              </div>
+            </div>
+          </div>
+          <div class="inbox-actions">
+            ${actionHtml}
+          </div>
+        `;
+
+        card.querySelectorAll("[data-action]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const act = btn.dataset.action;
+            dispatchConnectItem(item, act);
+          });
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+    async function dispatchConnectItem(item, action, autoStart = false) {
+      showToast(`正在从局域网载入 ${item.name}…`);
+      try {
+        const res = await fetch(`/api/connect/file/${item.id}`);
+        const blob = await res.blob();
+        const file = new File([blob], item.name, { type: item.mimetype || blob.type });
+
+        if (action === "ocr_image") {
+          switchTab("image");
+          acceptFiles([file]);
+          if (autoStart) {
+            setTimeout(() => {
+              const runBtn = $("runBtn");
+              if (runBtn && !runBtn.disabled) runBtn.click();
+            }, 600);
+          }
+          showToast(`已将手机图片导入图片文字识别 ✓`);
+        } else if (action === "ocr_pdf") {
+          switchTab("pdf");
+          acceptPdfFile(file);
+          showToast(`已将手机 PDF 导入识别工作台 ✓`);
+        } else if (action === "ocr_table") {
+          switchTab("table");
+          acceptTableFile(file);
+          showToast(`已将手机表格文件载入表格识别 ✓`);
+        } else if (action === "format") {
+          const text = await blob.text();
+          sendToWorkbench(text, `手机发送: ${item.name}`);
+        } else if (action === "doc_insert") {
+          if (item.category === "image") {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const mdImg = `![${item.name}](${reader.result})\n\n`;
+              sendToDocEditor(mdImg, "手机图片导入文档");
+            };
+            reader.readAsDataURL(blob);
+          } else {
+            const text = await blob.text();
+            sendToDocEditor(text, item.name);
+          }
+        }
+      } catch (e) {
+        showToast("读取文件失败: " + e.message);
+      }
+    }
+
+    // 电脑分享文件给手机 (Outbox)
+    async function uploadFileToShared(file) {
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const res = await fetch("/api/connect/share", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`已将 ${file.name} 共享至手机端，手机扫码即可下载 ✓`);
+          loadDesktopSharedFiles();
+        }
+      } catch (err) {
+        showToast("分享失败: " + err.message);
+      }
+    }
+
+    async function loadDesktopSharedFiles() {
+      try {
+        const res = await fetch("/api/connect/shared");
+        const data = await res.json();
+        const container = $("connectSharedList");
+        if (!container) return;
+        container.innerHTML = "";
+        const files = data.files || [];
+        if (files.length === 0) {
+          container.innerHTML = `<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:10px 0;">暂无电脑共享文件</div>`;
+          return;
+        }
+        files.forEach((f) => {
+          const div = document.createElement("div");
+          div.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg-app);border-radius:6px;border:1px solid var(--border-color);font-size:12px;";
+          const sizeKb = (f.size / 1024).toFixed(1);
+          div.innerHTML = `
+            <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px;">📄 <b>${f.name}</b> (${sizeKb} KB)</div>
+            <a href="/api/connect/shared/${f.id}" download="${f.name}" style="font-size:11px;color:var(--primary);text-decoration:none;">下载</a>
+          `;
+          container.appendChild(div);
+        });
+      } catch (_) {}
+    }
+
+    window.shareToMobileDevice = (fileOrBlob, filename = "共享文件.txt") => {
+      const file = fileOrBlob instanceof File ? fileOrBlob : new File([fileOrBlob], filename);
+      uploadFileToShared(file);
+      switchTab("connect");
+    };
+
+    // ==========================================
     // 12. App Bootstrap
     // ==========================================
     window.addEventListener("DOMContentLoaded", () => {
@@ -5055,6 +5890,7 @@
       initPreferences();
       initLicenseEvents();
       initHistoryEvents();
+      initConnectService();
       initTableEvents();
       initAiEvents();
       initImageEvents();

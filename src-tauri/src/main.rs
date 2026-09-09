@@ -70,7 +70,7 @@ fn guess_mime(path_str: &str) -> &'static str {
 }
 
 fn start_local_server(asset_dir: PathBuf) -> u16 {
-    let server = Server::http("127.0.0.1:0").expect("Failed to bind local server");
+    let server = Server::http("0.0.0.0:0").expect("Failed to bind local server");
     let port = server.server_addr().to_ip().map(|a| a.port()).unwrap_or(8000);
 
     thread::spawn(move || {
