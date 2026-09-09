@@ -2,8 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::fs;
-use std::io::Read;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::sync::Mutex;
 use std::thread;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -711,46 +710,43 @@ fn start_local_server(asset_dir: PathBuf) -> u16 {
                 let mut body = Vec::new();
                 let _ = request.as_reader().read_to_end(&mut body);
 
-                let mut shared_success = false;
-                if let Some(boundary) = extract_boundary(&content_type) {
+                let found_file = if let Some(boundary) = extract_boundary(&content_type) {
                     let parts = parse_multipart(&body, &boundary);
-                    for p in parts {
-                        if (p.name == "file" || p.filename.is_some()) && !p.data.is_empty() {
-                            let fname = p.filename.unwrap_or_else(|| "shared_file".to_string());
-                            let mime = p.content_type.unwrap_or_else(|| "application/octet-stream".to_string());
-                            let item_id = generate_id();
-                            let now = SystemTime::now()
-                                .duration_since(UNIX_EPOCH)
-                                .map(|d| d.as_secs())
-                                .unwrap_or(0);
+                    parts.into_iter().find(|p| (p.name == "file" || p.filename.is_some()) && !p.data.is_empty())
+                } else {
+                    None
+                };
 
-                            let item = SharedItem {
-                                id: item_id.clone(),
-                                name: fname.clone(),
-                                size: p.data.len(),
-                                mimetype: mime,
-                                timestamp: now,
-                                data: p.data,
-                            };
+                if let Some(p) = found_file {
+                    let fname = p.filename.unwrap_or_else(|| "shared_file".to_string());
+                    let mime = p.content_type.unwrap_or_else(|| "application/octet-stream".to_string());
+                    let item_id = generate_id();
+                    let now = SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .map(|d| d.as_secs())
+                        .unwrap_or(0);
 
-                            let mut lock = SHARED_FILES.lock().unwrap();
-                            lock.insert(0, item);
-                            while lock.len() > MAX_STORE_ITEMS {
-                                lock.pop();
-                            }
+                    let item = SharedItem {
+                        id: item_id.clone(),
+                        name: fname.clone(),
+                        size: p.data.len(),
+                        mimetype: mime,
+                        timestamp: now,
+                        data: p.data,
+                    };
 
-                            respond_json(
-                                request,
-                                200,
-                                &serde_json::json!({ "success": true, "id": item_id, "name": fname }),
-                            );
-                            shared_success = true;
-                            break;
-                        }
+                    let mut lock = SHARED_FILES.lock().unwrap();
+                    lock.insert(0, item);
+                    while lock.len() > MAX_STORE_ITEMS {
+                        lock.pop();
                     }
-                }
 
-                if !shared_success {
+                    respond_json(
+                        request,
+                        200,
+                        &serde_json::json!({ "success": true, "id": item_id, "name": fname }),
+                    );
+                } else {
                     respond_json(request, 400, &serde_json::json!({ "error": "Invalid share upload" }));
                 }
                 continue;
