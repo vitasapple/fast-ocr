@@ -5537,10 +5537,13 @@
             opt.textContent = `${chosenIp} (手动设置)`;
             $("connectIpSelect").insertBefore(opt, $("connectIpSelect").firstChild);
             $("connectIpSelect").value = chosenIp;
+            localStorage.setItem("dali_last_lan_ip", chosenIp);
           } else {
             $("connectIpSelect").value = connectState.info?.primaryIp || "";
             return;
           }
+        } else if (chosenIp) {
+          localStorage.setItem("dali_last_lan_ip", chosenIp);
         }
         if (!chosenIp) return;
         const port = connectState.info?.port || (window.location.port || 8000);
@@ -5589,55 +5592,77 @@
     }
 
     async function refreshConnectInfo() {
-      try {
-        const res = await fetch("/api/connect/info");
-        if (res.ok) {
-          const info = await res.json();
-          connectState.info = info;
+      let info = null;
 
-          const rawIps = Array.isArray(info.allIps) ? info.allIps : (info.primaryIp ? [info.primaryIp] : []);
-          const validIps = rawIps.filter(isPhysicalLanIp);
-
-          // 优先检测当前访问浏览器的 hostname 是否为有效局域网 IP
-          const curHost = window.location.hostname;
-          if (isPhysicalLanIp(curHost) && !validIps.includes(curHost)) {
-            validIps.unshift(curHost);
-          }
-
-          const primary = validIps[0] || info.primaryIp || curHost || "127.0.0.1";
-          const port = info.port || window.location.port || 8000;
-
-          const ipSelect = $("connectIpSelect");
-          ipSelect.innerHTML = "";
-          validIps.forEach((ip) => {
-            const opt = document.createElement("option");
-            opt.value = ip;
-            opt.textContent = `${ip} ${ip.startsWith("192.168.") ? "(局域网 WiFi / 推荐)" : "(物理网卡)"}`;
-            ipSelect.appendChild(opt);
-          });
-
-          // 添加手动输入选项
-          const customOpt = document.createElement("option");
-          customOpt.value = "custom";
-          customOpt.textContent = "✏️ 手动输入局域网 IP…";
-          ipSelect.appendChild(customOpt);
-
-          ipSelect.value = primary;
-
-          const mobileUrl = `http://${primary}:${port}/mobile.html`;
-          $("connectUrlInput").value = mobileUrl;
-          $("connectStatusText").textContent = `服务就绪 :${port}`;
-
-          renderQrCode(mobileUrl);
+      // 1. 优先调用 Tauri 原生 IPC 获取局域网信息（桌面打包环境）
+      if (window.__TAURI__?.core?.invoke) {
+        try {
+          info = await window.__TAURI__.core.invoke("get_lan_info");
+        } catch (e) {
+          console.warn("Tauri get_lan_info IPC fallback to HTTP:", e);
         }
-      } catch (err) {
-        $("connectStatusText").textContent = "离线/独立模式";
-        const curHost = window.location.hostname || "127.0.0.1";
-        const port = window.location.port || 8000;
-        const fallbackUrl = `http://${curHost}:${port}/mobile.html`;
-        $("connectUrlInput").value = fallbackUrl;
-        renderQrCode(fallbackUrl);
       }
+
+      // 2. HTTP API 兜底
+      if (!info) {
+        try {
+          const res = await fetch("/api/connect/info");
+          if (res.ok) {
+            info = await res.json();
+          }
+        } catch (err) {
+          console.warn("Fetch /api/connect/info failed:", err);
+        }
+      }
+
+      // 3. 提取有效物理局域网 IP
+      const rawIps = (info && Array.isArray(info.allIps)) ? info.allIps : (info?.primaryIp ? [info.primaryIp] : []);
+      let validIps = rawIps.filter(isPhysicalLanIp);
+
+      const curHost = window.location.hostname;
+      if (isPhysicalLanIp(curHost) && !validIps.includes(curHost)) {
+        validIps.unshift(curHost);
+      }
+
+      const savedIp = localStorage.getItem("dali_last_lan_ip");
+      if (savedIp && isPhysicalLanIp(savedIp) && !validIps.includes(savedIp)) {
+        validIps.push(savedIp);
+      }
+
+      if (validIps.length === 0) {
+        validIps = [curHost && curHost !== "localhost" && curHost !== "" ? curHost : "127.0.0.1"];
+      }
+
+      const primary = (savedIp && validIps.includes(savedIp)) ? savedIp : (validIps[0] || "127.0.0.1");
+      const port = info?.port || window.location.port || 8000;
+
+      connectState.info = info || { status: "ok", port, primaryIp: primary, allIps: validIps };
+
+      // 填充 IP 下拉列表，保证不处于“正在检测”卡顿状态
+      const ipSelect = $("connectIpSelect");
+      if (ipSelect) {
+        ipSelect.innerHTML = "";
+        validIps.forEach((ip) => {
+          const opt = document.createElement("option");
+          opt.value = ip;
+          const isWifi = ip.startsWith("192.168.");
+          opt.textContent = `${ip} ${isWifi ? "(局域网 WiFi / 推荐)" : "(物理网卡)"}`;
+          ipSelect.appendChild(opt);
+        });
+
+        const customOpt = document.createElement("option");
+        customOpt.value = "custom";
+        customOpt.textContent = "✏️ 手动输入局域网 IP…";
+        ipSelect.appendChild(customOpt);
+
+        ipSelect.value = primary;
+      }
+
+      const mobileUrl = `http://${primary}:${port}/mobile.html`;
+      if ($("connectUrlInput")) $("connectUrlInput").value = mobileUrl;
+      if ($("connectStatusText")) $("connectStatusText").textContent = `服务就绪 :${port}`;
+
+      renderQrCode(mobileUrl);
     }
 
     function renderQrCode(url) {

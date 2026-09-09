@@ -1,6 +1,6 @@
 {
   "name": "dali-ocr",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "大梨OCR 离线桌面版（支持 Windows / macOS）",
   "private": true,
   "scripts": {

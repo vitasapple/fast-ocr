@@ -1,6 +1,6 @@
 [package]
 name = "dali-ocr"
-version = "1.0.0"
+version = "0.0.1"
 description = "DaLi OCR Desktop Application"
 authors = ["DaLi OCR"]
 edition = "2021"
