@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   build-windows:
@@ -106,40 +107,79 @@ jobs:
       - name: List downloaded release assets
         run: ls -la release-assets/
 
-      - name: Auto-clean stale assets from existing release
+      - name: Auto-clean all old releases, assets and previous run records
         uses: actions/github-script@v7
         env:
           TAG_NAME: ${{ steps.app-version.outputs.tag_name }}
         with:
           script: |
-            const tag = process.env.TAG_NAME;
+            const currentTag = process.env.TAG_NAME;
+            // 1. Delete old releases and their assets
             try {
-              const release = await github.rest.repos.getReleaseByTag({
+              const releases = await github.rest.repos.listReleases({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                tag: tag
+                per_page: 50
               });
-              if (release && release.data && release.data.assets && release.data.assets.length > 0) {
-                console.log(`Found ${release.data.assets.length} existing assets for ${tag}. Cleaning old files...`);
-                for (const asset of release.data.assets) {
-                  console.log(`Deleting stale asset: ${asset.name} (id: ${asset.id})`);
-                  await github.rest.repos.deleteReleaseAsset({
+              for (const rel of releases.data) {
+                console.log(`Processing release ${rel.tag_name} (id: ${rel.id})...`);
+                for (const asset of rel.assets) {
+                  console.log(`Deleting asset: ${asset.name} (id: ${asset.id})`);
+                  try {
+                    await github.rest.repos.deleteReleaseAsset({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      asset_id: asset.id
+                    });
+                  } catch (e) {
+                    console.log('Asset delete error:', e.message);
+                  }
+                }
+                try {
+                  await github.rest.repos.deleteRelease({
                     owner: context.repo.owner,
                     repo: context.repo.repo,
-                    asset_id: asset.id
+                    release_id: rel.id
                   });
+                  console.log(`Deleted release ${rel.tag_name}`);
+                } catch (e) {
+                  console.log('Release delete error:', e.message);
                 }
-                console.log('Old assets cleaned successfully.');
               }
             } catch (err) {
-              console.log('No existing release found (a new one will be created):', err.message);
+              console.log('Error listing releases:', err.message);
+            }
+
+            // 2. Delete old completed workflow runs
+            try {
+              const runs = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 50
+              });
+              for (const r of runs.data.workflow_runs) {
+                if (r.id !== context.runId && r.status === 'completed') {
+                  console.log(`Deleting old workflow run #${r.run_number} (${r.id})`);
+                  try {
+                    await github.rest.actions.deleteWorkflowRun({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      run_id: r.id
+                    });
+                  } catch (e) {
+                    console.log('Run delete error:', e.message);
+                  }
+                }
+              }
+            } catch (err) {
+              console.log('Error listing workflow runs:', err.message);
             }
 
       - name: Publish Fresh Clean Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.app-version.outputs.tag_name }}
-          name: "大梨OCR Desktop ${{ steps.app-version.outputs.tag_name }}"
+          name: "Release ${{ steps.app-version.outputs.tag_name }}"
           draft: false
           prerelease: false
           files: |
