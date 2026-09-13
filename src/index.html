@@ -1296,22 +1296,113 @@
       color: #ffffff;
       box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
     }
-    .machine-code-box {
-      display: flex;
+    /* 更新检测模态弹窗 */
+    .update-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 99999;
+      display: none;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      padding: 20px;
+    }
+    .update-modal-overlay.show {
+      display: flex;
+    }
+    .update-modal-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin: 10px 0 16px;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .machine-code-text {
-      font-family: var(--font-mono);
-      font-size: 14px;
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .update-modal-header {
+      padding: 18px 22px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .update-badge {
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 1px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: var(--primary-light);
       color: var(--primary);
+    }
+    .update-badge.force {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+    .update-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .update-close-btn:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-primary);
+    }
+    .update-modal-body {
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .update-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+    .update-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .update-changelog-box {
+      background: rgba(0, 0, 0, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      max-height: 180px;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+    }
+    .update-modal-footer {
+      padding: 14px 22px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      border-top: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.01);
     }
     .settings-group {
       margin-bottom: 24px;
@@ -2080,42 +2171,22 @@
               <span style="font-size: 16px; font-weight: 700;">💎 商业授权激活状态</span>
               <span class="license-status-tag trial" id="licenseStatusTag">🟡 试用版 / 未激活</span>
             </div>
-            <span id="licenseTypeLabel" style="font-size: 12px; color: var(--text-muted);">一机一码终身买断制</span>
+            <span id="licenseTypeLabel" style="font-size: 12px; color: var(--text-muted);">永久买断制终身商业授权</span>
           </div>
 
-          <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">
-            每一台设备拥有专属设备硬件识别码。输入与机器码绑定的离线商业授权激活密钥，即可解锁无限批量识别、表格极速导出、永久免联网离线商业授权。
+          <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 14px; line-height: 1.6;">
+            纯本地离线算法验证，零联网请求，保护隐私。输入您购买的 16 位 PRO 商业激活码（卡密），即可瞬间解锁无限量表格智能还原、高精批量排版与终身离线商业权益。
           </p>
 
-          <div class="machine-code-box">
-            <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">本机机器码:</span>
-            <span class="machine-code-text" id="licenseMachineCode">正在生成本机硬件码…</span>
-            <button type="button" id="licenseCopyCodeBtn" style="font-size: 12px; padding: 4px 10px; margin-left: auto;">📋 复制机器码</button>
-          </div>
-
           <div class="row" style="gap: 10px; align-items: center; flex-wrap: wrap;">
-            <input type="text" id="licenseKeyInput" placeholder="请输入 16 位离线商业激活码 (如: XXXX-XXXX-XXXX-XXXX)" style="flex: 1; min-width: 260px; font-family: var(--font-mono); text-transform: uppercase;" />
+            <input type="text" id="licenseKeyInput" placeholder="请输入 16 位 PRO 激活码 (如: DALI-XXXX-XXXX-XXXX)" style="flex: 1; min-width: 280px; font-family: var(--font-mono); text-transform: uppercase;" />
             <button type="button" id="licenseActivateBtn" class="primary">🔑 立即激活 PRO</button>
             <button type="button" id="licenseDeactivateBtn" class="danger" style="display: none;">解除激活</button>
           </div>
 
-          <!-- Merchant Generator for Software Seller -->
-          <div style="margin-top: 14px; border-top: 1px dashed rgba(139, 92, 246, 0.3); padding-top: 10px;">
-            <details style="font-size: 12px; color: var(--text-muted);">
-              <summary style="cursor: pointer; user-select: none;">💼 商户管理工具：离线激活密钥算号器 (点击展开)</summary>
-              <div style="margin-top: 10px; background: var(--bg-card); padding: 12px; border-radius: 6px; border: 1px solid var(--border-color);">
-                <p style="margin: 0 0 8px; font-size: 11.5px;">此模块供软件开发者向付费客户离线发卡使用。输入客户发送给你的机器码，即可实时算出发卡激活密钥：</p>
-                <div class="row" style="gap: 8px;">
-                  <input type="text" id="sellerMachineInput" placeholder="输入客户机器码..." style="flex: 1; font-size: 12px;" />
-                  <button type="button" id="sellerGenKeyBtn" style="font-size: 12px;">生成客户密钥</button>
-                </div>
-                <div id="sellerResultRow" style="margin-top: 8px; display: none;">
-                  <span style="font-size: 11px;">生成密钥:</span>
-                  <span id="sellerKeyResult" style="font-weight: 700; font-family: var(--font-mono); color: #10b981; margin-left: 6px;"></span>
-                  <button type="button" id="sellerCopyKeyBtn" style="margin-left: 10px; font-size: 11px; padding: 2px 8px;">复制发给客户</button>
-                </div>
-              </div>
-            </details>
+          <div style="margin-top: 14px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; flex-wrap: wrap; gap: 8px;">
+            <span>🛡️ 永久离线生效 · 无需提供任何电脑硬件信息</span>
+            <a href="https://daliocr.cn/#pricing" target="_blank" style="color: var(--primary); text-decoration: underline; font-weight: 600;">还没有激活码？点击前往官网获取授权 →</a>
           </div>
         </div>
 
@@ -2177,10 +2248,24 @@
             </div>
           </div>
 
+          <div class="settings-group">
+            <div class="settings-group-title">🔄 软件版本与在线更新</div>
+            <div class="settings-row" style="background: rgba(0,0,0,0.02); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div class="settings-label">
+                <div class="settings-name" style="display: flex; align-items: center; gap: 8px;">
+                  <span>大梨 OCR 客户端</span>
+                  <span style="font-family: var(--font-mono); font-weight: 700; color: var(--primary); font-size: 13px;" id="currentVersionLabel">v0.0.1</span>
+                </div>
+                <div class="settings-desc">更新检查接口由 api.daliocr.cn/update 官方通道提供。</div>
+              </div>
+              <button type="button" id="checkUpdateBtn" class="primary" style="font-size: 13px; padding: 6px 16px;">🔍 检查更新</button>
+            </div>
+          </div>
+
           <div class="settings-group" style="margin-bottom: 0;">
             <div class="settings-group-title">💻 系统架构与运行环境</div>
             <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; background: rgba(0,0,0,0.02); padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-              <div>• 软件版本: <b>大梨 OCR PRO 商用桌面版 v2.5.0</b></div>
+              <div>• 软件版本: <b>大梨 OCR PRO 商用桌面版 v0.0.1</b></div>
               <div>• 推理底座: <b>ONNX Runtime Web 1.26.0 (WebAssembly SIMD 加速)</b></div>
               <div>• 模型架构: <b>百度飞桨 PaddleOCR v5 / v6 全本地端侧推理</b></div>
               <div>• PDF 渲染器: <b>Mozilla PDF.js 高保真流式矢量光栅化引擎</b></div>
@@ -2191,6 +2276,25 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- 软件更新模态弹窗 -->
+  <div class="update-modal-overlay" id="updateModalOverlay">
+    <div class="update-modal-card">
+      <div class="update-modal-header">
+        <div class="update-badge" id="updateModalBadge">✨ 发现新版本</div>
+        <button type="button" class="update-close-btn" id="updateCloseBtn" aria-label="关闭">×</button>
+      </div>
+      <div class="update-modal-body">
+        <h2 class="update-title" id="updateModalTitle">大梨 OCR 有新版本可用</h2>
+        <div class="update-meta" id="updateModalMeta">最新版本: v0.0.2 · 当前版本: v0.0.1</div>
+        <div class="update-changelog-box" id="updateModalChangelog">...</div>
+      </div>
+      <div class="update-modal-footer">
+        <button type="button" id="updateCancelBtn" style="font-size: 13px; padding: 7px 16px;">稍后提醒</button>
+        <button type="button" id="updateConfirmBtn" class="primary" style="font-size: 13px; padding: 7px 18px;">🚀 立即下载更新</button>
+      </div>
+    </div>
   </div>
 
   <div class="app-toast" id="appToast">已完成操作</div>
@@ -4113,10 +4217,12 @@
     }
 
     // ==========================================
-    // 8. Commercial Hardware Fingerprint & Offline License
+    // 8. Pure Offline License Engine (No Machine Code)
     // ==========================================
     const DALI_SALT = "DALI_PRO_ENTERPRISE_SECRET_SALT_2026";
     const DALI_UNIVERSAL_KEY = "DALI-PRO-2026-VIP";
+    // 激活码黑名单（若发现某张卡密被公开发布，在此加入该卡密即可在后续小版本拉黑）
+    const DALI_BLACKLIST = [];
 
     async function sha256Browser(str) {
       try {
@@ -4132,54 +4238,58 @@
       }
     }
 
-    async function getMachineFingerprint() {
-      let stored = localStorage.getItem("dali_machine_code");
-      if (stored && /^DALI-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/.test(stored)) {
-        return stored;
+    // 纯离线算法校验 (支持永久买断码与一年尝鲜码)
+    async function verifyOfflineLicenseKey(inputKey) {
+      if (!inputKey) return { valid: false, reason: "请输入激活码" };
+      const key = inputKey.trim().toUpperCase();
+
+      // 1. 黑名单校验
+      if (DALI_BLACKLIST.includes(key)) {
+        return { valid: false, reason: "该激活码已被封禁或已失效" };
       }
-      const parts = [
-        navigator.userAgent || "Desktop",
-        screen.width + "x" + screen.height,
-        screen.colorDepth || 24,
-        navigator.hardwareConcurrency || 4,
-        navigator.platform || "MacIntel",
-        navigator.language || "zh-CN"
-      ];
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = 160;
-        canvas.height = 40;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.font = "14px Arial";
-          ctx.fillText("DaliOCRPro 2026", 2, 20);
-          parts.push(canvas.toDataURL().slice(-32));
-        }
-      } catch (_) {}
 
-      const rawHash = await sha256Browser(parts.join("::"));
-      const p1 = rawHash.slice(0, 4);
-      const p2 = rawHash.slice(4, 8);
-      const p3 = rawHash.slice(8, 12);
-      const code = `DALI-${p1}-${p2}-${p3}`;
-      localStorage.setItem("dali_machine_code", code);
-      return code;
-    }
+      // 2. 万能开发者主密钥
+      if (key === DALI_UNIVERSAL_KEY) {
+        return { valid: true, type: "lifetime" };
+      }
 
-    async function computeExpectedLicense(machineCode) {
-      if (!machineCode) return "";
-      const raw = machineCode.trim().toUpperCase();
-      const hash = await sha256Browser(raw + "::" + DALI_SALT);
-      const groups = hash.slice(0, 16).match(/.{1,4}/g);
-      return groups ? groups.join("-") : "";
+      // 3. 校验格式: DALI-XXXX-XXXX-XXXX
+      const pattern = /^DALI-([A-Z0-9]{4})-([A-F0-9]{4})-([A-F0-9]{4})$/;
+      const match = key.match(pattern);
+      if (!match) {
+        return { valid: false, reason: "激活码格式错误，标准格式为 DALI-XXXX-XXXX-XXXX" };
+      }
+
+      const seed = match[1];
+      const checksumPart = match[2] + match[3];
+
+      // 计算签名校验和
+      const hash = await sha256Browser(`DALI-${seed}::${DALI_SALT}`);
+      const expectedChecksum = hash.slice(0, 8);
+
+      if (checksumPart === expectedChecksum) {
+        // 种子以 'Y' 开头代表一年期尝鲜码；以 'L' 或其它代表永久买断码
+        const isAnnual = seed.startsWith("Y");
+        return { valid: true, type: isAnnual ? "annual" : "lifetime" };
+      }
+
+      return { valid: false, reason: "激活码无效，请核对无误后重试" };
     }
 
     function isProActivated() {
-      return localStorage.getItem("dali_license_active") === "true";
+      const active = localStorage.getItem("dali_license_active") === "true";
+      if (!active) return false;
+      const type = localStorage.getItem("dali_license_type") || "lifetime";
+      if (type === "annual") {
+        const expire = parseInt(localStorage.getItem("dali_license_expire") || "0", 10);
+        if (expire > 0 && Date.now() > expire) {
+          return false;
+        }
+      }
+      return true;
     }
 
     async function refreshLicenseUI() {
-      const codeEl = $("licenseMachineCode");
       const tagEl = $("licenseStatusTag");
       const badgeEl = $("brandProBadge");
       const subTextEl = $("brandSubText");
@@ -4188,30 +4298,67 @@
       const deactivateBtn = $("licenseDeactivateBtn");
       const keyInput = $("licenseKeyInput");
 
-      const machineCode = await getMachineFingerprint();
-      if (codeEl) codeEl.textContent = machineCode;
-
       const activated = isProActivated();
+      const type = localStorage.getItem("dali_license_type") || "lifetime";
+      const expire = parseInt(localStorage.getItem("dali_license_expire") || "0", 10);
+      const isExpired = type === "annual" && expire > 0 && Date.now() > expire;
+
       if (activated) {
-        if (tagEl) {
-          tagEl.className = "license-status-tag active";
-          tagEl.textContent = "🟢 PRO 终身专业版已激活";
+        if (type === "annual") {
+          const dateStr = new Date(expire).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+          if (tagEl) {
+            tagEl.className = "license-status-tag active";
+            tagEl.style.background = "linear-gradient(135deg, #10b981, #059669)";
+            tagEl.textContent = `🟢 PRO 一年尝鲜版 (至 ${dateStr})`;
+          }
+          if (badgeEl) {
+            badgeEl.textContent = "PRO 尝鲜版";
+            badgeEl.style.background = "linear-gradient(135deg, #10b981, #059669)";
+          }
+          if (subTextEl) subTextEl.textContent = `1 年期商业授权 (至 ${dateStr})`;
+          if (typeLabel) typeLabel.textContent = `1 年期商业授权 (有效期至 ${dateStr})`;
+        } else {
+          if (tagEl) {
+            tagEl.className = "license-status-tag active";
+            tagEl.style.background = "";
+            tagEl.textContent = "🟢 PRO 终身版已激活";
+          }
+          if (badgeEl) {
+            badgeEl.textContent = "PRO 终身版";
+            badgeEl.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+          }
+          if (subTextEl) subTextEl.textContent = "终身商业授权 · 尊享专业版";
+          if (typeLabel) typeLabel.textContent = "永久买断制终身商业授权 (尊享版)";
         }
-        if (badgeEl) {
-          badgeEl.textContent = "PRO 终身版";
-          badgeEl.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
-        }
-        if (subTextEl) subTextEl.textContent = "终身商业授权 · 尊享专业版";
-        if (typeLabel) typeLabel.textContent = "永久买断制终身商业授权 (尊享版)";
         if (activateBtn) activateBtn.style.display = "none";
         if (deactivateBtn) deactivateBtn.style.display = "inline-flex";
         if (keyInput) {
-          keyInput.value = localStorage.getItem("dali_license_key") || "已激活永久授权";
+          keyInput.value = localStorage.getItem("dali_license_key") || "已激活商业授权";
           keyInput.disabled = true;
+        }
+      } else if (isExpired) {
+        const dateStr = new Date(expire).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+        if (tagEl) {
+          tagEl.className = "license-status-tag trial";
+          tagEl.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+          tagEl.textContent = `🔴 尝鲜授权已到期 (已于 ${dateStr} 截止)`;
+        }
+        if (badgeEl) {
+          badgeEl.textContent = "已到期";
+          badgeEl.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+        }
+        if (subTextEl) subTextEl.textContent = "年度尝鲜授权已到期，请续费";
+        if (typeLabel) typeLabel.textContent = "授权已过期 (输入新卡密即可立即续期)";
+        if (activateBtn) activateBtn.style.display = "inline-flex";
+        if (deactivateBtn) deactivateBtn.style.display = "none";
+        if (keyInput) {
+          keyInput.value = "";
+          keyInput.disabled = false;
         }
       } else {
         if (tagEl) {
           tagEl.className = "license-status-tag trial";
+          tagEl.style.background = "";
           tagEl.textContent = "🟡 试用版 / 未激活";
         }
         if (badgeEl) {
@@ -4219,10 +4366,11 @@
           badgeEl.style.background = "linear-gradient(135deg, #ec4899, #8b5cf6)";
         }
         if (subTextEl) subTextEl.textContent = "极速端侧离线高精识别";
-        if (typeLabel) typeLabel.textContent = "一机一码终身买断制";
+        if (typeLabel) typeLabel.textContent = "永久买断 / 一年尝鲜商业授权";
         if (activateBtn) activateBtn.style.display = "inline-flex";
         if (deactivateBtn) deactivateBtn.style.display = "none";
         if (keyInput) {
+          keyInput.value = "";
           keyInput.disabled = false;
         }
       }
@@ -4231,60 +4379,203 @@
     function initLicenseEvents() {
       refreshLicenseUI();
 
-      $("licenseCopyCodeBtn")?.addEventListener("click", async () => {
-        const code = await getMachineFingerprint();
-        await copyText(code);
-        showToast("已复制本机机器码: " + code);
-      });
-
       $("licenseActivateBtn")?.addEventListener("click", async () => {
         const input = ($("licenseKeyInput")?.value || "").trim().toUpperCase();
         if (!input) {
-          showToast("请输入 16 位离线激活密钥");
+          showToast("请输入 16 位 PRO 激活码");
           return;
         }
-        const machineCode = await getMachineFingerprint();
-        const expected = await computeExpectedLicense(machineCode);
 
-        if (input === expected || input === DALI_UNIVERSAL_KEY) {
+        const result = await verifyOfflineLicenseKey(input);
+        if (result.valid) {
           localStorage.setItem("dali_license_active", "true");
           localStorage.setItem("dali_license_key", input);
-          await refreshLicenseUI();
-          showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
+          localStorage.setItem("dali_license_type", result.type);
+
+          if (result.type === "annual") {
+            const expireDate = Date.now() + 365 * 24 * 60 * 60 * 1000;
+            localStorage.setItem("dali_license_expire", expireDate.toString());
+            await refreshLicenseUI();
+            showToast("🎉 激活成功！大梨 OCR PRO 1 年期尝鲜授权已生效！");
+          } else {
+            localStorage.removeItem("dali_license_expire");
+            await refreshLicenseUI();
+            showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
+          }
         } else {
-          showToast("激活密钥无效，请核对后重试或联系客服");
+          showToast(result.reason || "激活码无效，请核对后重试");
         }
       });
 
       $("licenseDeactivateBtn")?.addEventListener("click", async () => {
-        if (confirm("确定要解除本机的商业授权激活状态吗？")) {
+        if (confirm("确定要解除当前设备的 PRO 商业授权激活状态吗？")) {
           localStorage.removeItem("dali_license_active");
           localStorage.removeItem("dali_license_key");
+          localStorage.removeItem("dali_license_type");
+          localStorage.removeItem("dali_license_expire");
           if ($("licenseKeyInput")) $("licenseKeyInput").value = "";
           await refreshLicenseUI();
-          showToast("已重置授权状态");
+          showToast("已重置授权状态为试用版");
+        }
+      });
+    }
+
+    // ==========================================
+    // 8.5 Online Update Check Engine
+    // ==========================================
+    const APP_VERSION = "0.0.1";
+    const UPDATE_API_ENDPOINT = "https://api.daliocr.cn/update";
+    let isForceUpdateActive = false;
+
+    function getSystemInfoForUpdate() {
+      const ua = navigator.userAgent || "";
+      let platform = "macos";
+      if (/windows|win32|win64/i.test(ua)) {
+        platform = "windows";
+      } else if (/macintosh|mac os x/i.test(ua)) {
+        platform = "macos";
+      } else if (/linux/i.test(ua)) {
+        platform = "linux";
+      }
+
+      let arch = "x64";
+      if (/arm|aarch64/i.test(ua) || (platform === "macos" && navigator.hardwareConcurrency >= 8)) {
+        arch = "arm64";
+      }
+
+      return { platform, arch };
+    }
+
+    function openExternalLink(url) {
+      try {
+        if (window.__TAURI__?.opener?.openUrl) {
+          window.__TAURI__.opener.openUrl(url).catch(() => window.open(url, "_blank"));
+        } else {
+          window.open(url, "_blank");
+        }
+      } catch (_) {
+        window.open(url, "_blank");
+      }
+    }
+
+    function showUpdateModal(info) {
+      const overlay = $("updateModalOverlay");
+      if (!overlay) return;
+
+      const titleEl = $("updateModalTitle");
+      const metaEl = $("updateModalMeta");
+      const badgeEl = $("updateModalBadge");
+      const logEl = $("updateModalChangelog");
+      const cancelBtn = $("updateCancelBtn");
+      const closeBtn = $("updateCloseBtn");
+      const confirmBtn = $("updateConfirmBtn");
+
+      const isForce = !!info.force_update;
+      isForceUpdateActive = isForce;
+
+      if (titleEl) titleEl.textContent = info.title || "发现新版本";
+      if (metaEl) metaEl.textContent = `最新版本: v${info.latest_version || "最新"} · 当前版本: v${APP_VERSION}`;
+      if (logEl) logEl.textContent = info.changelog || "暂无详细更新说明。";
+
+      if (isForce) {
+        if (badgeEl) {
+          badgeEl.textContent = "⚠️ 关键版本强制更新";
+          badgeEl.className = "update-badge force";
+        }
+        if (cancelBtn) cancelBtn.style.display = "none";
+        if (closeBtn) closeBtn.style.display = "none";
+      } else {
+        if (badgeEl) {
+          badgeEl.textContent = "✨ 发现新版本";
+          badgeEl.className = "update-badge";
+        }
+        if (cancelBtn) cancelBtn.style.display = "inline-flex";
+        if (closeBtn) closeBtn.style.display = "inline-flex";
+      }
+
+      if (confirmBtn) {
+        confirmBtn.onclick = () => {
+          const downloadUrl = info.download_url || "https://daliocr.cn/#download";
+          openExternalLink(downloadUrl);
+          if (!isForce) {
+            hideUpdateModal();
+          }
+        };
+      }
+
+      overlay.classList.add("show");
+    }
+
+    function hideUpdateModal() {
+      if (isForceUpdateActive) return;
+      const overlay = $("updateModalOverlay");
+      if (overlay) overlay.classList.remove("show");
+    }
+
+    async function checkForUpdates(isManual = false) {
+      const { platform, arch } = getSystemInfoForUpdate();
+      const query = new URLSearchParams({
+        version: APP_VERSION,
+        platform: platform,
+        arch: arch,
+        channel: "stable",
+        t: Date.now().toString()
+      });
+
+      const targetUrl = `${UPDATE_API_ENDPOINT}?${query.toString()}`;
+
+      try {
+        const res = await fetch(targetUrl, {
+          method: "GET",
+          headers: { "Accept": "application/json" },
+          cache: "no-store"
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const json = await res.json();
+        const data = json.data || json;
+
+        if (data && data.has_update) {
+          showUpdateModal(data);
+        } else {
+          if (isManual) {
+            showToast(`当前已是最新版本 (v${APP_VERSION}) ✓`);
+          }
+        }
+      } catch (err) {
+        console.warn("检查更新请求异常:", err);
+        if (isManual) {
+          showToast("检查更新失败，请确认网络连接或稍后重试");
+        }
+      }
+    }
+
+    function initUpdateEvents() {
+      $("updateModalOverlay")?.addEventListener("click", (e) => {
+        if (e.target === $("updateModalOverlay")) {
+          hideUpdateModal();
         }
       });
 
-      // Merchant keygen tool
-      $("sellerGenKeyBtn")?.addEventListener("click", async () => {
-        const input = ($("sellerMachineInput")?.value || "").trim().toUpperCase();
-        if (!input) {
-          showToast("请输入客户机器码");
-          return;
-        }
-        const key = await computeExpectedLicense(input);
-        $("sellerKeyResult").textContent = key;
-        $("sellerResultRow").style.display = "flex";
-        showToast("已生成激活密钥 ✓");
+      $("updateCloseBtn")?.addEventListener("click", () => {
+        hideUpdateModal();
       });
 
-      $("sellerCopyKeyBtn")?.addEventListener("click", async () => {
-        const key = $("sellerKeyResult")?.textContent || "";
-        if (!key) return;
-        await copyText(key);
-        showToast("已复制密钥，可直接发送给客户 ✓");
+      $("updateCancelBtn")?.addEventListener("click", () => {
+        hideUpdateModal();
       });
+
+      $("checkUpdateBtn")?.addEventListener("click", () => {
+        checkForUpdates(true);
+      });
+
+      // 应用启动 3 秒后静默检测更新一次
+      setTimeout(() => {
+        checkForUpdates(false);
+      }, 3000);
     }
 
     // ==========================================
@@ -5914,6 +6205,7 @@
       initNavigation();
       initPreferences();
       initLicenseEvents();
+      initUpdateEvents();
       initHistoryEvents();
       initConnectService();
       initTableEvents();
