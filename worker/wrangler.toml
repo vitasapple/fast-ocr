@@ -1,0 +1,12 @@
+name = "dali-api"
+main = "index.js"
+compatibility_date = "2024-09-01"
+
+# 绑定自定义路由域名 (在 Cloudflare 接管 daliocr.cn 之后生效)
+# routes = [
+#   { pattern = "api.daliocr.cn/*", zone_name = "daliocr.cn" }
+# ]
+
+# 可选：用户反馈推送到飞书/企业微信/钉钉/Telegram 机器人
+# [vars]
+# FEEDBACK_WEBHOOK_URL = "https://open.feishu.cn/open-apis/bot/v2/hook/xxxx"

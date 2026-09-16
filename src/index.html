@@ -1404,6 +1404,64 @@
       border-top: 1px solid var(--border-color);
       background: rgba(0, 0, 0, 0.01);
     }
+    .app-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .app-modal-overlay.show {
+      display: flex;
+    }
+    .app-modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalFadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .feedback-form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .feedback-form-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .feedback-input, .feedback-textarea, .feedback-select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-main);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feedback-input:focus, .feedback-textarea:focus, .feedback-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
     .settings-group {
       margin-bottom: 24px;
     }
@@ -1547,6 +1605,7 @@
           <span id="engineStatusText">正在加载引擎…</span>
         </div>
         <div class="sidebar-tool-row">
+          <button class="theme-toggle-btn" id="sidebarFeedbackBtn" title="意见建议与异常上报">💬 反馈</button>
           <button class="theme-toggle-btn" id="compactToggleBtn" title="切换侧边栏紧凑模式">🪟 紧凑模式</button>
           <button class="theme-toggle-btn" id="themeToggleBtn" title="切换暗色/亮色外观">🌓 外观</button>
         </div>
@@ -2262,6 +2321,17 @@
             </div>
           </div>
 
+          <div class="settings-group">
+            <div class="settings-group-title">💬 意见反馈与问题上报</div>
+            <div class="settings-row" style="background: rgba(0,0,0,0.02); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div class="settings-label">
+                <div class="settings-name">向作者反馈建议或报告识别异常</div>
+                <div class="settings-desc">遇到生僻字漏识、复杂表格单元格对齐有偏差或有新功能诉求？随时直达开发者。</div>
+              </div>
+              <button type="button" id="openFeedbackBtn" class="primary" style="font-size: 13px; padding: 6px 16px; background: linear-gradient(135deg, #10b981, #059669);">✍️ 填写反馈</button>
+            </div>
+          </div>
+
           <div class="settings-group" style="margin-bottom: 0;">
             <div class="settings-group-title">💻 系统架构与运行环境</div>
             <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; background: rgba(0,0,0,0.02); padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
@@ -2293,6 +2363,72 @@
       <div class="update-modal-footer">
         <button type="button" id="updateCancelBtn" style="font-size: 13px; padding: 7px 16px;">稍后提醒</button>
         <button type="button" id="updateConfirmBtn" class="primary" style="font-size: 13px; padding: 7px 18px;">🚀 立即下载更新</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 远程运营公告与通知模态弹窗 -->
+  <div class="app-modal-overlay" id="noticeModalOverlay">
+    <div class="app-modal-card">
+      <div class="update-modal-header">
+        <div class="update-badge" id="noticeModalBadge" style="background: rgba(37,99,235,0.12); color: var(--primary);">📢 官方公告</div>
+        <button type="button" class="update-close-btn" id="noticeCloseBtn" aria-label="关闭">×</button>
+      </div>
+      <div class="update-modal-body">
+        <h2 class="update-title" id="noticeModalTitle">大梨 OCR 官方公告</h2>
+        <div class="update-changelog-box" id="noticeModalContent" style="max-height: 240px; white-space: pre-wrap; font-size: 13.5px; line-height: 1.7;">...</div>
+      </div>
+      <div class="update-modal-footer">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);cursor:pointer;margin-right:auto;user-select:none;">
+          <input type="checkbox" id="noticeDismissCheck" style="cursor:pointer;" /> 不再提示此公告
+        </label>
+        <button type="button" id="noticeCloseActionBtn" style="font-size: 13px; padding: 7px 16px;">关闭</button>
+        <button type="button" id="noticeActionBtn" class="primary" style="font-size: 13px; padding: 7px 18px; display: none;">前往查看</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 用户意见与报错反馈模态弹窗 -->
+  <div class="app-modal-overlay" id="feedbackModalOverlay">
+    <div class="app-modal-card">
+      <div class="update-modal-header">
+        <div class="update-badge" style="background: rgba(16,185,129,0.12); color: #059669;">💬 意见反馈与问题上报</div>
+        <button type="button" class="update-close-btn" id="feedbackCloseBtn" aria-label="关闭">×</button>
+      </div>
+      <div class="update-modal-body" style="padding: 16px 22px 10px;">
+        <div style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5;">
+          遇到表格对齐偏差、字词识别有误或有功能改进建议？欢迎随时告诉我们，持续迭代为您提供更好的体验。
+        </div>
+
+        <div class="feedback-form-row">
+          <label class="feedback-form-label" for="feedbackTypeSelect">反馈分类</label>
+          <select id="feedbackTypeSelect" class="feedback-select">
+            <option value="feature">💡 功能建议与体验优化</option>
+            <option value="table">📊 复杂表格识别与排版问题</option>
+            <option value="ocr">🔍 图片/文字识别准确度问题</option>
+            <option value="crash">⚠️ 报错卡死或异常提示</option>
+            <option value="other">💬 其它交流与建议</option>
+          </select>
+        </div>
+
+        <div class="feedback-form-row">
+          <label class="feedback-form-label" for="feedbackContentInput">详细描述 <span style="color: #ef4444;">*</span></label>
+          <textarea id="feedbackContentInput" class="feedback-textarea" rows="4" placeholder="请详细描述您遇到的问题现象、操作步骤或您期望的新特性…"></textarea>
+        </div>
+
+        <div class="feedback-form-row">
+          <label class="feedback-form-label" for="feedbackContactInput">联系方式 (选填)</label>
+          <input type="text" id="feedbackContactInput" class="feedback-input" placeholder="微信 / QQ / 邮箱 (方便作者为您解答或同步修复进展)" />
+        </div>
+
+        <div style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted);margin-top:2px;">
+          <input type="checkbox" id="feedbackAttachEnvCheck" checked style="cursor:pointer;" />
+          <label for="feedbackAttachEnvCheck" style="cursor:pointer;user-select:none;">自动附带客户端版本 (v0.0.1) 与当前系统架构信息以辅助排查</label>
+        </div>
+      </div>
+      <div class="update-modal-footer">
+        <button type="button" id="feedbackCancelBtn" style="font-size: 13px; padding: 7px 16px;">取消</button>
+        <button type="button" id="feedbackSubmitBtn" class="primary" style="font-size: 13px; padding: 7px 18px; background: linear-gradient(135deg, #10b981, #059669);">🚀 提交反馈</button>
       </div>
     </div>
   </div>
@@ -4553,29 +4689,203 @@
       }
     }
 
-    function initUpdateEvents() {
-      $("updateModalOverlay")?.addEventListener("click", (e) => {
-        if (e.target === $("updateModalOverlay")) {
-          hideUpdateModal();
+    // ==========================================
+    // 8.6 Remote Notice Engine
+    // ==========================================
+    const NOTICE_API_ENDPOINT = "https://api.daliocr.cn/notice";
+    let activeNoticeId = null;
+
+    function showNoticeModal(notice) {
+      const overlay = $("noticeModalOverlay");
+      if (!overlay) return;
+
+      activeNoticeId = notice.id;
+      const titleEl = $("noticeModalTitle");
+      const contentEl = $("noticeModalContent");
+      const badgeEl = $("noticeModalBadge");
+      const actionBtn = $("noticeActionBtn");
+      const dismissCheck = $("noticeDismissCheck");
+
+      if (titleEl) titleEl.textContent = notice.title || "官方公告";
+      if (contentEl) contentEl.textContent = notice.content || "";
+      if (dismissCheck) dismissCheck.checked = false;
+
+      if (badgeEl) {
+        if (notice.type === "warning") {
+          badgeEl.textContent = "⚠️ 重要通知";
+          badgeEl.style.background = "#fee2e2";
+          badgeEl.style.color = "#ef4444";
+        } else if (notice.type === "activity") {
+          badgeEl.textContent = "🎉 特惠活动";
+          badgeEl.style.background = "#fef3c7";
+          badgeEl.style.color = "#d97706";
+        } else {
+          badgeEl.textContent = "📢 官方公告";
+          badgeEl.style.background = "rgba(37,99,235,0.12)";
+          badgeEl.style.color = "var(--primary)";
         }
-      });
+      }
 
-      $("updateCloseBtn")?.addEventListener("click", () => {
-        hideUpdateModal();
-      });
+      if (actionBtn) {
+        if (notice.action_url) {
+          actionBtn.style.display = "inline-flex";
+          actionBtn.textContent = notice.action_label || "前往查看";
+          actionBtn.onclick = () => {
+            openExternalLink(notice.action_url);
+            hideNoticeModal();
+          };
+        } else {
+          actionBtn.style.display = "none";
+        }
+      }
 
-      $("updateCancelBtn")?.addEventListener("click", () => {
-        hideUpdateModal();
-      });
+      overlay.classList.add("show");
+    }
 
-      $("checkUpdateBtn")?.addEventListener("click", () => {
-        checkForUpdates(true);
-      });
+    function hideNoticeModal() {
+      const overlay = $("noticeModalOverlay");
+      if (!overlay) return;
+      const dismissCheck = $("noticeDismissCheck");
+      if (dismissCheck?.checked && activeNoticeId) {
+        localStorage.setItem(`dali_dismissed_notice_${activeNoticeId}`, "true");
+      }
+      overlay.classList.remove("show");
+    }
 
-      // 应用启动 3 秒后静默检测更新一次
-      setTimeout(() => {
-        checkForUpdates(false);
-      }, 3000);
+    async function checkRemoteNotice(isManual = false) {
+      try {
+        const res = await fetch(`${NOTICE_API_ENDPOINT}?t=${Date.now()}`, {
+          method: "GET",
+          headers: { "Accept": "application/json" },
+          cache: "no-store"
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        const data = json.data || json;
+        if (data && data.has_notice && data.id) {
+          const dismissed = localStorage.getItem(`dali_dismissed_notice_${data.id}`) === "true";
+          if (!dismissed || isManual) {
+            showNoticeModal(data);
+          }
+        }
+      } catch (err) {
+        console.warn("公告检查异常:", err);
+      }
+    }
+
+    // ==========================================
+    // 8.7 User Feedback Engine
+    // ==========================================
+    const FEEDBACK_API_ENDPOINT = "https://api.daliocr.cn/feedback";
+
+    function showFeedbackModal() {
+      const overlay = $("feedbackModalOverlay");
+      if (!overlay) return;
+      const contentInput = $("feedbackContentInput");
+      const contactInput = $("feedbackContactInput");
+      const submitBtn = $("feedbackSubmitBtn");
+      if (contentInput) contentInput.value = "";
+      if (contactInput) contactInput.value = "";
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "🚀 提交反馈";
+      }
+      overlay.classList.add("show");
+      setTimeout(() => contentInput?.focus(), 150);
+    }
+
+    function hideFeedbackModal() {
+      const overlay = $("feedbackModalOverlay");
+      if (overlay) overlay.classList.remove("show");
+    }
+
+    async function submitUserFeedback() {
+      const contentInput = $("feedbackContentInput");
+      const contactInput = $("feedbackContactInput");
+      const typeSelect = $("feedbackTypeSelect");
+      const attachEnvCheck = $("feedbackAttachEnvCheck");
+      const submitBtn = $("feedbackSubmitBtn");
+
+      const content = (contentInput?.value || "").trim();
+      if (!content || content.length < 3) {
+        showToast("请填写详细的反馈或问题描述 (至少3个字)");
+        contentInput?.focus();
+        return;
+      }
+
+      const type = typeSelect?.value || "other";
+      const contact = (contactInput?.value || "").trim();
+      const { platform, arch } = attachEnvCheck?.checked ? getSystemInfoForUpdate() : { platform: "hidden", arch: "hidden" };
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "正在提交…";
+      }
+
+      try {
+        const res = await fetch(FEEDBACK_API_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: type,
+            contact: contact,
+            content: content,
+            version: APP_VERSION,
+            platform: platform,
+            arch: arch
+          })
+        });
+
+        const json = await res.json();
+        if (res.ok && json.code === 0) {
+          hideFeedbackModal();
+          showToast("🎉 反馈提交成功，非常感谢您的宝贵支持！");
+        } else {
+          showToast(json.msg || "反馈提交失败，请稍后重试");
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "🚀 提交反馈";
+          }
+        }
+      } catch (err) {
+        console.warn("反馈上报异常:", err);
+        showToast("网络请求异常，请确认网络连接或稍后重试");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "🚀 提交反馈";
+        }
+      }
+    }
+
+    function initUpdateEvents() {
+      // 1. 版本更新弹窗事件
+      $("updateModalOverlay")?.addEventListener("click", (e) => {
+        if (e.target === $("updateModalOverlay")) hideUpdateModal();
+      });
+      $("updateCloseBtn")?.addEventListener("click", hideUpdateModal);
+      $("updateCancelBtn")?.addEventListener("click", hideUpdateModal);
+      $("checkUpdateBtn")?.addEventListener("click", () => checkForUpdates(true));
+
+      // 2. 远程公告弹窗事件
+      $("noticeModalOverlay")?.addEventListener("click", (e) => {
+        if (e.target === $("noticeModalOverlay")) hideNoticeModal();
+      });
+      $("noticeCloseBtn")?.addEventListener("click", hideNoticeModal);
+      $("noticeCloseActionBtn")?.addEventListener("click", hideNoticeModal);
+
+      // 3. 意见反馈弹窗事件
+      $("openFeedbackBtn")?.addEventListener("click", showFeedbackModal);
+      $("sidebarFeedbackBtn")?.addEventListener("click", showFeedbackModal);
+      $("feedbackModalOverlay")?.addEventListener("click", (e) => {
+        if (e.target === $("feedbackModalOverlay")) hideFeedbackModal();
+      });
+      $("feedbackCloseBtn")?.addEventListener("click", hideFeedbackModal);
+      $("feedbackCancelBtn")?.addEventListener("click", hideFeedbackModal);
+      $("feedbackSubmitBtn")?.addEventListener("click", submitUserFeedback);
+
+      // 应用启动 3 秒后静默检测更新一次，4.5 秒检测是否有运营新公告
+      setTimeout(() => checkForUpdates(false), 3000);
+      setTimeout(() => checkRemoteNotice(false), 4500);
     }
 
     // ==========================================
