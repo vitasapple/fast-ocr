@@ -2106,6 +2106,14 @@
 
     // 导出 Word：将 Markdown 渲染为 HTML 并伪装成 .doc 下载
     function exportWord() {
+      if (window.parent && typeof window.parent.isProActivated === 'function') {
+        if (!window.parent.isProActivated()) {
+          if (typeof window.parent.showProFeatureModal === 'function') {
+            window.parent.showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => exportWord());
+          }
+          return;
+        }
+      }
       let name = filenameInput.value.trim();
       if (!name) name = '未命名文档.md';
       name = name.replace(/\.md$/i, '').replace(/\.markdown$/i, '') + '.doc';
@@ -2231,6 +2239,14 @@ ${'</scr' + 'ipt>'}
     }
 
     function exportPDF() {
+      if (window.parent && typeof window.parent.isProActivated === 'function') {
+        if (!window.parent.isProActivated()) {
+          if (typeof window.parent.showProFeatureModal === 'function') {
+            window.parent.showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => exportPDF());
+          }
+          return;
+        }
+      }
       const wasSource = previewMode === 'source';
       if (wasSource) {
         setPreviewMode('preview');

@@ -2228,9 +2228,9 @@
           <div class="license-header">
             <div class="row" style="gap: 10px; align-items: center;">
               <span style="font-size: 16px; font-weight: 700;">💎 商业授权激活状态</span>
-              <span class="license-status-tag trial" id="licenseStatusTag">🟡 试用版 / 未激活</span>
+              <span class="license-status-tag trial" id="licenseStatusTag">🟡 免费体验版 (未激活 PRO)</span>
             </div>
-            <span id="licenseTypeLabel" style="font-size: 12px; color: var(--text-muted);">永久买断制终身商业授权</span>
+            <span id="licenseTypeLabel" style="font-size: 12px; color: var(--text-muted);">普通单图/跨屏快传/历史免费 · 复杂表格与导出需 PRO</span>
           </div>
 
           <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 14px; line-height: 1.6;">
@@ -2433,6 +2433,59 @@
     </div>
   </div>
 
+  <!-- PRO 商业版功能拦截与激活模态弹窗 -->
+  <div class="app-modal-overlay" id="proFeatureModalOverlay">
+    <div class="app-modal-card" style="max-width: 540px;">
+      <div class="update-modal-header" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(217, 119, 6, 0.05)); border-bottom: 1px solid rgba(245, 158, 11, 0.2);">
+        <div class="update-badge" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-weight: 700; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);">👑 PRO 商业版专属功能</div>
+        <button type="button" class="update-close-btn" id="proFeatureCloseBtn" aria-label="关闭">×</button>
+      </div>
+      <div class="update-modal-body" style="padding: 18px 22px 14px;">
+        <h2 class="update-title" style="font-size: 16.5px; margin-bottom: 10px; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+          <span>解锁复杂表格重构与无损办公导出</span>
+        </h2>
+
+        <!-- 用户指定的醒目标识语 -->
+        <div id="proModalCustomNotice" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-sm); padding: 11px 14px; font-size: 13.5px; font-weight: 600; color: #d97706; margin-bottom: 14px; line-height: 1.6;">
+          📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权
+        </div>
+
+        <!-- 功能对比与权益说明 -->
+        <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.7; background: rgba(0,0,0,0.02); padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 14px;">
+          <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">🎁 版本权益对比：</div>
+          <div style="color: #059669;">✅ <b>免费体验版</b>：普通单张图片文字提取、手机扫码跨屏快传、基础识别历史记录</div>
+          <div style="margin-top: 6px; color: var(--text-primary); font-weight: 600;">⭐ <b>PRO 商业版解锁以下核心能力</b>：</div>
+          <div style="padding-left: 8px;">
+            <div>• <b>方案 A 复杂表格还原</b>：高精二维拓扑聚类，智能保留跨行跨列合并单元格</div>
+            <div>• <b>Excel / Word 无损导出</b>：一键导出规整 .xlsx / .tsv / .csv / .docx，保持排版格式</div>
+            <div>• <b>多页 PDF 流式识别</b>：长文档一次性全速解析拼接，免除单页重复处理</div>
+            <div>• <b>AI 智能助理深度赋能</b>：错别字自动校正、中英专业互译与凭据结构化提炼</div>
+            <div>• <b>100% 纯端侧离线安全</b>：全本地神经推理，绝不上传商业秘密与个人数据</div>
+          </div>
+        </div>
+
+        <!-- 快速输入激活码直接激活 -->
+        <div style="background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 12px 14px;">
+          <div style="font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px;">
+            🔑 已购买授权卡密？在此输入 16 位激活码立即生效：
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="proModalKeyInput" placeholder="输入 16 位激活码 (如: DALI-YYYY-... 或 DALI-XXXX-...)" style="flex: 1; padding: 7px 10px; font-size: 13px; font-family: var(--font-mono); text-transform: uppercase; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-primary);" />
+            <button type="button" id="proModalActivateBtn" class="primary" style="font-size: 12.5px; padding: 7px 14px; white-space: nowrap;">立即激活</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="update-modal-footer" style="padding: 12px 20px; background: rgba(0,0,0,0.02);">
+        <div style="font-size: 11.5px; color: var(--text-muted); margin-right: auto;">
+          🛡️ 纯离线算法验证 · 永久生效
+        </div>
+        <button type="button" id="proFeatureCancelBtn" style="font-size: 13px; padding: 7px 16px;">稍后再说</button>
+        <button type="button" id="proFeatureBuyBtn" class="primary" style="font-size: 13px; padding: 7px 18px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-weight: 600; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);">🛒 获取 PRO 授权 (39元起)</button>
+      </div>
+    </div>
+  </div>
+
   <div class="app-toast" id="appToast">已完成操作</div>
 
   <!-- Offline QR Code Engine -->
@@ -2509,6 +2562,10 @@
     }
 
     function sendToDocEditor(text, title = "") {
+      if (!isProActivated()) {
+        showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+        return;
+      }
       if (!text || !text.trim()) {
         showToast("暂无可发送的文本");
         return;
@@ -3230,6 +3287,11 @@
         return;
       }
 
+      if (!isProActivated()) {
+        showProFeatureModal("📁 多图批量并发识别与合并导出为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => runOcr());
+        return;
+      }
+
       state.isBatchRunning = true;
       state.isAborted = false;
       ui.runBtn.style.display = "none";
@@ -3513,6 +3575,10 @@
       });
 
       ui.sendToDocBtn?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const text = ui.result.value;
         if (!text.trim()) {
           showToast("暂无可发送的识别文本");
@@ -3523,12 +3589,48 @@
       });
 
       ui.sendToTableBtn?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const currentImg = state.images[state.currentIndex];
         if (!currentImg) {
           showToast("暂无可转换的图片");
           return;
         }
         sendImageToTable(currentImg.file);
+      });
+
+      ui.copyAllBatchBtn?.addEventListener("click", async () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📁 多图批量并发识别与合并导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
+        const texts = state.images.filter((img) => img.status === "done").map((img) => `--- ${img.name} ---\n` + (state.docFormat === "md" ? img.mdText : (state.formatMode === "smart" ? img.formattedText : img.text)));
+        if (!texts.length) {
+          showToast("暂无可复制的批量识别结果");
+          return;
+        }
+        await copyText(texts.join("\n\n"));
+        showToast("已复制全部已识别图片内容 ✓");
+      });
+
+      ui.downloadBatchBtn?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📁 多图批量并发识别与合并导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
+        const texts = state.images.filter((img) => img.status === "done").map((img) => `========================================\n文件: ${img.name}\n========================================\n` + (state.docFormat === "md" ? img.mdText : (state.formatMode === "smart" ? img.formattedText : img.text)));
+        if (!texts.length) {
+          showToast("暂无可导出的批量识别结果");
+          return;
+        }
+        const blob = new Blob([texts.join("\n\n")], { type: "text/plain;charset=utf-8" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `批量OCR合并结果_${Date.now()}.txt`;
+        a.click();
+        showToast("已导出批量合并结果 ✓");
       });
 
       ui.sendToAiBtn?.addEventListener("click", () => {
@@ -3641,6 +3743,10 @@
     }
 
     async function recognizePdf() {
+      if (!isProActivated()) {
+        showProFeatureModal("📑 PDF 多页流式高保真识别为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => recognizePdf());
+        return;
+      }
       if (!state.ocrReady || !state.ocr || !pdfState.file || pdfState.isRunning) return;
 
       pdfState.isRunning = true;
@@ -3823,6 +3929,10 @@
       });
 
       $("pdfSendToDocBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const text = $("pdfResult").value;
         if (!text.trim()) {
           showToast("暂无可发送的识别文本");
@@ -4203,6 +4313,10 @@
       });
 
       $("wbSendToDocBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const text = wbState.viewMode === "single" ? $("wbSingleEditor").value : $("wbProcessedText").value;
         if (!text.trim()) {
           showToast("暂无可发送的排版文本");
@@ -4495,14 +4609,14 @@
         if (tagEl) {
           tagEl.className = "license-status-tag trial";
           tagEl.style.background = "";
-          tagEl.textContent = "🟡 试用版 / 未激活";
+          tagEl.textContent = "🟡 免费体验版 (未激活 PRO)";
         }
         if (badgeEl) {
-          badgeEl.textContent = "PRO";
-          badgeEl.style.background = "linear-gradient(135deg, #ec4899, #8b5cf6)";
+          badgeEl.textContent = "免费版";
+          badgeEl.style.background = "linear-gradient(135deg, #64748b, #475569)";
         }
-        if (subTextEl) subTextEl.textContent = "极速端侧离线高精识别";
-        if (typeLabel) typeLabel.textContent = "永久买断 / 一年尝鲜商业授权";
+        if (subTextEl) subTextEl.textContent = "免费体验基础文字提取";
+        if (typeLabel) typeLabel.textContent = "普通单图/跨屏快传/历史免费 · 复杂表格与导出需 PRO";
         if (activateBtn) activateBtn.style.display = "inline-flex";
         if (deactivateBtn) deactivateBtn.style.display = "none";
         if (keyInput) {
@@ -4512,8 +4626,83 @@
       }
     }
 
+    let pendingProAction = null;
+
+    function showProFeatureModal(customMsg = "", callback = null) {
+      pendingProAction = callback;
+      const overlay = $("proFeatureModalOverlay");
+      if (!overlay) return;
+      const noticeEl = $("proModalCustomNotice");
+      if (noticeEl) {
+        noticeEl.textContent = customMsg || "📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权";
+      }
+      const keyInput = $("proModalKeyInput");
+      if (keyInput) keyInput.value = "";
+      overlay.classList.add("show");
+    }
+
+    function hideProFeatureModal() {
+      const overlay = $("proFeatureModalOverlay");
+      if (overlay) overlay.classList.remove("show");
+      pendingProAction = null;
+    }
+
+    window.isProActivated = isProActivated;
+    window.showProFeatureModal = showProFeatureModal;
+    window.hideProFeatureModal = hideProFeatureModal;
+
+    function initProModalEvents() {
+      $("proFeatureCloseBtn")?.addEventListener("click", hideProFeatureModal);
+      $("proFeatureCancelBtn")?.addEventListener("click", hideProFeatureModal);
+      $("proFeatureBuyBtn")?.addEventListener("click", () => {
+        openExternalLink("https://daliocr.cn/#pricing");
+      });
+      $("proFeatureModalOverlay")?.addEventListener("click", (e) => {
+        if (e.target === $("proFeatureModalOverlay")) hideProFeatureModal();
+      });
+
+      async function handleModalActivation() {
+        const input = ($("proModalKeyInput")?.value || "").trim().toUpperCase();
+        if (!input) {
+          showToast("请输入 16 位 PRO 激活码");
+          return;
+        }
+
+        const result = await verifyOfflineLicenseKey(input);
+        if (result.valid) {
+          localStorage.setItem("dali_license_active", "true");
+          localStorage.setItem("dali_license_key", input);
+          localStorage.setItem("dali_license_type", result.type);
+
+          if (result.type === "annual") {
+            const expireDate = Date.now() + 365 * 24 * 60 * 60 * 1000;
+            localStorage.setItem("dali_license_expire", expireDate.toString());
+            await refreshLicenseUI();
+            showToast("🎉 激活成功！大梨 OCR PRO 1 年期尝鲜授权已生效！");
+          } else {
+            localStorage.removeItem("dali_license_expire");
+            await refreshLicenseUI();
+            showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
+          }
+          const resume = pendingProAction;
+          hideProFeatureModal();
+          if (typeof resume === "function") {
+            resume();
+          }
+        } else {
+          showToast(result.reason || "激活码无效，请核对后重试");
+        }
+      }
+
+      $("proModalActivateBtn")?.addEventListener("click", handleModalActivation);
+      $("proModalKeyInput")?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleModalActivation();
+      });
+    }
+
     function initLicenseEvents() {
       refreshLicenseUI();
+      initProModalEvents();
 
       $("licenseActivateBtn")?.addEventListener("click", async () => {
         const input = ($("licenseKeyInput")?.value || "").trim().toUpperCase();
@@ -4551,7 +4740,7 @@
           localStorage.removeItem("dali_license_expire");
           if ($("licenseKeyInput")) $("licenseKeyInput").value = "";
           await refreshLicenseUI();
-          showToast("已重置授权状态为试用版");
+          showToast("已重置授权状态为免费体验版");
         }
       });
     }
@@ -5650,6 +5839,10 @@
     const acceptTableImage = acceptTableFile;
 
     async function runTableOcr() {
+      if (!isProActivated()) {
+        showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => runTableOcr());
+        return;
+      }
       if (!state.ocrReady || !state.ocr || !tableState.file || tableState.isRunning) return;
       tableState.isRunning = true;
       tableState.isAborted = false;
@@ -5811,7 +6004,13 @@
       });
 
       $("tableSnipBtn")?.addEventListener("click", startSnip);
-      $("tableRunBtn")?.addEventListener("click", runTableOcr);
+      $("tableRunBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => runTableOcr());
+          return;
+        }
+        runTableOcr();
+      });
       $("tableStopBtn")?.addEventListener("click", () => {
         tableState.isAborted = true;
       });
@@ -5824,6 +6023,10 @@
       });
 
       $("tableCopyTsvBtn")?.addEventListener("click", async () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const tsv = getTableAsTsv();
         if (!tsv) return;
         await copyText(tsv);
@@ -5831,6 +6034,10 @@
       });
 
       $("tableDownloadCsvBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const csv = getTableAsCsv();
         if (!csv) return;
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -5842,6 +6049,10 @@
       });
 
       $("tableSendToConnectBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const csv = getTableAsCsv();
         if (!csv) return;
         const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -5850,6 +6061,10 @@
       });
 
       $("tableCopySchemeABtn")?.addEventListener("click", async () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const md = getTableAsSchemeA();
         if (!md) return;
         await copyText(md);
@@ -5857,6 +6072,10 @@
       });
 
       $("tableCopyMdBtn")?.addEventListener("click", async () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const md = getTableAsMarkdown();
         if (!md) return;
         await copyText(md);
@@ -5864,12 +6083,20 @@
       });
 
       $("tableSendToDocBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const md = getTableAsSchemeA();
         if (!md) return;
         sendToDocEditor(md, tableState.fileName || "表格数据");
       });
 
       $("tableSendToAiBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const md = getTableAsSchemeA();
         if (!md) return;
         sendToAiAssistant(md, "invoice");
@@ -5939,6 +6166,10 @@
     }
 
     async function runAiTask(taskType = "proofread") {
+      if (!isProActivated()) {
+        showProFeatureModal("🤖 AI 智能助理深度校对与结构化提取为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => runAiTask(taskType));
+        return;
+      }
       const inputText = ($("aiInputText")?.value || "").trim();
       if (!inputText) {
         showToast("请先在左侧输入或从 OCR 导入待处理文本");
@@ -6089,6 +6320,10 @@
       });
 
       $("aiSendToDocBtn")?.addEventListener("click", () => {
+        if (!isProActivated()) {
+          showProFeatureModal("📊 方案 A 复杂表格还原与 Excel 无损导出为 PRO 商业版专属功能，请输入激活码或立即获取授权");
+          return;
+        }
         const text = $("aiOutputBox").textContent;
         if (!text || text.includes("❌ AI 处理出错")) return;
         sendToDocEditor(text, "AI润色成稿");
