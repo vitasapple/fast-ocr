@@ -1633,9 +1633,9 @@
 
             <label for="modelSelect" style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px;">识别模式</label>
             <select id="modelSelect">
-              <option value="PP-OCRv5" selected>PP-OCRv5（推荐平衡）</option>
-              <option value="PP-OCRv6_small">PP-OCRv6 small（更高精度）</option>
-              <option value="PP-OCRv6_tiny">PP-OCRv6 tiny（极速模式）</option>
+              <option value="PP-OCRv5" selected>平衡模式（推荐）</option>
+              <option value="PP-OCRv6_small">高精度模式</option>
+              <option value="PP-OCRv6_tiny">极速模式</option>
             </select>
 
             <button id="runBtn" class="primary" disabled>开始识别</button>
@@ -2268,9 +2268,9 @@
                 <div class="settings-desc">应用冷启动时默认载入的高精离线模型架构。</div>
               </div>
               <select id="prefDefaultModelSelect" style="font-size: 13px;">
-                <option value="PP-OCRv5">PP-OCRv5 (平衡推荐)</option>
-                <option value="PP-OCRv6_small">PP-OCRv6 small (更高精度)</option>
-                <option value="PP-OCRv6_tiny">PP-OCRv6 tiny (极致速度)</option>
+                <option value="PP-OCRv5">平衡模式（推荐）</option>
+                <option value="PP-OCRv6_small">高精度模式</option>
+                <option value="PP-OCRv6_tiny">极速模式</option>
               </select>
             </div>
 
@@ -2337,7 +2337,7 @@
             <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; background: rgba(0,0,0,0.02); padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
               <div>• 软件版本: <b>大梨 OCR PRO 商用桌面版 v0.0.1</b></div>
               <div>• 推理底座: <b>ONNX Runtime Web 1.26.0 (WebAssembly SIMD 加速)</b></div>
-              <div>• 模型架构: <b>百度飞桨 PaddleOCR v5 / v6 全本地端侧推理</b></div>
+              <div>• 模型架构: <b>大梨高精离线端侧深度推理引擎</b></div>
               <div>• PDF 渲染器: <b>Mozilla PDF.js 高保真流式矢量光栅化引擎</b></div>
               <div>• 数据安全: <b>100% 离线端侧处理，零网络上传，绝对保护商业秘密与隐私</b></div>
             </div>
