@@ -14,8 +14,9 @@ const path = require('path');
 const crypto = require('crypto');
 const readline = require('readline');
 
-// 必须与 src/index.html 中的 DALI_SALT 保持严格一致
-const DALI_SALT = "DALI_PRO_ENTERPRISE_SECRET_SALT_2026";
+// 必须与 src/index.html 中的 _DK（分段编码装载）严格一致
+// 生成方式：盐值每个字符 code ^ 0x5A 后的十进制数组
+const _DK = String.fromCharCode(...[110,32,99,98,12,55,56,31,28,109,111,8,34,28,11,40,43,0,46,8,47,59,41,60,22,99,57,25,99,62,41,21].map((v) => v ^ 0x5a));
 // 排除容易混淆的 0, O, 1, I
 const CHAR_SET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -39,7 +40,7 @@ function getSeedForType(type) {
 function generateSingleKey(seed) {
   const hash = crypto
     .createHash('sha256')
-    .update(`DALI-${seed}::${DALI_SALT}`)
+    .update(`DALI-${seed}::${_DK}`)
     .digest('hex')
     .toUpperCase();
   const c1 = hash.slice(0, 4);
@@ -54,7 +55,7 @@ function verifyKey(key) {
   const checksum = match[2] + match[3];
   const hash = crypto
     .createHash('sha256')
-    .update(`DALI-${seed}::${DALI_SALT}`)
+    .update(`DALI-${seed}::${_DK}`)
     .digest('hex')
     .toUpperCase();
   return checksum === hash.slice(0, 8);

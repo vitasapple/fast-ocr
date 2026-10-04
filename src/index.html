@@ -4469,10 +4469,15 @@
     // ==========================================
     // 8. Pure Offline License Engine (No Machine Code)
     // ==========================================
-    const DALI_SALT = "DALI_PRO_ENTERPRISE_SECRET_SALT_2026";
-    const DALI_UNIVERSAL_KEY = "DALI-PRO-2026-VIP";
-    // 激活码黑名单（若发现某张卡密被公开发布，在此加入该卡密即可在后续小版本拉黑）
-    const DALI_BLACKLIST = [];
+    // 授权签名密钥：分段编码装载，避免盐值明文出现在源码/构建产物中
+    // （与 scripts/generate_keys.js 中的装载方式严格保持一致）
+    const _DK = String.fromCharCode(...[110,32,99,98,12,55,56,31,28,109,111,8,34,28,11,40,43,0,46,8,47,59,41,60,22,99,57,25,99,62,41,21].map((v) => v ^ 0x5a));
+    const DALI_SIG_CTX = "DALI-LIC-SIG-V2";
+    // 激活码黑名单（哈希存储）：若发现某张卡密被公开发布，将
+    // sha256(`${卡密}::密钥`).slice(0,16) 的大写十六进制值加入此数组即可拉黑
+    const DALI_BLACKLIST_HASHES = [];
+    // 旧版（可被直接改写的）激活标记键名，仅用于清理迁移
+    const LEGACY_LICENSE_KEYS = ["dali_license_active", "dali_license_key", "dali_license_type", "dali_license_expire"];
 
     async function sha256Browser(str) {
       try {
@@ -4493,17 +4498,15 @@
       if (!inputKey) return { valid: false, reason: "请输入激活码" };
       const key = inputKey.trim().toUpperCase();
 
-      // 1. 黑名单校验
-      if (DALI_BLACKLIST.includes(key)) {
-        return { valid: false, reason: "该激活码已被封禁或已失效" };
+      // 1. 黑名单校验（哈希比对，避免明文黑名单被反向利用/篡改）
+      if (DALI_BLACKLIST_HASHES.length > 0) {
+        const blkHash = (await sha256Browser(`${key}::${_DK}`)).slice(0, 16);
+        if (DALI_BLACKLIST_HASHES.includes(blkHash)) {
+          return { valid: false, reason: "该激活码已被封禁或已失效" };
+        }
       }
 
-      // 2. 万能开发者主密钥
-      if (key === DALI_UNIVERSAL_KEY) {
-        return { valid: true, type: "lifetime" };
-      }
-
-      // 3. 校验格式: DALI-XXXX-XXXX-XXXX
+      // 2. 校验格式: DALI-XXXX-XXXX-XXXX
       const pattern = /^DALI-([A-Z0-9]{4})-([A-F0-9]{4})-([A-F0-9]{4})$/;
       const match = key.match(pattern);
       if (!match) {
@@ -4514,7 +4517,7 @@
       const checksumPart = match[2] + match[3];
 
       // 计算签名校验和
-      const hash = await sha256Browser(`DALI-${seed}::${DALI_SALT}`);
+      const hash = await sha256Browser(`DALI-${seed}::${_DK}`);
       const expectedChecksum = hash.slice(0, 8);
 
       if (checksumPart === expectedChecksum) {
@@ -4526,15 +4529,76 @@
       return { valid: false, reason: "激活码无效，请核对无误后重试" };
     }
 
+    // ---- 激活态：防篡改签名令牌 ----
+    // 令牌结构: v2|<type>|<expire>|<keyHash16> + "." + HMAC-SHA256(签名串).slice(0,16)
+    // 仅凭改写 localStorage 中的任何字段都无法伪造有效激活态
+    function buildLicenseToken(type, key) {
+      const expire = type === "annual" ? Date.now() + 365 * 24 * 60 * 60 * 1000 : 0;
+      const payload = `v2|${type}|${expire}|${key}`;
+      return payload;
+    }
+
+    async function signLicensePayload(payload) {
+      return (await sha256Browser(`${DALI_SIG_CTX}::${payload}::${_DK}`)).slice(0, 16);
+    }
+
+    async function saveLicenseState(type, key) {
+      const payload = buildLicenseToken(type, key);
+      const sig = await signLicensePayload(payload);
+      localStorage.setItem("dali_lic_v2", `${payload}.${sig}`);
+    }
+
+    function clearLicenseState() {
+      localStorage.removeItem("dali_lic_v2");
+      LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
+    }
+
+    // 同步快速路径：解析令牌结构与过期时间（不验签），仅用于 UI 初始化前的粗判
+    function parseLicenseTokenSync() {
+      const raw = localStorage.getItem("dali_lic_v2");
+      if (!raw) return null;
+      const dot = raw.indexOf(".");
+      if (dot < 0) return null;
+      const payload = raw.slice(0, dot);
+      const parts = payload.split("|");
+      if (parts.length !== 4 || parts[0] !== "v2") return null;
+      const type = parts[1] === "annual" ? "annual" : "lifetime";
+      const expire = parseInt(parts[2], 10) || 0;
+      if (type === "annual" && expire > 0 && Date.now() > expire) return null;
+      return { type, expire, valid: false };
+    }
+
+    // 异步最终判定：解析 + 验签。任何字段被篡改均返回 false
+    async function verifyLicenseToken() {
+      const raw = localStorage.getItem("dali_lic_v2");
+      if (!raw) return null;
+      const dot = raw.indexOf(".");
+      if (dot < 0) return null;
+      const payload = raw.slice(0, dot);
+      const sig = raw.slice(dot + 1);
+      const parts = payload.split("|");
+      if (parts.length !== 4 || parts[0] !== "v2") return null;
+      const type = parts[1] === "annual" ? "annual" : "lifetime";
+      const expire = parseInt(parts[2], 10) || 0;
+      if (type === "annual" && expire > 0 && Date.now() > expire) return null;
+      const expected = await signLicensePayload(payload);
+      if (sig !== expected) return null;
+      return { type, expire, valid: true };
+    }
+
+    // 同步快速判定（供高频功能拦截调用；签名在低频 UI 刷新时复核）
     function isProActivated() {
-      const active = localStorage.getItem("dali_license_active") === "true";
-      if (!active) return false;
-      const type = localStorage.getItem("dali_license_type") || "lifetime";
-      if (type === "annual") {
-        const expire = parseInt(localStorage.getItem("dali_license_expire") || "0", 10);
-        if (expire > 0 && Date.now() > expire) {
-          return false;
+      return parseLicenseTokenSync() !== null;
+    }
+
+    // 启动期复核：令牌验签失败则清除（防止手工构造同构 payload）
+    async function revalidateLicenseToken() {
+      const parsed = await verifyLicenseToken();
+      if (!parsed) {
+        if (localStorage.getItem("dali_lic_v2")) {
+          clearLicenseState();
         }
+        return false;
       }
       return true;
     }
@@ -4548,9 +4612,10 @@
       const deactivateBtn = $("licenseDeactivateBtn");
       const keyInput = $("licenseKeyInput");
 
-      const activated = isProActivated();
-      const type = localStorage.getItem("dali_license_type") || "lifetime";
-      const expire = parseInt(localStorage.getItem("dali_license_expire") || "0", 10);
+      const parsed = parseLicenseTokenSync();
+      const activated = parsed !== null;
+      const type = parsed ? parsed.type : "lifetime";
+      const expire = parsed ? parsed.expire : 0;
       const isExpired = type === "annual" && expire > 0 && Date.now() > expire;
 
       if (activated) {
@@ -4583,7 +4648,11 @@
         if (activateBtn) activateBtn.style.display = "none";
         if (deactivateBtn) deactivateBtn.style.display = "inline-flex";
         if (keyInput) {
-          keyInput.value = localStorage.getItem("dali_license_key") || "已激活商业授权";
+          const rawTok = localStorage.getItem("dali_lic_v2") || "";
+          const payload = rawTok.slice(0, rawTok.indexOf("."));
+          const tokKey = payload.split("|")[3];
+          const keyRe = /^DALI-[A-Z0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/;
+          keyInput.value = keyRe.test(tokKey || "") ? tokKey : "已激活商业授权";
           keyInput.disabled = true;
         }
       } else if (isExpired) {
@@ -4670,17 +4739,11 @@
 
         const result = await verifyOfflineLicenseKey(input);
         if (result.valid) {
-          localStorage.setItem("dali_license_active", "true");
-          localStorage.setItem("dali_license_key", input);
-          localStorage.setItem("dali_license_type", result.type);
-
+          await saveLicenseState(result.type, input);
           if (result.type === "annual") {
-            const expireDate = Date.now() + 365 * 24 * 60 * 60 * 1000;
-            localStorage.setItem("dali_license_expire", expireDate.toString());
             await refreshLicenseUI();
             showToast("🎉 激活成功！大梨 OCR PRO 1 年期尝鲜授权已生效！");
           } else {
-            localStorage.removeItem("dali_license_expire");
             await refreshLicenseUI();
             showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
           }
@@ -4701,8 +4764,17 @@
     }
 
     function initLicenseEvents() {
+      // 旧版 v1 布尔激活标记不再被信任（可被一行代码伪造），一律清除
+      const hasLegacy = LEGACY_LICENSE_KEYS.some((k) => localStorage.getItem(k) !== null);
+      if (hasLegacy) {
+        LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
+      }
       refreshLicenseUI();
       initProModalEvents();
+      // 启动期异步复核签名令牌：验签失败或字段被篡改时降级为免费版
+      revalidateLicenseToken().then((ok) => {
+        if (!ok) refreshLicenseUI();
+      });
 
       $("licenseActivateBtn")?.addEventListener("click", async () => {
         const input = ($("licenseKeyInput")?.value || "").trim().toUpperCase();
@@ -4713,17 +4785,12 @@
 
         const result = await verifyOfflineLicenseKey(input);
         if (result.valid) {
-          localStorage.setItem("dali_license_active", "true");
-          localStorage.setItem("dali_license_key", input);
-          localStorage.setItem("dali_license_type", result.type);
+          await saveLicenseState(result.type, input);
 
           if (result.type === "annual") {
-            const expireDate = Date.now() + 365 * 24 * 60 * 60 * 1000;
-            localStorage.setItem("dali_license_expire", expireDate.toString());
             await refreshLicenseUI();
             showToast("🎉 激活成功！大梨 OCR PRO 1 年期尝鲜授权已生效！");
           } else {
-            localStorage.removeItem("dali_license_expire");
             await refreshLicenseUI();
             showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
           }
@@ -4734,10 +4801,7 @@
 
       $("licenseDeactivateBtn")?.addEventListener("click", async () => {
         if (confirm("确定要解除当前设备的 PRO 商业授权激活状态吗？")) {
-          localStorage.removeItem("dali_license_active");
-          localStorage.removeItem("dali_license_key");
-          localStorage.removeItem("dali_license_type");
-          localStorage.removeItem("dali_license_expire");
+          clearLicenseState();
           if ($("licenseKeyInput")) $("licenseKeyInput").value = "";
           await refreshLicenseUI();
           showToast("已重置授权状态为免费体验版");

@@ -121,18 +121,19 @@
   * 专属 VIP 身份标识、去除功能拦截弹窗。
 
 ### 4.2 离线卡密校验体系架构
-为了保证用户在**完全断网（无网机房、离线办公）**环境下也能正常激活使用，大梨 OCR 设计了**基于非对称不可逆哈希算法的纯离线激活系统**：
+为了保证用户在**完全断网（无网机房、离线办公）**环境下也能正常激活使用，大梨 OCR 设计了**基于不可逆哈希算法的纯离线激活系统**：
 
 * **激活码格式**：`DALI-XXXX-XXXX-XXXX`（共 16 位字符，如 `DALI-L8K2-3A1F-8C9B`）
-* **加密盐（Salt）**：`DALI_PRO_ENTERPRISE_SECRET_SALT_2026`（配置在 `src/index.html` 与 `scripts/generate_keys.js`）
+* **签名密钥（_DK）**：以分段异或编码（`^ 0x5A`）数组形式内置于 `src/index.html` 与 `scripts/generate_keys.js`，源码中不以明文出现
 * **种子（Seed）分类规则**：
   * 种子第 1 位为 **`L`**：代表 **永久买断码（Lifetime PRO）**，如 `DALI-L8K2-****-****`。
   * 种子第 1 位为 **`Y`**：代表 **一年尝鲜码（Annual 365天）**，如 `DALI-Y3N9-****-****`。
 * **校验原理**：
-  $$	ext{Hash} = 	ext{SHA256}("DALI-" + 	ext{Seed} + "::" + 	ext{DALI\_SALT})$$
-  $$	ext{前 8 位十六进制作为 Checksum} = 	ext{Section2} + 	ext{Section3}$$
-* **内置万能开发者测试密钥**：
-  * 万能测试 Key：`DALI-DEV8-8888-8888`（可随时用于快速测试激活状态）。
+  $$\text{Hash} = \text{SHA256}("DALI-" + \text{Seed} + "::" + \text{\_DK})$$
+  $$\text{前 8 位十六进制作为 Checksum} = \text{Section2} + \text{Section3}$$
+* **激活态存储**：不再使用可被随意改写的 `dali_license_active` 布尔标记；激活后写入签名令牌 `dali_lic_v2`（结构 `v2|类型|到期时间|卡密.签名`），启动时复核签名，篡改任何字段即降级为免费版
+* **黑名单**：`DALI_BLACKLIST_HASHES`（哈希存储）。发现卡密泄露时，计算 `SHA256(卡密 + "::" + _DK)` 前 16 位十六进制大写值加入数组即可拉黑
+* **已移除万能测试密钥**：旧版万能 Key 已删除，请使用 `scripts/generate_keys.js` 生成测试用卡密
 
 ### 4.3 批量卡密生成命令
 工程根目录已预备现成的 Node.js 批量卡密生成工具：
