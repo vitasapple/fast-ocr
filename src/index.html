@@ -811,7 +811,7 @@
       opacity: 0;
       transform: translateY(12px);
       transition: all 0.25s ease;
-      z-index: 9999;
+      z-index: 100000;
     }
     .app-toast.show { opacity: 1; transform: translateY(0); }
 
@@ -1513,7 +1513,7 @@
             <span class="brand-name">大梨 OCR</span>
             <span class="brand-badge" id="brandProBadge">PRO</span>
           </div>
-          <div class="brand-sub" id="brandSubText">极速端侧离线高精识别</div>
+          <div class="brand-sub" id="brandSubText">极速离线高精识别</div>
         </div>
       </div>
 
@@ -1531,7 +1531,7 @@
           <span class="nav-icon">📑</span>
           <div class="nav-meta">
             <div class="nav-title">PDF 识别</div>
-            <div class="nav-desc">多页流式高保真</div>
+            <div class="nav-desc">多页高速识别</div>
           </div>
         </button>
 
@@ -1620,7 +1620,7 @@
         <div class="view-header">
           <div>
             <h1 class="view-title">图片文字识别</h1>
-            <p class="view-desc">支持单张或批量图片拖拽、选择、剪贴板粘贴与 Alt+S 快捷截屏识别，全离线端侧推理。</p>
+            <p class="view-desc">支持单张或批量图片拖拽、选择、剪贴板粘贴与 Alt+S 快捷截屏识别，全程离线保护隐私。</p>
           </div>
         </div>
 
@@ -1736,7 +1736,7 @@
         <div class="view-header">
           <div>
             <h1 class="view-title">PDF 文档识别</h1>
-            <p class="view-desc">支持扫描件与多页 PDF 智能提取，逐页流式边识别边预览，支持随时中断与格式化导出。</p>
+            <p class="view-desc">支持扫描件与多页 PDF 智能提取，逐页识别实时预览，支持随时中断与格式化导出。</p>
           </div>
         </div>
 
@@ -1753,7 +1753,7 @@
           <div class="dropzone" id="pdfDropzone">
             <div class="dropzone-hint" id="pdfDropHint">
               <b>拖拽 PDF 文件到这里</b>，或点击上方“选择 PDF 文档”<br />
-              <span style="opacity:0.75;font-size:12px;">自动分页渲染为高清图像，逐页流式高精度 OCR 识别</span>
+              <span style="opacity:0.75;font-size:12px;">自动分页渲染为高清图像，逐页高精度 OCR 识别</span>
             </div>
           </div>
 
@@ -1792,7 +1792,7 @@
             </div>
           </div>
 
-          <textarea id="pdfResult" readonly placeholder="PDF 识别结果将逐页流式追加在此处…"></textarea>
+          <textarea id="pdfResult" readonly placeholder="PDF 识别结果将逐页追加在此处…"></textarea>
         </div>
       </section>
 
@@ -1923,7 +1923,7 @@
         <div class="view-header">
           <div>
             <h1 class="view-title">📊 表格文字识别与 Excel 导出</h1>
-            <p class="view-desc">端侧智能识别表格线与二维拓扑结构，聚类为规整行列数据，支持直接在表格内编辑，一键直接粘贴到 Excel / Numbers / 飞书，或导出 CSV 与 Markdown 表格。</p>
+            <p class="view-desc">智能识别表格线与结构，还原为规整行列数据，支持直接在表格内编辑，一键直接粘贴到 Excel / Numbers / 飞书，或导出 CSV 与 Markdown 表格。</p>
           </div>
         </div>
 
@@ -2086,7 +2086,7 @@
                   <button type="button" id="aiSendToDocBtn" class="btn-badge-doc" style="font-size: 11px; padding: 2px 8px;">📝 发送到文档</button>
                 </div>
               </div>
-              <div class="ai-output-container" id="aiOutputBox">点击上方预设卡片或点击“开始 AI 处理”后，AI 分析和润色结果将在此流式呈现…</div>
+              <div class="ai-output-container" id="aiOutputBox">点击上方预设卡片或点击“开始 AI 处理”后，AI 分析和润色结果将在此呈现…</div>
             </div>
           </div>
         </div>
@@ -2181,7 +2181,7 @@
         <div class="view-header">
           <div>
             <h1 class="view-title">📜 识别历史记录中心</h1>
-            <p class="view-desc">端侧本地轻量 IndexedDB 数据库安全持久化存储，无需联网。支持多源分类过滤、毫秒级关键词检索、历史一键重新排版与批量导出。</p>
+            <p class="view-desc">历史记录本地安全存储，无需联网。支持多源分类过滤、毫秒级关键词检索、历史一键重新排版与批量导出。</p>
           </div>
         </div>
 
@@ -2219,7 +2219,7 @@
         <div class="view-header">
           <div>
             <h1 class="view-title">⚙️ 偏好设置与商业授权中心</h1>
-            <p class="view-desc">管理软件全局识别偏好、离线端侧推理配置与设备专属商业授权注册。</p>
+            <p class="view-desc">管理软件全局识别偏好、离线识别配置与设备专属商业授权注册。</p>
           </div>
         </div>
 
@@ -2234,7 +2234,7 @@
           </div>
 
           <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 14px; line-height: 1.6;">
-            纯本地离线算法验证，零联网请求，保护隐私。输入您购买的 16 位 PRO 商业激活码（卡密），即可瞬间解锁无限量表格智能还原、高精批量排版与终身离线商业权益。
+            输入您购买的 16 位 PRO 商业激活码（卡密），即可瞬间解锁无限量表格智能还原、高精批量排版与终身离线商业权益。
           </p>
 
           <div class="row" style="gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -2244,7 +2244,7 @@
           </div>
 
           <div style="margin-top: 14px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; flex-wrap: wrap; gap: 8px;">
-            <span>🛡️ 永久离线生效 · 无需提供任何电脑硬件信息</span>
+            <span>🛡️ 一码激活 · 永久生效 · 安全可靠</span>
             <a href="https://daliocr.cn/#pricing" target="_blank" style="color: var(--primary); text-decoration: underline; font-weight: 600;">还没有激活码？点击前往官网获取授权 →</a>
           </div>
         </div>
@@ -2264,8 +2264,8 @@
 
             <div class="settings-row">
               <div class="settings-label">
-                <div class="settings-name">默认识别模型引擎</div>
-                <div class="settings-desc">应用冷启动时默认载入的高精离线模型架构。</div>
+                <div class="settings-name">默认识别引擎</div>
+                <div class="settings-desc">应用启动时默认载入的识别模式。</div>
               </div>
               <select id="prefDefaultModelSelect" style="font-size: 13px;">
                 <option value="PP-OCRv5">平衡模式（推荐）</option>
@@ -2288,7 +2288,7 @@
             <div class="settings-row">
               <div class="settings-label">
                 <div class="settings-name">历史记录保留上限</div>
-                <div class="settings-desc">本地 IndexedDB 存储的最大记录数，超出将自动清理最旧记录。</div>
+                <div class="settings-desc">本地存储的最大记录数，超出将自动清理最旧记录。</div>
               </div>
               <select id="prefHistoryLimitSelect" style="font-size: 13px;">
                 <option value="50">保留最近 50 条</option>
@@ -2315,7 +2315,7 @@
                   <span>大梨 OCR 客户端</span>
                   <span style="font-family: var(--font-mono); font-weight: 700; color: var(--primary); font-size: 13px;" id="currentVersionLabel">v0.0.1</span>
                 </div>
-                <div class="settings-desc">更新检查接口由 api.daliocr.cn/update 官方通道提供。</div>
+                <div class="settings-desc">检查并安装大梨 OCR 官方发布的最新版本。</div>
               </div>
               <button type="button" id="checkUpdateBtn" class="primary" style="font-size: 13px; padding: 6px 16px;">🔍 检查更新</button>
             </div>
@@ -2333,13 +2333,10 @@
           </div>
 
           <div class="settings-group" style="margin-bottom: 0;">
-            <div class="settings-group-title">💻 系统架构与运行环境</div>
+            <div class="settings-group-title">💻 版本信息</div>
             <div style="font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; background: rgba(0,0,0,0.02); padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
               <div>• 软件版本: <b>大梨 OCR PRO 商用桌面版 v0.0.1</b></div>
-              <div>• 推理底座: <b>ONNX Runtime Web 1.26.0 (WebAssembly SIMD 加速)</b></div>
-              <div>• 模型架构: <b>大梨高精离线端侧深度推理引擎</b></div>
-              <div>• PDF 渲染器: <b>Mozilla PDF.js 高保真流式矢量光栅化引擎</b></div>
-              <div>• 数据安全: <b>100% 离线端侧处理，零网络上传，绝对保护商业秘密与隐私</b></div>
+              <div>• 数据安全: <b>100% 本地离线处理，零网络上传，绝对保护商业秘密与隐私</b></div>
             </div>
           </div>
         </div>
@@ -2456,11 +2453,11 @@
           <div style="color: #059669;">✅ <b>免费体验版</b>：普通单张图片文字提取、手机扫码跨屏快传、基础识别历史记录</div>
           <div style="margin-top: 6px; color: var(--text-primary); font-weight: 600;">⭐ <b>PRO 商业版解锁以下核心能力</b>：</div>
           <div style="padding-left: 8px;">
-            <div>• <b>方案 A 复杂表格还原</b>：高精二维拓扑聚类，智能保留跨行跨列合并单元格</div>
+            <div>• <b>方案 A 复杂表格还原</b>：智能保留跨行跨列合并单元格</div>
             <div>• <b>Excel / Word 无损导出</b>：一键导出规整 .xlsx / .tsv / .csv / .docx，保持排版格式</div>
-            <div>• <b>多页 PDF 流式识别</b>：长文档一次性全速解析拼接，免除单页重复处理</div>
+            <div>• <b>多页 PDF 识别</b>：长文档一次性全速解析拼接，免除单页重复处理</div>
             <div>• <b>AI 智能助理深度赋能</b>：错别字自动校正、中英专业互译与凭据结构化提炼</div>
-            <div>• <b>100% 纯端侧离线安全</b>：全本地神经推理，绝不上传商业秘密与个人数据</div>
+            <div>• <b>100% 离线安全</b>：全程本地处理，绝不上传商业秘密与个人数据</div>
           </div>
         </div>
 
@@ -2478,7 +2475,7 @@
 
       <div class="update-modal-footer" style="padding: 12px 20px; background: rgba(0,0,0,0.02);">
         <div style="font-size: 11.5px; color: var(--text-muted); margin-right: auto;">
-          🛡️ 纯离线算法验证 · 永久生效
+          🛡️ 正版授权 · 一码永久生效
         </div>
         <button type="button" id="proFeatureCancelBtn" style="font-size: 13px; padding: 7px 16px;">稍后再说</button>
         <button type="button" id="proFeatureBuyBtn" class="primary" style="font-size: 13px; padding: 7px 18px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; font-weight: 600; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);">🛒 获取 PRO 授权 (39元起)</button>
@@ -2984,7 +2981,7 @@
         ];
         ui.metrics.textContent = lines.join("\n");
         setStatus("就绪：选择图片、截屏或粘贴，然后点击“开始识别”。", "ok");
-        updateSidebarEngineStatus("ONNX 引擎就绪 (离线)", true);
+        updateSidebarEngineStatus("识别引擎就绪 (离线)", true);
 
         if (pdfState.file && $("pdfRunBtn")) {
           $("pdfRunBtn").disabled = false;
@@ -3744,7 +3741,7 @@
 
     async function recognizePdf() {
       if (!isProActivated()) {
-        showProFeatureModal("📑 PDF 多页流式高保真识别为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => recognizePdf());
+        showProFeatureModal("📑 PDF 多页批量识别为 PRO 商业版专属功能，请输入激活码或立即获取授权", () => recognizePdf());
         return;
       }
       if (!state.ocrReady || !state.ocr || !pdfState.file || pdfState.isRunning) return;
@@ -4467,16 +4464,11 @@
     }
 
     // ==========================================
-    // 8. Pure Offline License Engine (No Machine Code)
+    // 8. License & Activation
     // ==========================================
-    // 授权签名密钥：分段编码装载，避免盐值明文出现在源码/构建产物中
-    // （与 scripts/generate_keys.js 中的装载方式严格保持一致）
     const _DK = String.fromCharCode(...[110,32,99,98,12,55,56,31,28,109,111,8,34,28,11,40,43,0,46,8,47,59,41,60,22,99,57,25,99,62,41,21].map((v) => v ^ 0x5a));
     const DALI_SIG_CTX = "DALI-LIC-SIG-V2";
-    // 激活码黑名单（哈希存储）：若发现某张卡密被公开发布，将
-    // sha256(`${卡密}::密钥`).slice(0,16) 的大写十六进制值加入此数组即可拉黑
     const DALI_BLACKLIST_HASHES = [];
-    // 旧版（可被直接改写的）激活标记键名，仅用于清理迁移
     const LEGACY_LICENSE_KEYS = ["dali_license_active", "dali_license_key", "dali_license_type", "dali_license_expire"];
 
     async function sha256Browser(str) {
@@ -4493,12 +4485,11 @@
       }
     }
 
-    // 纯离线算法校验 (支持永久买断码与一年尝鲜码)
+    // 激活码校验
     async function verifyOfflineLicenseKey(inputKey) {
       if (!inputKey) return { valid: false, reason: "请输入激活码" };
       const key = inputKey.trim().toUpperCase();
 
-      // 1. 黑名单校验（哈希比对，避免明文黑名单被反向利用/篡改）
       if (DALI_BLACKLIST_HASHES.length > 0) {
         const blkHash = (await sha256Browser(`${key}::${_DK}`)).slice(0, 16);
         if (DALI_BLACKLIST_HASHES.includes(blkHash)) {
@@ -4506,7 +4497,6 @@
         }
       }
 
-      // 2. 校验格式: DALI-XXXX-XXXX-XXXX
       const pattern = /^DALI-([A-Z0-9]{4})-([A-F0-9]{4})-([A-F0-9]{4})$/;
       const match = key.match(pattern);
       if (!match) {
@@ -4529,9 +4519,7 @@
       return { valid: false, reason: "激活码无效，请核对无误后重试" };
     }
 
-    // ---- 激活态：防篡改签名令牌 ----
-    // 令牌结构: v2|<type>|<expire>|<keyHash16> + "." + HMAC-SHA256(签名串).slice(0,16)
-    // 仅凭改写 localStorage 中的任何字段都无法伪造有效激活态
+    // ---- 激活态管理 ----
     function buildLicenseToken(type, key) {
       const expire = type === "annual" ? Date.now() + 365 * 24 * 60 * 60 * 1000 : 0;
       const payload = `v2|${type}|${expire}|${key}`;
@@ -4553,7 +4541,6 @@
       LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
     }
 
-    // 同步快速路径：解析令牌结构与过期时间（不验签），仅用于 UI 初始化前的粗判
     function parseLicenseTokenSync() {
       const raw = localStorage.getItem("dali_lic_v2");
       if (!raw) return null;
@@ -4568,7 +4555,6 @@
       return { type, expire, valid: false };
     }
 
-    // 异步最终判定：解析 + 验签。任何字段被篡改均返回 false
     async function verifyLicenseToken() {
       const raw = localStorage.getItem("dali_lic_v2");
       if (!raw) return null;
@@ -4586,12 +4572,10 @@
       return { type, expire, valid: true };
     }
 
-    // 同步快速判定（供高频功能拦截调用；签名在低频 UI 刷新时复核）
     function isProActivated() {
       return parseLicenseTokenSync() !== null;
     }
 
-    // 启动期复核：令牌验签失败则清除（防止手工构造同构 payload）
     async function revalidateLicenseToken() {
       const parsed = await verifyLicenseToken();
       if (!parsed) {
@@ -4764,14 +4748,12 @@
     }
 
     function initLicenseEvents() {
-      // 旧版 v1 布尔激活标记不再被信任（可被一行代码伪造），一律清除
       const hasLegacy = LEGACY_LICENSE_KEYS.some((k) => localStorage.getItem(k) !== null);
       if (hasLegacy) {
         LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
       }
       refreshLicenseUI();
       initProModalEvents();
-      // 启动期异步复核签名令牌：验签失败或字段被篡改时降级为免费版
       revalidateLicenseToken().then((ok) => {
         if (!ok) refreshLicenseUI();
       });
@@ -5979,7 +5961,7 @@
           }
         } else {
           // Single Image
-          $("tableStatus").textContent = "正在进行表格文字与拓扑结构识别…";
+          $("tableStatus").textContent = "正在进行表格文字与结构识别…";
           $("tableProgress").max = 1;
           $("tableProgress").value = 0.5;
 
@@ -5992,7 +5974,7 @@
           renderTableGrid(grid);
           $("tableProgress").value = 1;
 
-          $("tableStatus").textContent = `表格识别完成！识别到 ${items.length} 个单元格，聚类为 ${grid.length} 行 ${grid[0]?.length || 0} 列。`;
+          $("tableStatus").textContent = `表格识别完成！识别到 ${items.length} 个单元格，还原为 ${grid.length} 行 ${grid[0]?.length || 0} 列。`;
           showToast("表格识别完成 ✓");
         }
 
