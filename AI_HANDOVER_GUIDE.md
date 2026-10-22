@@ -121,19 +121,19 @@
   * 专属 VIP 身份标识、去除功能拦截弹窗。
 
 ### 4.2 离线卡密校验体系架构
-为了保证用户在**完全断网（无网机房、离线办公）**环境下也能正常激活使用，大梨 OCR 设计了**基于不可逆哈希算法的纯离线激活系统**：
+自 2026-10-21 起，商业授权改为**服务端权威 + 离线宽限**（`dali-api/`，接口与部署见 `dali-api/README.md`）。纯离线自校验的老问题在于：`_DK` 就躺在分发包里，还原后任何人都能自造无限终身码，而且年码到期时间是客户端算的，同一个码重复输入就能白续一年。现在的机制：
 
-* **激活码格式**：`DALI-XXXX-XXXX-XXXX`（共 16 位字符，如 `DALI-L8K2-3A1F-8C9B`）
-* **签名密钥（_DK）**：以分段异或编码（`^ 0x5A`）数组形式内置于 `src/index.html` 与 `scripts/generate_keys.js`，源码中不以明文出现
-* **种子（Seed）分类规则**：
+* **激活码格式**：`DALI-XXXX-XXXX-XXXX`（种子长度 4~12 位均可，老批次是 4 位；**新批次建议 8 位**，4 位种子全空间只有 65536，靠限速兜不住）
+* **签名密钥（_DK）**：以分段异或编码（`^ 0x5A`）数组形式内置于 `src/index.html` 与 `scripts/generate_keys.js`。**它现在只用于挡掉乱输入的预过滤，不再是授权凭据**；一个码有效与否，只看 MySQL/SQLite `licenses` 表里有没有这一行。
+* **种子（Seed）分类规则**（仅作人工识别用，**类型以数据库 `key_type` 为准**）：
   * 种子第 1 位为 **`L`**：代表 **永久买断码（Lifetime PRO）**，如 `DALI-L8K2-****-****`。
   * 种子第 1 位为 **`Y`**：代表 **一年尝鲜码（Annual 365天）**，如 `DALI-Y3N9-****-****`。
-* **校验原理**：
+* **校验原理**（不变，仍是 `SHA256("DALI-" + Seed + "::" + _DK)` 前 8 位当 Checksum）：
   $$\text{Hash} = \text{SHA256}("DALI-" + \text{Seed} + "::" + \text{\_DK})$$
   $$\text{前 8 位十六进制作为 Checksum} = \text{Section2} + \text{Section3}$$
-* **激活态存储**：不再使用可被随意改写的 `dali_license_active` 布尔标记；激活后写入签名令牌 `dali_lic_v2`（结构 `v2|类型|到期时间|卡密.签名`），启动时复核签名，篡改任何字段即降级为免费版
-* **黑名单**：`DALI_BLACKLIST_HASHES`（哈希存储）。发现卡密泄露时，计算 `SHA256(卡密 + "::" + _DK)` 前 16 位十六进制大写值加入数组即可拉黑
-* **已移除万能测试密钥**：旧版万能 Key 已删除，请使用 `scripts/generate_keys.js` 生成测试用卡密
+* **激活态存储**：`dali_lic_v3`，内容是**服务器 RSA 私钥签发的令牌**（`base64url(payload).base64url(签名)`，payload 含 `type/act/exp/gc/hc`）。客户端内置的是**公钥 JWK**，能验签不能伪造；到期时间与宽限期由服务端下发，客户端不再自己算 365 天。离线宽限：`gc`(7 天) 内不联网照常是 PRO，超过 `hc`(30 天) 才锁回免费版。换机需联网调用解除接口。
+* **封禁与设备绑定**：`DALI_BLACKLIST_HASHES` 那个手工数组已废弃。封禁 = 后台把 `licenses.status` 置 `revoked`，用户下次联网心跳立即停用；一码一机由 `machine_id`（macOS `IOPlatformUUID` / Windows `MachineGuid` / Linux `machine-id`，客户端 SHA-256 后上传）在服务端强制。**改这些不用重新打包发版**。
+* **已移除万能测试密钥**：旧版万能 Key 已删除，测试用卡密请用 `dali-api` 的 `python3 -m cli gen-keys`（或仍用 `scripts/generate_keys.js`，两边算法完全一致）
 
 ### 4.3 批量卡密生成命令
 工程根目录已预备现成的 Node.js 批量卡密生成工具：

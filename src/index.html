@@ -2238,13 +2238,13 @@
           </p>
 
           <div class="row" style="gap: 10px; align-items: center; flex-wrap: wrap;">
-            <input type="text" id="licenseKeyInput" placeholder="请输入 16 位 PRO 激活码 (如: DALI-XXXX-XXXX-XXXX)" style="flex: 1; min-width: 280px; font-family: var(--font-mono); text-transform: uppercase;" />
+            <input type="text" id="licenseKeyInput" placeholder="请输入 PRO 激活码 (如: DALI-XXXX-XXXX-XXXX)" style="flex: 1; min-width: 280px; font-family: var(--font-mono); text-transform: uppercase;" />
             <button type="button" id="licenseActivateBtn" class="primary">🔑 立即激活 PRO</button>
             <button type="button" id="licenseDeactivateBtn" class="danger" style="display: none;">解除激活</button>
           </div>
 
           <div style="margin-top: 14px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 10px; flex-wrap: wrap; gap: 8px;">
-            <span>🛡️ 一码激活 · 永久生效 · 安全可靠</span>
+            <span>🛡️ 联网激活 · 一码一机 · 换机可自助解绑</span>
             <a href="https://daliocr.cn/#pricing" target="_blank" style="color: var(--primary); text-decoration: underline; font-weight: 600;">还没有激活码？点击前往官网获取授权 →</a>
           </div>
         </div>
@@ -2467,7 +2467,7 @@
             🔑 已购买授权卡密？在此输入 16 位激活码立即生效：
           </div>
           <div style="display: flex; gap: 8px; align-items: center;">
-            <input type="text" id="proModalKeyInput" placeholder="输入 16 位激活码 (如: DALI-YYYY-... 或 DALI-XXXX-...)" style="flex: 1; padding: 7px 10px; font-size: 13px; font-family: var(--font-mono); text-transform: uppercase; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-primary);" />
+            <input type="text" id="proModalKeyInput" placeholder="输入激活码 (年码 DALI-YYYY-... / 永久码 DALI-XXXX-...)" style="flex: 1; padding: 7px 10px; font-size: 13px; font-family: var(--font-mono); text-transform: uppercase; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-primary);" />
             <button type="button" id="proModalActivateBtn" class="primary" style="font-size: 12.5px; padding: 7px 14px; white-space: nowrap;">立即激活</button>
           </div>
         </div>
@@ -4466,125 +4466,288 @@
     // ==========================================
     // 8. License & Activation
     // ==========================================
-    const _DK = String.fromCharCode(...[110,32,99,98,12,55,56,31,28,109,111,8,34,28,11,40,43,0,46,8,47,59,41,60,22,99,57,25,99,62,41,21].map((v) => v ^ 0x5a));
-    const DALI_SIG_CTX = "DALI-LIC-SIG-V2";
-    const DALI_BLACKLIST_HASHES = [];
+    // ==========================================
+    // 8. License & Activation  (v3: 服务端权威 + RSA 验签，激活后离线可用)
+    // ==========================================
+    //
+    // 旧版是纯本地 SHA256 自校验，而签名盐 _DK 就躺在分发包里，任何人还原出盐
+    // 就能自造无限终身码；年码到期时间也是客户端 Date.now()+365d 算的，同一个码
+    // 重复输入就能白续一年。现在唯一凭据是服务器数据库里那一行记录，本地只缓存
+    // 服务器私钥签发的令牌，客户端内置的是公钥：能验签，不能伪造。
+    const _DK = String.fromCharCode(...[110, 32, 99, 98, 12, 55, 56, 31, 28, 109, 111, 8, 34, 28, 11, 40, 43, 0, 46, 8, 47, 59, 41, 60, 22, 99, 57, 25, 99, 62, 41, 21].map((v) => v ^ 0x5a));
     const LEGACY_LICENSE_KEYS = ["dali_license_active", "dali_license_key", "dali_license_type", "dali_license_expire"];
+    const DALI_LIC_STORE = "dali_lic_v3";
+    const DALI_LIC_V2_STORE = "dali_lic_v2";
+    const DALI_KEY_RE = /^DALI-([A-Z0-9]{4,12})-([A-F0-9]{4})-([A-F0-9]{4})$/;
+
+    // 用服务器上的 `python3 -m cli gen-keypair` 输出的 JWK 替换下面 n/e 再打包。
+    // 保持占位符原样时联网激活仍会成功，但本地无法验签，下次开机就要重新联网。
+    const DALI_LIC_PUBLIC_JWK = {
+      kty: "RSA",
+      alg: "RS256",
+      use: "sig",
+      n: "mKb6Jul68_oXvwOY9Q9bvccWf7GSNQQQ3kQF3BnpGof18RTHQszprXy6Wbn7uSrMCZ-hnX9hjIrXaunPyunWWchTE0qysjMXMgWP8EpE-auYxCM19-dmrPwTmehGFhroEAa4dj6gZdv4iXSYqpbWwwuritGpXX24CCjGBxOpvURF-dk03qZhVhf6kK81TB-eWWoWFNpaMRDgVfl6GPHOvagLiU_LlsDzYu3t6FkEasg0DusWGnrKe8IJV4EkMcNsRoJEpykef4nMaDNGs2rhLcbM_e4A3b1Ts_rS2Hpqnh7Lh59ONVMPFZFW5ZUA--0YjrNObMkx92PRnHAjDyz5fw",
+      e: "AQAB",
+    };
+
+    const HAS_SUBTLE = !!(window.crypto && window.crypto.subtle);
+
+    // 三个远程接口与授权接口共用同一前缀。联调时可在浏览器控制台覆盖：
+    // localStorage.setItem("dali_api_base","http://127.0.0.1:8000")
+    const DALI_API_BASE = (localStorage.getItem("dali_api_base") || "https://api.daliocr.cn").replace(/\/+$/, "");
 
     async function sha256Browser(str) {
+      if (!HAS_SUBTLE) return "";
       try {
-        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+        const buf = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
         return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
       } catch (_) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-          hash = (hash << 5) - hash + str.charCodeAt(i);
-          hash |= 0;
-        }
-        return Math.abs(hash).toString(16).padStart(16, "0").toUpperCase();
+        return "";
       }
     }
 
-    // 激活码校验
+    function b64uToBytes(b64u) {
+      const s = b64u.replace(/-/g, "+").replace(/_/g, "/");
+      const pad = s + "=".repeat((4 - (s.length % 4)) % 4);
+      const bin = atob(pad);
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    }
+
+    function normalizeKeyInput(raw) {
+      const flat = String(raw || "").trim().toUpperCase().replace(/[\s　-]/g, "");
+      const m = flat.match(/^DALI([A-Z0-9]{4,12})([A-F0-9]{4})([A-F0-9]{4})$/);
+      if (m) return `DALI-${m[1]}-${m[2]}-${m[3]}`;
+      return flat;
+    }
+
+    // 只做输入预过滤，不是授权判定。网络不可用或没有 WebCrypto 时直接放行到服务器。
     async function verifyOfflineLicenseKey(inputKey) {
       if (!inputKey) return { valid: false, reason: "请输入激活码" };
-      const key = inputKey.trim().toUpperCase();
-
-      if (DALI_BLACKLIST_HASHES.length > 0) {
-        const blkHash = (await sha256Browser(`${key}::${_DK}`)).slice(0, 16);
-        if (DALI_BLACKLIST_HASHES.includes(blkHash)) {
-          return { valid: false, reason: "该激活码已被封禁或已失效" };
-        }
-      }
-
-      const pattern = /^DALI-([A-Z0-9]{4})-([A-F0-9]{4})-([A-F0-9]{4})$/;
-      const match = key.match(pattern);
+      const key = normalizeKeyInput(inputKey);
+      const match = DALI_KEY_RE.exec(key);
       if (!match) {
         return { valid: false, reason: "激活码格式错误，标准格式为 DALI-XXXX-XXXX-XXXX" };
       }
-
-      const seed = match[1];
-      const checksumPart = match[2] + match[3];
-
-      // 计算签名校验和
-      const hash = await sha256Browser(`DALI-${seed}::${_DK}`);
-      const expectedChecksum = hash.slice(0, 8);
-
-      if (checksumPart === expectedChecksum) {
-        // 种子以 'Y' 开头代表一年期尝鲜码；以 'L' 或其它代表永久买断码
-        const isAnnual = seed.startsWith("Y");
-        return { valid: true, type: isAnnual ? "annual" : "lifetime" };
+      if (!HAS_SUBTLE) return { valid: true, key, type: match[1].startsWith("Y") ? "annual" : "lifetime" };
+      const hash = await sha256Browser(`DALI-${match[1]}::${_DK}`);
+      if (!hash) return { valid: true, key, type: match[1].startsWith("Y") ? "annual" : "lifetime" };
+      if (match[2] + match[3] !== hash.slice(0, 8)) {
+        return { valid: false, reason: "激活码无效，请核对无误后重试" };
       }
-
-      return { valid: false, reason: "激活码无效，请核对无误后重试" };
+      return { valid: true, key, type: match[1].startsWith("Y") ? "annual" : "lifetime" };
     }
 
-    // ---- 激活态管理 ----
-    function buildLicenseToken(type, key) {
-      const expire = type === "annual" ? Date.now() + 365 * 24 * 60 * 60 * 1000 : 0;
-      const payload = `v2|${type}|${expire}|${key}`;
-      return payload;
+    // isProActivated() 被十几处同步门控调用，所以验签结果缓存在这里，
+    // 由开机加载与心跳刷新，不在门控路径上做异步等待。
+    let licState = null;
+    let machineIdCache = null;
+
+    function licSaveToken(token) {
+      localStorage.setItem(DALI_LIC_STORE, token);
     }
 
-    async function signLicensePayload(payload) {
-      return (await sha256Browser(`${DALI_SIG_CTX}::${payload}::${_DK}`)).slice(0, 16);
-    }
-
-    async function saveLicenseState(type, key) {
-      const payload = buildLicenseToken(type, key);
-      const sig = await signLicensePayload(payload);
-      localStorage.setItem("dali_lic_v2", `${payload}.${sig}`);
-    }
-
-    function clearLicenseState() {
-      localStorage.removeItem("dali_lic_v2");
+    function licClearAll() {
+      localStorage.removeItem(DALI_LIC_STORE);
+      localStorage.removeItem(DALI_LIC_V2_STORE);
       LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
     }
 
-    function parseLicenseTokenSync() {
-      const raw = localStorage.getItem("dali_lic_v2");
-      if (!raw) return null;
-      const dot = raw.indexOf(".");
-      if (dot < 0) return null;
-      const payload = raw.slice(0, dot);
-      const parts = payload.split("|");
-      if (parts.length !== 4 || parts[0] !== "v2") return null;
-      const type = parts[1] === "annual" ? "annual" : "lifetime";
-      const expire = parseInt(parts[2], 10) || 0;
-      if (type === "annual" && expire > 0 && Date.now() > expire) return null;
-      return { type, expire, valid: false };
-    }
-
-    async function verifyLicenseToken() {
-      const raw = localStorage.getItem("dali_lic_v2");
-      if (!raw) return null;
-      const dot = raw.indexOf(".");
-      if (dot < 0) return null;
-      const payload = raw.slice(0, dot);
-      const sig = raw.slice(dot + 1);
-      const parts = payload.split("|");
-      if (parts.length !== 4 || parts[0] !== "v2") return null;
-      const type = parts[1] === "annual" ? "annual" : "lifetime";
-      const expire = parseInt(parts[2], 10) || 0;
-      if (type === "annual" && expire > 0 && Date.now() > expire) return null;
-      const expected = await signLicensePayload(payload);
-      if (sig !== expected) return null;
-      return { type, expire, valid: true };
-    }
-
-    function isProActivated() {
-      return parseLicenseTokenSync() !== null;
-    }
-
-    async function revalidateLicenseToken() {
-      const parsed = await verifyLicenseToken();
-      if (!parsed) {
-        if (localStorage.getItem("dali_lic_v2")) {
-          clearLicenseState();
-        }
-        return false;
+    async function verifyLicenseSignature(token) {
+      if (!HAS_SUBTLE || !token) return null;
+      const parts = String(token).split(".");
+      if (parts.length !== 2) return null;
+      let payload;
+      try {
+        payload = JSON.parse(new TextDecoder().decode(b64uToBytes(parts[0])));
+      } catch (_) {
+        return null;
       }
-      return true;
+      if (!payload || payload.ver !== "v3" || payload.iss !== "daliocr") return null;
+      try {
+        const jwk = DALI_LIC_PUBLIC_JWK;
+        if (!jwk.n || jwk.n.indexOf("PASTE_") === 0) return null;
+        const key = await window.crypto.subtle.importKey(
+          "jwk",
+          { kty: "RSA", n: jwk.n, e: jwk.e, alg: "RS256", ext: true },
+          { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+          false,
+          ["verify"]
+        );
+        const ok = await window.crypto.subtle.verify(
+          "RSASSA-PKCS1-v1_5",
+          key,
+          b64uToBytes(parts[1]),
+          b64uToBytes(parts[0])
+        );
+        return ok ? payload : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function licStateFromPayload(payload) {
+      return {
+        key: payload.key,
+        type: payload.type,
+        expire: payload.exp || 0,
+        expired: payload.type === "annual" && (payload.exp || 0) > 0 && Date.now() > payload.exp,
+        verified: true,
+      };
+    }
+
+    // 激活那一刻联网验一次，之后凭服务器签发的令牌长期离线使用。
+    // 年码按令牌里的 exp 到点失效；永久码 exp=0，永不过期。
+    function isProActivated() {
+      const st = licState;
+      return !!(st && st.verified && !st.expired);
+    }
+
+    async function getMachineId() {
+      if (machineIdCache) return machineIdCache;
+      const cached = localStorage.getItem("dali_machine_id");
+      let raw = "";
+      try {
+        const t = window.__TAURI__;
+        if (t && t.core && typeof t.core.invoke === "function") {
+          raw = String(await t.core.invoke("get_machine_id") || "");
+        } else if (t && typeof t.invoke === "function") {
+          raw = String(await t.invoke("get_machine_id") || "");
+        }
+      } catch (_) {
+        raw = "";
+      }
+      if (!raw && cached) {
+        machineIdCache = cached;
+        return machineIdCache;
+      }
+      if (!raw) {
+        // 拿不到硬件标识时退化为本地持久化随机 ID，至少保证同一设备前后一致
+        raw = localStorage.getItem("dali_machine_fallback") || "";
+        if (!raw) {
+          raw = "fb-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 12);
+          localStorage.setItem("dali_machine_fallback", raw);
+        }
+      }
+      const hash = await sha256Browser(`DALI-MID::${raw}`);
+      machineIdCache = (hash || raw).toLowerCase();
+      localStorage.setItem("dali_machine_id", machineIdCache);
+      return machineIdCache;
+    }
+
+    async function apiPostLicense(path, body, timeoutMs) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs || 15000);
+      try {
+        const payload = Object.assign(
+          { machine_id: await getMachineId(), version: APP_VERSION },
+          body || {}
+        );
+        const res = await fetch(DALI_API_BASE + path, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal,
+          cache: "no-store",
+        });
+        return await res.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function activateLicense(inputKey) {
+      const pre = await verifyOfflineLicenseKey(inputKey);
+      if (!pre.valid) return { ok: false, reason: pre.reason };
+
+      let json;
+      try {
+        json = await apiPostLicense("/api/license/activate", { key: pre.key });
+      } catch (_) {
+        return { ok: false, offline: true, reason: "无法连接授权服务器，请检查网络后重试" };
+      }
+
+      if (json && json.code === 0 && json.data && json.data.token) {
+        const payload = await verifyLicenseSignature(json.data.token);
+        if (!payload) {
+          return { ok: false, reason: "授权响应校验失败，请确认客户端为最新版本后重试" };
+        }
+        licSaveToken(json.data.token);
+        licState = licStateFromPayload(payload);
+        await refreshLicenseUI();
+        return { ok: true, type: payload.type, msg: json.msg };
+      }
+
+      return { ok: false, code: json && json.code, reason: (json && json.msg) || "激活失败，请稍后重试" };
+    }
+
+    async function deactivateLicense() {
+      const st = licState;
+      if (!st || !st.key) {
+        licClearAll();
+        licState = null;
+        await refreshLicenseUI();
+        return;
+      }
+      let json;
+      try {
+        json = await apiPostLicense("/api/license/deactivate", { key: st.key });
+      } catch (_) {
+        showToast("解除绑定需要联网，请连接网络后再试");
+        return;
+      }
+      if (!json || json.code !== 0) {
+        if (json && json.code === 4109) {
+          showToast("该激活码当前没有绑定设备，已清除本机授权记录");
+        } else {
+          showToast((json && json.msg) || "解除失败，请稍后重试");
+          return;
+        }
+      } else {
+        showToast(json.msg || "已解除本机绑定");
+      }
+      licClearAll();
+      licState = null;
+      const input = $("licenseKeyInput");
+      if (input) {
+        input.value = "";
+        input.disabled = false;
+      }
+      await refreshLicenseUI();
+    }
+
+    // 旧版本地授权 (v2) 升级到联网激活。v2 的签名盐在包里，继续承认它就等于
+    // 白做这次改造，所以只借它取出用户当初输入的卡密，重新走一次服务器激活。
+    async function migrateLegacyLicense() {
+      const v2 = localStorage.getItem(DALI_LIC_V2_STORE);
+      if (!v2) return;
+      const key = (v2.slice(0, v2.indexOf(".")).split("|")[3] || "").trim();
+      if (!DALI_KEY_RE.test(normalizeKeyInput(key))) {
+        licClearAll();
+        return;
+      }
+      const res = await activateLicense(key);
+      if (!res.ok) {
+        licClearAll();
+        licState = null;
+        showToast(res.reason || "旧版授权需联网迁移，请重新输入激活码");
+      } else {
+        localStorage.removeItem(DALI_LIC_V2_STORE);
+        showToast("旧版本地授权已升级为联网授权，感谢支持");
+      }
+    }
+
+    async function initLicenseState() {
+      const raw = localStorage.getItem(DALI_LIC_STORE);
+      if (raw) {
+        const payload = await verifyLicenseSignature(raw);
+        licState = payload ? licStateFromPayload(payload) : null;
+        if (!payload) licClearAll();
+      } else {
+        await migrateLegacyLicense();
+      }
+      await refreshLicenseUI();
     }
 
     async function refreshLicenseUI() {
@@ -4596,86 +4759,79 @@
       const deactivateBtn = $("licenseDeactivateBtn");
       const keyInput = $("licenseKeyInput");
 
-      const parsed = parseLicenseTokenSync();
-      const activated = parsed !== null;
-      const type = parsed ? parsed.type : "lifetime";
-      const expire = parsed ? parsed.expire : 0;
-      const isExpired = type === "annual" && expire > 0 && Date.now() > expire;
+      const st = licState;
+      const activated = isProActivated();
 
-      if (activated) {
-        if (type === "annual") {
-          const dateStr = new Date(expire).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
-          if (tagEl) {
-            tagEl.className = "license-status-tag active";
-            tagEl.style.background = "linear-gradient(135deg, #10b981, #059669)";
-            tagEl.textContent = `🟢 PRO 一年尝鲜版 (至 ${dateStr})`;
-          }
-          if (badgeEl) {
-            badgeEl.textContent = "PRO 尝鲜版";
-            badgeEl.style.background = "linear-gradient(135deg, #10b981, #059669)";
-          }
-          if (subTextEl) subTextEl.textContent = `1 年期商业授权 (至 ${dateStr})`;
-          if (typeLabel) typeLabel.textContent = `1 年期商业授权 (有效期至 ${dateStr})`;
-        } else {
-          if (tagEl) {
-            tagEl.className = "license-status-tag active";
-            tagEl.style.background = "";
-            tagEl.textContent = "🟢 PRO 终身版已激活";
-          }
-          if (badgeEl) {
-            badgeEl.textContent = "PRO 终身版";
-            badgeEl.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
-          }
-          if (subTextEl) subTextEl.textContent = "终身商业授权 · 尊享专业版";
-          if (typeLabel) typeLabel.textContent = "永久买断制终身商业授权 (尊享版)";
-        }
-        if (activateBtn) activateBtn.style.display = "none";
-        if (deactivateBtn) deactivateBtn.style.display = "inline-flex";
-        if (keyInput) {
-          const rawTok = localStorage.getItem("dali_lic_v2") || "";
-          const payload = rawTok.slice(0, rawTok.indexOf("."));
-          const tokKey = payload.split("|")[3];
-          const keyRe = /^DALI-[A-Z0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}$/;
-          keyInput.value = keyRe.test(tokKey || "") ? tokKey : "已激活商业授权";
-          keyInput.disabled = true;
-        }
-      } else if (isExpired) {
-        const dateStr = new Date(expire).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+      const setFreeUi = (subText, typeText, tagText) => {
         if (tagEl) {
           tagEl.className = "license-status-tag trial";
           tagEl.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
-          tagEl.textContent = `🔴 尝鲜授权已到期 (已于 ${dateStr} 截止)`;
-        }
-        if (badgeEl) {
-          badgeEl.textContent = "已到期";
-          badgeEl.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
-        }
-        if (subTextEl) subTextEl.textContent = "年度尝鲜授权已到期，请续费";
-        if (typeLabel) typeLabel.textContent = "授权已过期 (输入新卡密即可立即续期)";
-        if (activateBtn) activateBtn.style.display = "inline-flex";
-        if (deactivateBtn) deactivateBtn.style.display = "none";
-        if (keyInput) {
-          keyInput.value = "";
-          keyInput.disabled = false;
-        }
-      } else {
-        if (tagEl) {
-          tagEl.className = "license-status-tag trial";
-          tagEl.style.background = "";
-          tagEl.textContent = "🟡 免费体验版 (未激活 PRO)";
+          tagEl.textContent = tagText;
         }
         if (badgeEl) {
           badgeEl.textContent = "免费版";
           badgeEl.style.background = "linear-gradient(135deg, #64748b, #475569)";
         }
-        if (subTextEl) subTextEl.textContent = "免费体验基础文字提取";
-        if (typeLabel) typeLabel.textContent = "普通单图/跨屏快传/历史免费 · 复杂表格与导出需 PRO";
+        if (subTextEl) subTextEl.textContent = subText;
+        if (typeLabel) typeLabel.textContent = typeText;
         if (activateBtn) activateBtn.style.display = "inline-flex";
         if (deactivateBtn) deactivateBtn.style.display = "none";
         if (keyInput) {
           keyInput.value = "";
           keyInput.disabled = false;
         }
+      };
+
+      if (activated && st.type === "annual") {
+        const dateStr = new Date(st.expire).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+        if (tagEl) {
+          tagEl.className = "license-status-tag active";
+          tagEl.style.background = "linear-gradient(135deg, #10b981, #059669)";
+          tagEl.textContent = `🟢 PRO 一年尝鲜版 (至 ${dateStr})`;
+        }
+        if (badgeEl) {
+          badgeEl.textContent = "PRO 尝鲜版";
+          badgeEl.style.background = "linear-gradient(135deg, #10b981, #059669)";
+        }
+        if (subTextEl) subTextEl.textContent = `1 年期商业授权 (至 ${dateStr})`;
+        if (typeLabel) typeLabel.textContent = `1 年期商业授权 (有效期至 ${dateStr})`;
+        if (activateBtn) activateBtn.style.display = "none";
+        if (deactivateBtn) deactivateBtn.style.display = "inline-flex";
+        if (keyInput) {
+          keyInput.value = DALI_KEY_RE.test(st.key || "") ? st.key : "已激活商业授权";
+          keyInput.disabled = true;
+        }
+      } else if (activated) {
+        if (tagEl) {
+          tagEl.className = "license-status-tag active";
+          tagEl.style.background = "";
+          tagEl.textContent = "🟢 PRO 终身版已激活";
+        }
+        if (badgeEl) {
+          badgeEl.textContent = "PRO 终身版";
+          badgeEl.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+        }
+        if (subTextEl) subTextEl.textContent = "终身商业授权 · 尊享专业版";
+        if (typeLabel) typeLabel.textContent = "永久买断制终身商业授权 (尊享版)";
+        if (activateBtn) activateBtn.style.display = "none";
+        if (deactivateBtn) deactivateBtn.style.display = "inline-flex";
+        if (keyInput) {
+          keyInput.value = DALI_KEY_RE.test(st.key || "") ? st.key : "已激活商业授权";
+          keyInput.disabled = true;
+        }
+      } else if (st && st.expired) {
+        const dateStr = new Date(st.expire).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+        setFreeUi(
+          "年度尝鲜授权已到期，请续费",
+          "授权已过期 (输入新卡密即可立即续期)",
+          `🔴 尝鲜授权已到期 (已于 ${dateStr} 截止)`
+        );
+      } else {
+        setFreeUi(
+          "免费体验基础文字提取",
+          "普通单图/跨屏快传/历史免费 · 复杂表格与导出需 PRO",
+          "🟡 免费体验版 (未激活 PRO)"
+        );
       }
     }
 
@@ -4715,30 +4871,23 @@
       });
 
       async function handleModalActivation() {
-        const input = ($("proModalKeyInput")?.value || "").trim().toUpperCase();
+        const input = ($("proModalKeyInput")?.value || "").trim();
         if (!input) {
-          showToast("请输入 16 位 PRO 激活码");
+          showToast("请输入 PRO 激活码");
           return;
         }
-
-        const result = await verifyOfflineLicenseKey(input);
-        if (result.valid) {
-          await saveLicenseState(result.type, input);
-          if (result.type === "annual") {
-            await refreshLicenseUI();
-            showToast("🎉 激活成功！大梨 OCR PRO 1 年期尝鲜授权已生效！");
-          } else {
-            await refreshLicenseUI();
-            showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
-          }
-          const resume = pendingProAction;
-          hideProFeatureModal();
-          if (typeof resume === "function") {
-            resume();
-          }
-        } else {
-          showToast(result.reason || "激活码无效，请核对后重试");
+        const btn = $("proModalActivateBtn");
+        if (btn) btn.disabled = true;
+        const result = await activateLicense(input);
+        if (btn) btn.disabled = false;
+        if (!result.ok) {
+          showToast(result.reason || "激活失败，请核对后重试");
+          return;
         }
+        const resume = pendingProAction;
+        hideProFeatureModal();
+        showToast(`🎉 ${result.msg || "激活成功"}`);
+        if (typeof resume === "function") resume();
       }
 
       $("proModalActivateBtn")?.addEventListener("click", handleModalActivation);
@@ -4748,45 +4897,38 @@
     }
 
     function initLicenseEvents() {
-      const hasLegacy = LEGACY_LICENSE_KEYS.some((k) => localStorage.getItem(k) !== null);
-      if (hasLegacy) {
-        LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
-      }
-      refreshLicenseUI();
+      LEGACY_LICENSE_KEYS.forEach((k) => localStorage.removeItem(k));
       initProModalEvents();
-      revalidateLicenseToken().then((ok) => {
-        if (!ok) refreshLicenseUI();
-      });
+      // 首屏先按未激活渲染，验签与联网状态回来后自动刷新
+      refreshLicenseUI();
+      initLicenseState();
 
       $("licenseActivateBtn")?.addEventListener("click", async () => {
-        const input = ($("licenseKeyInput")?.value || "").trim().toUpperCase();
+        const input = ($("licenseKeyInput")?.value || "").trim();
         if (!input) {
-          showToast("请输入 16 位 PRO 激活码");
+          showToast("请输入 PRO 激活码");
           return;
         }
-
-        const result = await verifyOfflineLicenseKey(input);
-        if (result.valid) {
-          await saveLicenseState(result.type, input);
-
-          if (result.type === "annual") {
-            await refreshLicenseUI();
-            showToast("🎉 激活成功！大梨 OCR PRO 1 年期尝鲜授权已生效！");
-          } else {
-            await refreshLicenseUI();
-            showToast("🎉 恭喜！大梨 OCR PRO 终身商业版激活成功！");
-          }
+        const btn = $("licenseActivateBtn");
+        btn.disabled = true;
+        const result = await activateLicense(input);
+        btn.disabled = false;
+        if (result.ok) {
+          showToast(`🎉 ${result.msg || "激活成功"}`);
         } else {
           showToast(result.reason || "激活码无效，请核对后重试");
         }
       });
 
-      $("licenseDeactivateBtn")?.addEventListener("click", async () => {
-        if (confirm("确定要解除当前设备的 PRO 商业授权激活状态吗？")) {
-          clearLicenseState();
-          if ($("licenseKeyInput")) $("licenseKeyInput").value = "";
-          await refreshLicenseUI();
-          showToast("已重置授权状态为免费体验版");
+      $("licenseDeactivateBtn")?.addEventListener("click", () => {
+        if (
+          confirm(
+            "确定要解除当前设备的 PRO 商业授权激活状态吗？\n" +
+              "解除后本机回到免费体验版，该激活码可在另一台设备重新激活（到期时间不会重新计算）。\n" +
+              "换机需要联网。"
+          )
+        ) {
+          deactivateLicense();
         }
       });
     }
@@ -4795,7 +4937,7 @@
     // 8.5 Online Update Check Engine
     // ==========================================
     const APP_VERSION = "0.0.1";
-    const UPDATE_API_ENDPOINT = "https://api.daliocr.cn/update";
+    const UPDATE_API_ENDPOINT = `${DALI_API_BASE}/update`;
     let isForceUpdateActive = false;
 
     function getSystemInfoForUpdate() {
@@ -4927,7 +5069,7 @@
     // ==========================================
     // 8.6 Remote Notice Engine
     // ==========================================
-    const NOTICE_API_ENDPOINT = "https://api.daliocr.cn/notice";
+    const NOTICE_API_ENDPOINT = `${DALI_API_BASE}/notice`;
     let activeNoticeId = null;
 
     function showNoticeModal(notice) {
@@ -5011,7 +5153,7 @@
     // ==========================================
     // 8.7 User Feedback Engine
     // ==========================================
-    const FEEDBACK_API_ENDPOINT = "https://api.daliocr.cn/feedback";
+    const FEEDBACK_API_ENDPOINT = `${DALI_API_BASE}/feedback`;
 
     function showFeedbackModal() {
       const overlay = $("feedbackModalOverlay");
@@ -5067,7 +5209,9 @@
             content: content,
             version: APP_VERSION,
             platform: platform,
-            arch: arch
+            arch: arch,
+            license_key: (licState && licState.key) || "",
+            machine_id: (await getMachineId()) || ""
           })
         });
 

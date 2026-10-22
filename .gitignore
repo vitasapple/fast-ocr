@@ -20,3 +20,12 @@ Thumbs.db
 *.deb
 *.app
 *.dmg
+
+# dali-api 运行期产物（不要提交）
+dali-api/.env
+dali-api/keys/
+dali-api/data/
+dali-api/.venv/
+dali-api/__pycache__/
+dali-api/app/__pycache__/
+dali-api/*.db

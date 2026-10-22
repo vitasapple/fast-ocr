@@ -846,9 +846,62 @@ fn capture_screen() -> Result<Vec<u8>, String> {
     }
 }
 
+#[tauri::command]
+fn get_machine_id() -> Result<String, String> {
+    #[cfg(target_os = "macos")]
+    {
+        use std::process::Command;
+        let out = Command::new("ioreg")
+            .args(["-rd1", "-c", "IOPlatformExpertDevice"])
+            .output()
+            .map_err(|e| format!("ioreg failed: {}", e))?;
+        String::from_utf8_lossy(&out.stdout)
+            .lines()
+            .find(|l| l.contains("IOPlatformUUID"))
+            .and_then(|l| l.split('"').nth(1))
+            .map(|v| v.to_string())
+            .ok_or_else(|| "IOPlatformUUID not found".to_string())
+    }
+    #[cfg(target_os = "windows")]
+    {
+        use std::process::Command;
+        let out = Command::new("reg")
+            .args([
+                "query",
+                "HKLM\\SOFTWARE\\Microsoft\\Cryptography",
+                "/v",
+                "MachineGuid",
+            ])
+            .output()
+            .map_err(|e| format!("reg query failed: {}", e))?;
+        String::from_utf8_lossy(&out.stdout)
+            .lines()
+            .find(|l| l.contains("MachineGuid"))
+            .and_then(|l| l.split_whitespace().last())
+            .map(|v| v.to_string())
+            .ok_or_else(|| "MachineGuid not found".to_string())
+    }
+    #[cfg(all(unix, not(target_os = "macos")))]
+    {
+        for path in ["/etc/machine-id", "/var/lib/dbus/machine-id"] {
+            if let Ok(raw) = std::fs::read_to_string(path) {
+                let id = raw.trim().to_string();
+                if !id.is_empty() {
+                    return Ok(id);
+                }
+            }
+        }
+        Err("machine-id not found".to_string())
+    }
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![capture_screen, get_lan_info])
+        .invoke_handler(tauri::generate_handler![
+            capture_screen,
+            get_lan_info,
+            get_machine_id
+        ])
         .setup(|app| {
             let asset_dir = resolve_asset_dir(app.handle());
             let port = start_local_server(asset_dir);
